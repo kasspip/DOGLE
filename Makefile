@@ -1,4 +1,4 @@
-NAME = gogle
+NAME = dogle
 
 SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Application.cpp \
@@ -8,8 +8,8 @@ SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Skin.cpp \
 		src/CoreClass/Camera.cpp \
 		src/CoreClass/Light.cpp \
-		src/UtilsClass/RGB.cpp \
 
+SRC +=	src/UtilsClass/RGB.cpp \
 
 OBJ = $(SRC:.cpp=.o)
 
@@ -18,8 +18,14 @@ INCLUDES = 	-Iinclude \
 			-Isrc/UtilsClass \
 			-Isrc/EditorClass \
 			-Isrc/EngineClass \
+			-I$(HOME)/.brew/include \
+			-Iinclude/soil2/src/SOIL2 \
 
-LIBRARIES =	 -g
+LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
+			-L$(HOME)/.brew/lib/ -lGLEW\
+			-Linclude/soil2/lib/macosx/ -lsoil2-debug\
+			-framework OpenGL\
+			-framework Cocoa\
 
 FLAGS = -Wall -Wextra -Werror
 
