@@ -11,10 +11,16 @@ SRC = 	src/CoreClass/main.cpp \
 
 SRC +=	src/UtilsClass/RGB.cpp \
 
+SRC +=	src/EngineClass/Engine.cpp \
+		src/EngineClass/StateMachine.cpp \
+		src/EngineClass/Initialisation.cpp \
+
+
 OBJ = $(SRC:.cpp=.o)
 
 INCLUDES = 	-Iinclude \
 			-Isrc/CoreClass \
+			-Isrc/EngineClass \
 			-Isrc/UtilsClass \
 			-Isrc/EditorClass \
 			-Isrc/EngineClass \
