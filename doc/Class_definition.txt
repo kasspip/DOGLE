@@ -1,0 +1,13 @@
+TRANSFORM :	mat4 position
+			mat4 rotate
+			mat4 scale
+
+SKIN :	path .dea
+		path .png
+
+CAMERA :	float FOV
+			float clipping_near
+			float clipping_far
+
+LIGHT :		float	intensity
+			RGB		color

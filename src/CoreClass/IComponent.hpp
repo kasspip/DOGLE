@@ -8,11 +8,9 @@
 		public:
 
 			virtual ~IComponent(void){};
-
+			virtual void	Save(std::ofstream &file) = 0;
 		private:
-	
-	};
 
-	std::ostream	&operator<<(std::ostream &o, IComponent const &rhs);
+	};
 
 #endif

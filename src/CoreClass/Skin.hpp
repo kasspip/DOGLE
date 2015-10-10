@@ -15,6 +15,7 @@
 			Skin &operator=(Skin const &rhs);
 			
 			std::string toString(void) const;
+			void		Save(std::ofstream &file);
 
 		private:
 	

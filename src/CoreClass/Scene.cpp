@@ -1,11 +1,24 @@
 #include "Scene.hpp"
 
+size_t Scene::counter = 0;
+
 // CONSTRUCTOR DESTRUCTOR //
 
-Scene::Scene(void)
+Scene::Scene(void) : 	_id(counter)
 {
-	std::cout << "construct Scene" << std::endl;
+	std::stringstream	ss;
 
+	ss << "Scene" << _id;
+	_name = ss.str();
+	counter++;
+	std::cout << "construct "<< _name << std::endl;
+}
+
+Scene::Scene(std::string name) : 	_id(counter),
+									_name(name)
+{
+	counter++;
+	std::cout << "construct "<< _name << std::endl;
 }
 
 Scene::Scene(Scene const & src)
@@ -15,8 +28,7 @@ Scene::Scene(Scene const & src)
 
 Scene::~Scene(void)
 {
-	std::cout << "destruct Scene" << std::endl; 
-
+	std::cout << "destruct " << _name << std::endl; 
 }
 
 // OVERLOADS //
@@ -41,7 +53,15 @@ std::string		Scene::toString(void) const
 	return ss.str();
 }
 
-void	Scene::AddGameObject(GameObject *gameObject) 
+void			Scene::Save(std::ofstream &file)
+{
+	file << "\tSCENE : " << _name << std::endl;
+	std::list<GameObject *>::iterator it = _listGameObject.begin();
+	for (;it != _listGameObject.end();it++)
+		(*it)->Save(file);
+}
+
+void			Scene::AddGameObject(GameObject *gameObject) 
 { 
 	_listGameObject.push_back(gameObject);
 }

@@ -2,9 +2,14 @@
 
 // CONSTRUCTOR DESTRUCTOR //
 
-Application::Application(void)
+Application::Application(void) : _name("AppName")
 {
-	std::cout << "construct application" << std::endl;
+	std::cout << "construct " << _name << std::endl;
+}
+
+Application::Application(std::string name) : _name(name)
+{
+	std::cout << "construct " << _name << std::endl;
 }
 
 Application::Application(Application const & src)
@@ -14,7 +19,7 @@ Application::Application(Application const & src)
 
 Application::~Application(void)
 {
-	std::cout << "destruct application" << std::endl;
+	std::cout << "destruct " << _name << std::endl;
 }
 
 // OVERLOADS //
@@ -37,6 +42,18 @@ std::string		Application::toString(void) const
 {
 	std::stringstream ss;
 	return ss.str();
+}
+
+void			Application::Save(void)
+{
+	std::ofstream	file;
+
+	file.open(_name + ".dogle");
+	file << "APPLICATION : " << _name << std::endl;
+	std::list<Scene *>::iterator it = _listScene.begin();
+	for (;it != _listScene.end();it++)
+		(*it)->Save(file);
+	file.close();
 }
 
 void		Application::AddScene(Scene *scene)

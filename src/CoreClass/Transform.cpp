@@ -39,6 +39,11 @@ std::string		Transform::toString(void) const
 	return ss.str();
 }
 
+void			Transform::Save(std::ofstream &file)
+{
+	file << "\t\t\tTRANSFORM : " << std::endl;
+}
+
 // PRIVATE //
 
 // GETTER SETTER //

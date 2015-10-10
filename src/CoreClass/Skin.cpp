@@ -39,6 +39,11 @@ std::string		Skin::toString(void) const
 	return ss.str();
 }
 
+void			Skin::Save(std::ofstream &file)
+{
+	file << "\t\t\tSKIN : " << std::endl;
+}
+
 // PRIVATE //
 
 // GETTER SETTER //

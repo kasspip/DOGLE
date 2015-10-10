@@ -6,11 +6,16 @@ SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/GameObject.cpp \
 		src/CoreClass/Transform.cpp \
 		src/CoreClass/Skin.cpp \
+		src/CoreClass/Camera.cpp \
+		src/CoreClass/Light.cpp \
+		src/UtilsClass/RGB.cpp \
+
 
 OBJ = $(SRC:.cpp=.o)
 
 INCLUDES = 	-Iinclude \
 			-Isrc/CoreClass \
+			-Isrc/UtilsClass \
 			-Isrc/EditorClass \
 			-Isrc/EngineClass \
 

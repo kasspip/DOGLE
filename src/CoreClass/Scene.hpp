@@ -6,20 +6,24 @@
 
 	class Scene
 	{
+		static size_t	counter;
 		public:
 
 			Scene(void);
+			Scene(std::string);
 			Scene(Scene const &src);
 			~Scene(void);
 		
 			Scene &operator=(Scene const &rhs);
 			
 			std::string toString(void) const;
-			void	AddGameObject(GameObject *gameObject);
+			void		Save(std::ofstream &file);
+			void		AddGameObject(GameObject *gameObject);
 
 		private:
-	
-			std::list<GameObject *> _listGameObject;
+			size_t					_id;
+			std::string				_name;
+			std::list<GameObject *>	_listGameObject;
 
 	};
 
