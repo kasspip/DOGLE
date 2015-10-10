@@ -1,0 +1,6 @@
+{
+	Camera1
+	fov = 60
+	clipping_near = 0.1
+	clipping_far = 100
+}
