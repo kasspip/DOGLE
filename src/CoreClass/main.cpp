@@ -1,28 +1,30 @@
 #include "DOGLE.hpp"
 #include "Application.hpp"
 #include "Engine.hpp"
+#include "Skin.hpp"
 
 int main (void)
 {
-	Application app;
-	Scene 		scene;
-	Scene 		scene1("FUCK WILL");
-	GameObject 	go;
-	
+	Application app("42run");
+	Scene 		scene("TestTriangle");
+	GameObject 	go("Triangle");
 
-	scene.AddGameObject(&go);
-	scene1.AddGameObject(&go);
 	app.AddScene(&scene);
-	app.AddScene(&scene1);
-	// app.Save();
+	scene.AddGameObject(&go);
 	try 
 	{
-		Engine		EG(app);
-		throw DError() << msg("TEST.\n");
+		go.AddComponent(new Skin("triangle.dae")); //components on the heap else segfault
+
+		Engine		EG;
+		EG.StartOpenGL();
+		EG.RunApplication(app);
+		EG.StopOpenGL();
+		//throw DError() << msg("TEST");
 	}
 	catch (DError & e ) 
 	{
-		std::cerr << "DOGLE Exception : " << *(boost::get_error_info<msg>(e));
+		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) 
+					<< C_DEFAULT << std::endl;
 	}
 	return (0);
 }

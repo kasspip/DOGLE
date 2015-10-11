@@ -2,9 +2,16 @@
 
 // CONSTRUCTOR DESTRUCTOR //
 
-Engine::Engine(Application &app) :	_app(app),
-									_SM(app)
+Engine::Engine()
 {
+	_setupOpenGL = false;
+	_app = NULL;
+	// TODO from ?
+	_winW = 1280;
+	_winH = 1280;
+	_versionMajor = 4;
+	_versionMinor = 1;
+	_aliasingSamples = 4;
 }
 
 Engine::~Engine(void)
@@ -26,7 +33,69 @@ std::ostream	&operator<<(std::ostream & o, Engine const & rhs)
 	return o;
 }
 
+
 // PUBLIC //
+
+void			Engine::RunApplication(Application & app)
+{
+	_app = &app;
+	if (_setupOpenGL == false)
+		throw DError() << msg("OpenGL is not setup. Use StartOpenGL().");
+	_CompileShader("3D"); // shader par defaut ?
+	std::cout << C_GREEN << "Engine run application : " << app.GetName() << C_DEFAULT << std::endl;
+
+}
+
+
+void			Engine::StartOpenGL(void)
+{
+	if (!glfwInit())
+		throw DError() << msg("could not start GLFW3");
+
+	// set hints version
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, _versionMajor);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, _versionMinor);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	// window and GLFW context
+	if ((_window = glfwCreateWindow(_winW, _winH, "GOGLE", NULL, NULL)) == NULL)
+	{
+		glfwTerminate();
+		throw DError() << msg("glfw could not open window");
+	}
+	glfwMakeContextCurrent(_window);
+	glewExperimental = GL_TRUE;
+	glewInit();
+	std::cout << "Renderer: " <<  (char*)glGetString(GL_RENDERER) << std::endl;
+	std::cout << "OpenGL version supported " <<  (char*)glGetString(GL_VERSION) << std::endl;
+
+	// renderer attibuts
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glClearColor(0.0, 0.0, 0.0, 1);
+	glfwWindowHint(GLFW_SAMPLES, _aliasingSamples);
+	
+	// culling mode
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+
+	// texture setting
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	_setupOpenGL = true;
+}
+
+void			Engine::StopOpenGL(void)
+{
+	glfwTerminate();
+}
 
 std::string		Engine::toString(void) const
 {
@@ -34,6 +103,54 @@ std::string		Engine::toString(void) const
 	return ss.str();
 }
 
+
 // PRIVATE //
+
+
+const char 		*Engine::_GetShaderCode(std::string filePath)
+{
+	FILE 	*file;
+
+	if ((file = fopen(filePath.c_str(), "r")) == NULL)
+	{
+		std::string error = "Shader File " + filePath + " not found.";
+		throw DError() << msg(error);
+	}
+	int len = 0;
+	fseek(file, 0, SEEK_END);
+	len = ftell(file);
+	fseek(file, 0, SEEK_SET);
+	char *content = new char[len + 1];
+	fread(content, len, 1, file);
+	return (content);
+}
+
+void			Engine::_CompileShader(std::string name)
+{
+	// get shaders code
+	std::stringstream 	vertexFilePath; 
+	std::stringstream 	fragmentFilePath;
+
+	vertexFilePath << "resources/shaders/" << name << ".vert";
+	fragmentFilePath << "resources/shaders/" << name << ".frag";
+	const char * vertexCode = _GetShaderCode(vertexFilePath.str());
+	const char * fragmentCode = _GetShaderCode(fragmentFilePath.str());
+
+	// compile vertex shader code
+	GLuint vertexId = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexId, 1, &(vertexCode), NULL);
+	glCompileShader(vertexId);
+
+	// compile fragment shader code
+	GLuint fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentId, 1, &(fragmentCode), NULL);
+	glCompileShader(fragmentId);
+	
+	// create shader program
+	_3DShaderProgram = glCreateProgram();
+	glAttachShader(_3DShaderProgram, vertexId);
+	glAttachShader(_3DShaderProgram, fragmentId);
+	glLinkProgram(_3DShaderProgram);
+}
 
 // GETTER SETTER //

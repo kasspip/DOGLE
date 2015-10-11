@@ -15,15 +15,14 @@
 		}				e_state;
 
 		public:
-			StateMachine(Application &app);
+			StateMachine(void);
 			~StateMachine(void);
 			StateMachine &operator=(StateMachine const &rhs);
 			std::string toString(void) const;
 
 		private:
-			StateMachine(void);
 			StateMachine(StateMachine const &src);
-			Application		&_app;
+			Application		*_app;
 			e_state			_currentState;
 			static IState	*_states[];
 	};

@@ -64,3 +64,8 @@ void		Application::AddScene(Scene *scene)
 // PRIVATE //
 
 // GETTER SETTER //
+
+std::string	Application::GetName(void)
+{
+	return (_name);
+}

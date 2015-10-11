@@ -7,8 +7,7 @@ IState	*StateMachine::_states[] =
 
 // CONSTRUCTOR DESTRUCTOR //
 
-StateMachine::StateMachine(Application &app) :	_app(app),
-												_currentState(INITIALISATION)
+StateMachine::StateMachine(void) :	_currentState(INITIALISATION)
 {
 
 }

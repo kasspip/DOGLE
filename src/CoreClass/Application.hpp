@@ -19,6 +19,7 @@
 			void		Save(void);
 			void		AddScene(Scene *scene);
 
+			std::string	GetName(void);
 		private:
 			std::list<Scene *>	_listScene;
 			std::string			_name;

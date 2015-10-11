@@ -32,8 +32,9 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-Linclude/soil2/lib/macosx/ -lsoil2-debug\
 			-framework OpenGL\
 			-framework Cocoa\
+			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib\
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g -std=c++14
 
 CC = clang++ 
 
