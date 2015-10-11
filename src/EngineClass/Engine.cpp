@@ -4,7 +4,8 @@
 
 Engine::Engine(Application &app) :	_app(app),
 									_SM(app)
-{}
+{
+}
 
 Engine::~Engine(void)
 {

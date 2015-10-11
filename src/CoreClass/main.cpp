@@ -15,6 +15,14 @@ int main (void)
 	app.AddScene(&scene);
 	app.AddScene(&scene1);
 	// app.Save();
-	Engine		EG(app);
+	try 
+	{
+		Engine		EG(app);
+		throw DError() << msg("TEST.\n");
+	}
+	catch (DError & e ) 
+	{
+		std::cerr << "DOGLE Exception : " << *(boost::get_error_info<msg>(e));
+	}
 	return (0);
 }
