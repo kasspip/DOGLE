@@ -2,14 +2,16 @@
 
 // CONSTRUCTOR DESTRUCTOR //
 
-Application::Application(void) : _name("AppName")
+Application::Application(void) : name("AppName")
 {
-	std::cout << "construct " << _name << std::endl;
+	currentScene = NULL;
+	std::cout << "construct " << name << std::endl;
 }
 
-Application::Application(std::string name) : _name(name)
+Application::Application(std::string name) : name(name)
 {
-	std::cout << "construct " << _name << std::endl;
+	currentScene = NULL;
+	std::cout << "construct " << name << std::endl;
 }
 
 Application::Application(Application const & src)
@@ -19,7 +21,7 @@ Application::Application(Application const & src)
 
 Application::~Application(void)
 {
-	std::cout << "destruct " << _name << std::endl;
+	std::cout << "destruct " << name << std::endl;
 }
 
 // OVERLOADS //
@@ -48,8 +50,8 @@ void			Application::Save(void)
 {
 	std::ofstream	file;
 
-	file.open(_name + ".dogle");
-	file << "APPLICATION : " << _name << std::endl;
+	file.open(name + ".dogle");
+	file << "APPLICATION : " << name << std::endl;
 	std::list<Scene *>::iterator it = _listScene.begin();
 	for (;it != _listScene.end();it++)
 		(*it)->Save(file);
@@ -59,13 +61,11 @@ void			Application::Save(void)
 void		Application::AddScene(Scene *scene)
 { 
 	_listScene.push_back(scene);
+	if (currentScene == NULL)
+		currentScene = scene;
 }
 
 // PRIVATE //
 
 // GETTER SETTER //
 
-std::string	Application::GetName(void)
-{
-	return (_name);
-}

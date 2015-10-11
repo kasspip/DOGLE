@@ -22,4 +22,11 @@
 # define C_GREEN  "\x1B[32m"
 # define C_DEFAULT "\x1B[0m"
 
+typedef enum	state
+{
+	INITIALISATION,
+	EXIT,
+	STATE_NBR
+}				e_state;
+
 #endif

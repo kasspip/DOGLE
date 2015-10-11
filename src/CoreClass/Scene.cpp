@@ -47,11 +47,7 @@ std::ostream	&operator<<(std::ostream & o, Scene const & rhs)
 
 // PUBLIC //
 
-std::string		Scene::toString(void) const
-{
-	std::stringstream ss;
-	return ss.str();
-}
+
 
 void			Scene::Save(std::ofstream &file)
 {
@@ -66,6 +62,13 @@ void			Scene::AddGameObject(GameObject *gameObject)
 	_listGameObject.push_back(gameObject);
 }
 
+std::string		Scene::toString(void) const
+{
+	std::stringstream ss;
+	return ss.str();
+}
 // PRIVATE //
 
 // GETTER SETTER //
+
+std::list<GameObject *>		Scene::GetGameObjectList() {return _listGameObject;}

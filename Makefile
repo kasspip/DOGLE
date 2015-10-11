@@ -13,7 +13,7 @@ SRC +=	src/UtilsClass/RGB.cpp \
 
 SRC +=	src/EngineClass/Engine.cpp \
 		src/EngineClass/StateMachine.cpp \
-		src/EngineClass/Initialisation.cpp \
+		src/EngineClass/Start.cpp \
 
 
 OBJ = $(SRC:.cpp=.o)

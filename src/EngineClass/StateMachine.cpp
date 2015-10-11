@@ -1,8 +1,9 @@
 #include "StateMachine.hpp"
 
+
 IState	*StateMachine::_states[] =
 {
-	new Initialisation
+	new Start
 };
 
 // CONSTRUCTOR DESTRUCTOR //
@@ -38,6 +39,13 @@ std::string		StateMachine::toString(void) const
 	std::stringstream ss;
 	return ss.str();
 }
+
+void			StateMachine::RunApplication(Application & app)
+{
+	while (_currentState != EXIT)
+		_states[_currentState]->RunState(app, _currentState);
+}
+
 
 // PRIVATE //
 

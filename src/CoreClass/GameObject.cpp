@@ -10,17 +10,17 @@ GameObject::GameObject(void) :	_id(counter)
 	std::stringstream	ss;
 
 	ss << "GameObject " << _id;
-	_name = ss.str();
+	name = ss.str();
 	counter++;
 	std::cout << "construct GameObject" << std::endl;
 	AddComponent(new Transform);
 }
 
-GameObject::GameObject(std::string name) :	_id(counter),
-											_name(name)
+GameObject::GameObject(std::string n) :	_id(counter)
 {
+	name = n;
 	counter++;
-	std::cout << "construct "<< _name << std::endl;
+	std::cout << "construct "<< name << std::endl;
 }
 
 GameObject::GameObject(GameObject const & src)
@@ -60,7 +60,7 @@ std::string		GameObject::toString(void) const
 
 void			GameObject::Save(std::ofstream &file)
 {
-	file << "\t\tGAMEOBJECT : " << _name << std::endl;
+	file << "\t\tGAMEOBJECT : " << name << std::endl;
 	std::list<IComponent *>::iterator it = _listComponent.begin();
 	for (;it != _listComponent.end();it++)
 		(*it)->Save(file);

@@ -3,22 +3,18 @@
 
 # include "DOGLE.hpp"
 # include "Application.hpp"
-# include "IState.hpp"
-# include "Initialisation.hpp"
+# include "Start.hpp"
+#include "IState.hpp"
 
 	class StateMachine
 	{
-		typedef enum	e_state
-		{
-			INITIALISATION,
-			STATE_NBR
-		}				e_state;
 
 		public:
 			StateMachine(void);
 			~StateMachine(void);
 			StateMachine &operator=(StateMachine const &rhs);
 			std::string toString(void) const;
+			void		RunApplication(Application & app);
 
 		private:
 			StateMachine(StateMachine const &src);

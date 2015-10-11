@@ -19,6 +19,7 @@
 			std::string toString(void) const;
 			void		Save(std::ofstream &file);
 			void		AddGameObject(GameObject *gameObject);
+			std::list<GameObject *>		GetGameObjectList();
 
 		private:
 			size_t					_id;

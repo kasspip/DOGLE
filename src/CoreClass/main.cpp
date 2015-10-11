@@ -8,9 +8,11 @@ int main (void)
 	Application app("42run");
 	Scene 		scene("TestTriangle");
 	GameObject 	go("Triangle");
+	GameObject 	go1("Dummy");
 
 	app.AddScene(&scene);
 	scene.AddGameObject(&go);
+	scene.AddGameObject(&go1);
 	try 
 	{
 		go.AddComponent(new Skin("triangle.dae")); //components on the heap else segfault

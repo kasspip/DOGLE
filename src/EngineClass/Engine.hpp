@@ -19,7 +19,6 @@
 		private:
 			Engine(Engine const &src);
 
-			Application		*_app;
 			StateMachine	_SM;
 
 			// openGL
@@ -38,12 +37,8 @@
 			int				_aliasingSamples;
 
 			// shaders
-			GLuint			_3DShaderProgram;
-
-			void			_CompileShader(std::string name);
+			GLuint			_CompileShader(std::string name);
 			const char 		*_GetShaderCode(std::string filePath);
-
-
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Engine const &rhs);

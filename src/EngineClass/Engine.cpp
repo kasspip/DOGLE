@@ -5,7 +5,6 @@
 Engine::Engine()
 {
 	_setupOpenGL = false;
-	_app = NULL;
 	// TODO from ?
 	_winW = 1280;
 	_winH = 1280;
@@ -38,12 +37,11 @@ std::ostream	&operator<<(std::ostream & o, Engine const & rhs)
 
 void			Engine::RunApplication(Application & app)
 {
-	_app = &app;
 	if (_setupOpenGL == false)
 		throw DError() << msg("OpenGL is not setup. Use StartOpenGL().");
-	_CompileShader("3D"); // shader par defaut ?
-	std::cout << C_GREEN << "Engine run application : " << app.GetName() << C_DEFAULT << std::endl;
-
+	app.ShaderProgram3D = _CompileShader("3D"); // shader par defaut ?
+	std::cout << C_GREEN << "Engine run application : " << app.name << C_DEFAULT << std::endl;
+	_SM.RunApplication(app);
 }
 
 
@@ -94,6 +92,7 @@ void			Engine::StartOpenGL(void)
 
 void			Engine::StopOpenGL(void)
 {
+	_setupOpenGL = false;
 	glfwTerminate();
 }
 
@@ -125,7 +124,7 @@ const char 		*Engine::_GetShaderCode(std::string filePath)
 	return (content);
 }
 
-void			Engine::_CompileShader(std::string name)
+GLuint			Engine::_CompileShader(std::string name)
 {
 	// get shaders code
 	std::stringstream 	vertexFilePath; 
@@ -147,10 +146,14 @@ void			Engine::_CompileShader(std::string name)
 	glCompileShader(fragmentId);
 	
 	// create shader program
-	_3DShaderProgram = glCreateProgram();
-	glAttachShader(_3DShaderProgram, vertexId);
-	glAttachShader(_3DShaderProgram, fragmentId);
-	glLinkProgram(_3DShaderProgram);
+	GLuint			ShaderProgram;
+	ShaderProgram = glCreateProgram();
+	glAttachShader(ShaderProgram, vertexId);
+	glAttachShader(ShaderProgram, fragmentId);
+	glLinkProgram(ShaderProgram);
+
+	// TOCHECK free vertexCode & fragmentCode & vertexId & fragmentId?
+	return (ShaderProgram);
 }
 
 // GETTER SETTER //

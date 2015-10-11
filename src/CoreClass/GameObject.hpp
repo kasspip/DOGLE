@@ -3,7 +3,8 @@
 
 # include "DOGLE.hpp"
 # include "IComponent.hpp"
-
+	
+	
 	class GameObject
 	{
 		static size_t	counter;
@@ -17,13 +18,26 @@
 
 			GameObject &operator=(GameObject const &rhs);
 
-			std::string toString(void) const;
-			void		Save(std::ofstream &file);
-			void		AddComponent(IComponent *cmp);
+			void			Save(std::ofstream &file);
+			void			AddComponent(IComponent *cmp);
+			std::string 	toString(void) const;
+			
+			template < typename T >
+			T*				GetComponent(void)
+			{
+				std::list<IComponent*>::iterator it = _listComponent.begin();
+				for (; it != _listComponent.end(); it++)
+				{
+					if (dynamic_cast<T*>(*it))
+						return dynamic_cast<T*>(*it);
+				}
+				return NULL;
+			}
+			
+			std::string		name;
 
 		private:
 		size_t					_id;
-		std::string				_name;
 		std::list<IComponent *>	_listComponent;
 	};
 

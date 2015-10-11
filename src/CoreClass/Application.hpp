@@ -19,11 +19,12 @@
 			void		Save(void);
 			void		AddScene(Scene *scene);
 
-			std::string	GetName(void);
+			std::string			name;
+			GLuint				ShaderProgram3D;
+			Scene				*currentScene;
+
 		private:
 			std::list<Scene *>	_listScene;
-			std::string			_name;
-	
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Application const &rhs);
