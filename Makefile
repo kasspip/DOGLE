@@ -37,13 +37,18 @@ FLAGS = -Wall -Wextra -Werror
 
 CC = clang++ 
 
+SOIL2 = include/soil2/lib/macosx/libsoil2-debug.a
+
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(SOIL2) $(OBJ)
 	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) -o $(NAME)
 
 %.o: %.cpp
 	$(CC) -c $(FLAGS) $(INCLUDES) $< -o $@
+
+$(SOIL2):
+	make -C include/soil2/make/macosx soil2-static-lib
 
 clean:
 	rm -f $(OBJ)
