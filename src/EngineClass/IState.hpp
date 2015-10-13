@@ -4,8 +4,8 @@
 # include "DOGLE.hpp"
 # include "Application.hpp"
 # include "Scene.hpp" 
-# include "GameObject.hpp"
-# include "Skin.hpp"
+
+
 class Application;
 
 

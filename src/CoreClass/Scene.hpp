@@ -7,6 +7,7 @@
 	class Scene
 	{
 		static size_t	counter;
+		
 		public:
 
 			Scene(void);
@@ -16,16 +17,17 @@
 		
 			Scene &operator=(Scene const &rhs);
 			
-			std::string toString(void) const;
-			void		Save(std::ofstream &file);
-			void		AddGameObject(GameObject *gameObject);
-			std::list<GameObject *>		GetGameObjectList();
+			std::string 			toString(void) const;
+			void					Save(std::ofstream &file);
+			void					InstanciatePrefab(GameObject *prefab);
+			GameObject*				FindGameObject(std::string name);
+			std::list<GameObject*>	GetGameObjectList(void) const;
 
+			std::string					name;
+		
 		private:
 			size_t					_id;
-			std::string				_name;
-			std::list<GameObject *>	_listGameObject;
-
+			std::list<GameObject*>	_listGameObject;
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Scene const &rhs);

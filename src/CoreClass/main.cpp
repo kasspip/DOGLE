@@ -5,22 +5,27 @@
 
 int main (void)
 {
-	Application app("42run");
-	Scene 		scene("TestTriangle");
-	GameObject 	go("Triangle");
-	GameObject 	go1("Dummy");
-
-	app.AddScene(&scene);
-	scene.AddGameObject(&go);
-	scene.AddGameObject(&go1);
 	try 
 	{
-		go.AddComponent(new Skin("triangle.dae")); //components on the heap else segfault
+		Application *app = new Application( "42run" );
+			GameObject *object3D = new GameObject( "Object3D" ); 
+				app->AddPrefab(object3D);
+				object3D->AddComponent( new Skin("triangle.dae") );
+			
+			GameObject *camera = new GameObject( "Camera" );
+				app->AddPrefab(camera);
+				camera->AddComponent( new Camera );
+
+			Scene *scene1 = new Scene( "Level1" );
+				app->AddScene(scene1);
+				scene1->InstanciatePrefab( app->FindPrefab("Object3D") );
+				scene1->InstanciatePrefab( app->FindPrefab("Camera") );
 
 		Engine		EG;
 		EG.StartOpenGL();
-		EG.RunApplication(app);
+		EG.RunApplication(*app);
 		EG.StopOpenGL();
+
 		//throw DError() << msg("TEST");
 	}
 	catch (DError & e ) 

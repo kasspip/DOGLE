@@ -3,6 +3,8 @@
 
 # include "DOGLE.hpp"
 # include "Scene.hpp"
+# include "GameObject.hpp"
+# include "Skin.hpp"
 
 	class Application
 	{
@@ -15,16 +17,29 @@
 		
 			Application &operator=(Application const &rhs);
 			
-			std::string toString(void) const;
-			void		Save(void);
-			void		AddScene(Scene *scene);
+			std::string 		toString(void) const;
+			void				Save(void);
 
+			// Prefab
+			void				AddPrefab(GameObject* gameObject);
+			GameObject*			FindPrefab(std::string name);
+
+			//	Scene
+			void				AddScene(Scene* scene);
+			Scene*				FindScene(std::string name);
+			void				LoadScene(Scene* scene);
+			Scene*				GetCurrentScene(void);
+
+			
 			std::string			name;
 			GLuint				ShaderProgram3D;
-			Scene				*currentScene;
 
 		private:
-			std::list<Scene *>	_listScene;
+			std::list<GameObject*>	_listPrefab;
+			std::list<Scene*>		_listScene;
+			Scene*					_currentScene;
+
+			void		_SkinBindBuffers(Skin & skin);
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Application const &rhs);

@@ -3,6 +3,7 @@
 
 # include "DOGLE.hpp"
 # include "StateMachine.hpp"
+# include "Application.hpp"
 
 	class Engine
 	{
@@ -20,14 +21,13 @@
 			Engine(Engine const &src);
 
 			StateMachine	_SM;
+			Application*	_app;
 
 			// openGL
 			bool			_setupOpenGL;
 			GLFWwindow		*_window;
 			int				_winW;
 			int				_winH;
-
-
 
 			// Opengl settings
 			const GLubyte	*_renderer;

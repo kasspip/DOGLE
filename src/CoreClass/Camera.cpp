@@ -36,6 +36,7 @@ std::ostream	&operator<<(std::ostream & o, Camera const & rhs)
 std::string		Camera::toString(void) const
 {
 	std::stringstream ss;
+	ss << "# Component Camera #";
 	return ss.str();
 }
 

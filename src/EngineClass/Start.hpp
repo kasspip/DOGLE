@@ -18,7 +18,6 @@
 			std::string toString(void) const;
 
 		private:
-			void			_BindBuffers(Skin &skin);
 	
 	};
 

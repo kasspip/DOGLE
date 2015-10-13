@@ -9,16 +9,16 @@ Scene::Scene(void) : 	_id(counter)
 	std::stringstream	ss;
 
 	ss << "Scene" << _id;
-	_name = ss.str();
+	name = ss.str();
 	counter++;
-	std::cout << "construct "<< _name << std::endl;
+	std::cout << "construct "<< name << std::endl;
 }
 
-Scene::Scene(std::string name) : 	_id(counter),
-									_name(name)
+Scene::Scene(std::string n) : 	_id(counter)
 {
+	name = n;
 	counter++;
-	std::cout << "construct "<< _name << std::endl;
+	std::cout << "construct "<< name << std::endl;
 }
 
 Scene::Scene(Scene const & src)
@@ -28,7 +28,10 @@ Scene::Scene(Scene const & src)
 
 Scene::~Scene(void)
 {
-	std::cout << "destruct " << _name << std::endl; 
+	std::cout << "destruct " << name << std::endl; 
+	std::list<GameObject*>::iterator go = _listGameObject.begin();
+	for (; go != _listGameObject.end(); go++)
+		delete *go;
 }
 
 // OVERLOADS //
@@ -36,6 +39,7 @@ Scene::~Scene(void)
 Scene	&Scene::operator=(Scene const & rhs)
 {
 	(void)rhs;
+	throw DError() << msg ("Scene operator= not implemented");
 	return *this;
 }
 
@@ -47,28 +51,40 @@ std::ostream	&operator<<(std::ostream & o, Scene const & rhs)
 
 // PUBLIC //
 
-
-
-void			Scene::Save(std::ofstream &file)
+void					Scene::Save(std::ofstream &file)
 {
-	file << "\tSCENE : " << _name << std::endl;
+	file << "\tSCENE : " << name << std::endl;
 	std::list<GameObject *>::iterator it = _listGameObject.begin();
 	for (;it != _listGameObject.end();it++)
 		(*it)->Save(file);
 }
 
-void			Scene::AddGameObject(GameObject *gameObject) 
+void					Scene::InstanciatePrefab(GameObject *prefab) 
 { 
-	_listGameObject.push_back(gameObject);
+	GameObject* instance = new GameObject(*prefab);
+	_listGameObject.push_back(instance);
 }
 
-std::string		Scene::toString(void) const
+std::string				Scene::toString(void) const
 {
 	std::stringstream ss;
 	return ss.str();
 }
+
+GameObject*				Scene::FindGameObject(std::string name)
+{
+	std::list<GameObject*>::iterator go = _listGameObject.begin();
+	for (; go != _listGameObject.end(); go++)
+	{
+		if ((*go)->name == name)
+			return *go;
+	}
+	throw DError() << msg("FindGameObject(), resquested GameObject not found.");
+}
+
+
 // PRIVATE //
 
 // GETTER SETTER //
 
-std::list<GameObject *>		Scene::GetGameObjectList() {return _listGameObject;}
+std::list<GameObject*>	Scene::GetGameObjectList() const {return _listGameObject;}

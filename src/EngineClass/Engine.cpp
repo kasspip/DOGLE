@@ -5,12 +5,14 @@
 Engine::Engine()
 {
 	_setupOpenGL = false;
-	// TODO from ?
+	_app = NULL;
+	// TODO from config file ?
 	_winW = 1280;
 	_winH = 1280;
 	_versionMajor = 4;
 	_versionMinor = 1;
 	_aliasingSamples = 4;
+	// end TODO
 }
 
 Engine::~Engine(void)
@@ -32,24 +34,31 @@ std::ostream	&operator<<(std::ostream & o, Engine const & rhs)
 	return o;
 }
 
-
 // PUBLIC //
 
 void			Engine::RunApplication(Application & app)
 {
+	std::cout << "[ENGINE] <RunApplication> : " << app.name << std::endl;
+
+	if (_app != NULL)
+		delete _app;
+	_app = &app;
+
 	if (_setupOpenGL == false)
 		throw DError() << msg("OpenGL is not setup. Use StartOpenGL().");
 	app.ShaderProgram3D = _CompileShader("3D"); // shader par defaut ?
-	std::cout << C_GREEN << "Engine run application : " << app.name << C_DEFAULT << std::endl;
 	_SM.RunApplication(app);
 }
 
 
 void			Engine::StartOpenGL(void)
 {
+	std::cout << std::endl << "[ENGINE] <StartOpenGL>" <<  std::endl;
+	if (_setupOpenGL == true)
+		return ;
+
 	if (!glfwInit())
 		throw DError() << msg("could not start GLFW3");
-
 	// set hints version
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, _versionMajor);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, _versionMinor);
@@ -92,8 +101,14 @@ void			Engine::StartOpenGL(void)
 
 void			Engine::StopOpenGL(void)
 {
-	_setupOpenGL = false;
-	glfwTerminate();
+	std::cout << "[ENGINE] <StopOpenGL>" << std::endl <<  std::endl;
+	if (_app != NULL)
+		delete _app;
+	if (_setupOpenGL == true)
+	{
+		_setupOpenGL = false;
+		glfwTerminate();
+	}
 }
 
 std::string		Engine::toString(void) const

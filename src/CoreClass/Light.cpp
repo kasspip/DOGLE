@@ -36,6 +36,7 @@ std::ostream	&operator<<(std::ostream & o, Light const & rhs)
 std::string		Light::toString(void) const
 {
 	std::stringstream ss;
+	ss << "# Component Light #";
 	return ss.str();
 }
 

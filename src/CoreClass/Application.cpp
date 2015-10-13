@@ -4,14 +4,14 @@
 
 Application::Application(void) : name("AppName")
 {
-	currentScene = NULL;
-	std::cout << "construct " << name << std::endl;
+	_currentScene = NULL;
+	std::cout << "construct " + name << std::endl;
 }
 
 Application::Application(std::string name) : name(name)
 {
-	currentScene = NULL;
-	std::cout << "construct " << name << std::endl;
+	_currentScene = NULL;
+	std::cout << "construct " + name << std::endl;
 }
 
 Application::Application(Application const & src)
@@ -21,7 +21,14 @@ Application::Application(Application const & src)
 
 Application::~Application(void)
 {
-	std::cout << "destruct " << name << std::endl;
+	std::cout << "destuct " + name << std::endl;
+	std::list<GameObject*>::iterator prefab = _listPrefab.begin();
+	for (; prefab != _listPrefab.end(); prefab++)
+		delete *prefab;
+
+	std::list<Scene*>::iterator scene = _listScene.begin();
+	for (; scene != _listScene.end(); scene++)
+		delete *scene;
 }
 
 // OVERLOADS //
@@ -29,6 +36,7 @@ Application::~Application(void)
 Application	&Application::operator=(Application const & rhs)
 {
 	(void)rhs;
+	throw DError() << msg ("Application operator= not yet implemented");
 	return *this;
 }
 
@@ -40,10 +48,42 @@ std::ostream	&operator<<(std::ostream & o, Application const & rhs)
 
 // PUBLIC //
 
-std::string		Application::toString(void) const
+void			Application::AddPrefab(GameObject* gameObject) 
+{ 
+	_listPrefab.push_back(gameObject);
+}
+
+GameObject*		Application::FindPrefab(std::string name)
 {
-	std::stringstream ss;
-	return ss.str();
+	std::list<GameObject*>::iterator it = _listPrefab.begin();
+	for (; it != _listPrefab.end(); it ++)
+	{
+		if ((*it)->name == name)
+			return *it;
+	}
+	throw DError() << msg("FindPrefab(), resquested prefab not found.");
+}
+
+void			Application::LoadScene(Scene* scene)
+{
+	if (scene == NULL)
+		throw DError() << msg("Application.LoadScene(), NULL pointer");
+
+	// TODO 
+	// Nettoyer la scene precedente
+
+	_currentScene = scene;
+	std::list<GameObject*> GameObjects = scene->GetGameObjectList();
+	std::list<GameObject*>::iterator go = GameObjects.begin();
+
+	Skin* skin = NULL;
+
+	for (; go != GameObjects.end(); go++)
+	{
+		std::cout << "> Loading \'" << (*go)->name << "\'" << std::endl;
+		if ((skin = (*go)->GetComponent<Skin>()))
+			_SkinBindBuffers(*skin);
+	}
 }
 
 void			Application::Save(void)
@@ -58,14 +98,39 @@ void			Application::Save(void)
 	file.close();
 }
 
-void		Application::AddScene(Scene *scene)
+void			Application::AddScene(Scene* scene)
 { 
 	_listScene.push_back(scene);
-	if (currentScene == NULL)
-		currentScene = scene;
+	if (_currentScene == NULL)
+		_currentScene = scene;
+}
+
+Scene*			Application::FindScene(std::string name)
+{
+	std::list<Scene*>::iterator it = _listScene.begin();
+	for (; it != _listScene.end(); it++)
+	{
+		if ((*it)->name == name)
+			return *it;
+	}
+	throw DError() << msg("FindScene(), resquested scene not found.");
+}
+
+std::string		Application::toString(void) const
+{
+	std::stringstream ss;
+	return ss.str();
 }
 
 // PRIVATE //
 
+void			Application::_SkinBindBuffers(Skin& skin)
+{
+	(void)skin;
+	std::cout << "bind buffer" << std::endl;
+}
+
+
 // GETTER SETTER //
 
+Scene*			Application::GetCurrentScene() { return _currentScene; }

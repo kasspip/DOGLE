@@ -3,8 +3,11 @@
 
 # include "DOGLE.hpp"
 # include "IComponent.hpp"
-	
-	
+# include "Transform.hpp"
+# include "Skin.hpp"
+# include "Camera.hpp"
+# include "Light.hpp"
+
 	class GameObject
 	{
 		static size_t	counter;
@@ -18,12 +21,11 @@
 
 			GameObject &operator=(GameObject const &rhs);
 
-			void			Save(std::ofstream &file);
-			void			AddComponent(IComponent *cmp);
-			std::string 	toString(void) const;
-			
-			template < typename T >
-			T*				GetComponent(void)
+			void						Save(std::ofstream &file);
+			void						AddComponent(IComponent *cmp);
+			std::string 				toString(void);
+			std::list<IComponent*>		GetListComponent() const;
+			template < typename T > T*	GetComponent(void)
 			{
 				std::list<IComponent*>::iterator it = _listComponent.begin();
 				for (; it != _listComponent.end(); it++)
@@ -33,14 +35,15 @@
 				}
 				return NULL;
 			}
-			
+
 			std::string		name;
 
 		private:
+
 		size_t					_id;
-		std::list<IComponent *>	_listComponent;
+		std::list<IComponent*>	_listComponent;
 	};
 
-	std::ostream	&operator<<(std::ostream &o, GameObject const &rhs);
+	std::ostream	&operator<<(std::ostream &o, GameObject &rhs);
 
 #endif
