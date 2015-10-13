@@ -47,6 +47,7 @@ void			Engine::RunApplication(Application & app)
 	if (_setupOpenGL == false)
 		throw DError() << msg("OpenGL is not setup. Use StartOpenGL().");
 	app.ShaderProgram3D = _CompileShader("3D"); // shader par defaut ?
+	app.window = _window;
 	_SM.RunApplication(app);
 }
 

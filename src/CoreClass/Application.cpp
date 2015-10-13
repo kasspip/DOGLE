@@ -5,12 +5,14 @@
 Application::Application(void) : name("AppName")
 {
 	_currentScene = NULL;
+	appShouldClose = false;
 	std::cout << "construct " + name << std::endl;
 }
 
 Application::Application(std::string name) : name(name)
 {
 	_currentScene = NULL;
+	appShouldClose = false;
 	std::cout << "construct " + name << std::endl;
 }
 
@@ -36,7 +38,7 @@ Application::~Application(void)
 Application	&Application::operator=(Application const & rhs)
 {
 	(void)rhs;
-	throw DError() << msg ("Application operator= not yet implemented");
+	throw DError() << msg ("Application operator= not implemented");
 	return *this;
 }
 
@@ -80,7 +82,7 @@ void			Application::LoadScene(Scene* scene)
 
 	for (; go != GameObjects.end(); go++)
 	{
-		std::cout << "> Loading \'" << (*go)->name << "\'" << std::endl;
+		PRINT_DEBUG( "> Loading \'" + (*go)->name + "\'");
 		if ((skin = (*go)->GetComponent<Skin>()))
 			_SkinBindBuffers(*skin);
 	}
@@ -127,7 +129,7 @@ std::string		Application::toString(void) const
 void			Application::_SkinBindBuffers(Skin& skin)
 {
 	(void)skin;
-	std::cout << "bind buffer" << std::endl;
+	PRINT_DEBUG("bind buffer");
 }
 
 

@@ -17,22 +17,24 @@
 		
 			Application &operator=(Application const &rhs);
 			
-			std::string 		toString(void) const;
-			void				Save(void);
+			std::string 	toString(void) const;
+			void			Save(void);
 
 			// Prefab
-			void				AddPrefab(GameObject* gameObject);
-			GameObject*			FindPrefab(std::string name);
+			void			AddPrefab(GameObject* gameObject);
+			GameObject*		FindPrefab(std::string name);
 
 			//	Scene
-			void				AddScene(Scene* scene);
-			Scene*				FindScene(std::string name);
-			void				LoadScene(Scene* scene);
-			Scene*				GetCurrentScene(void);
+			void			AddScene(Scene* scene);
+			Scene*			FindScene(std::string name);
+			void			LoadScene(Scene* scene);
+			Scene*			GetCurrentScene(void);
 
 			
 			std::string			name;
 			GLuint				ShaderProgram3D;
+			bool				appShouldClose;
+			GLFWwindow			*window;
 
 		private:
 			std::list<GameObject*>	_listPrefab;

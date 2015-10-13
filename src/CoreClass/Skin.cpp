@@ -120,8 +120,8 @@ void		color_to_stream(std::stringstream &ss, const std::string nm, const aiColor
 std::string		Skin::toString(void) const
 {
 	std::stringstream ss;
-	ss << "# Component Light #";
-	
+	ss << "# Component Light #" << std::endl;
+
 	ss << "COLLADA file :" << _dae_file << "\n";
 	ss << "Texture file :" << texture_file << "\n";
 	ss << "Array vertices =\n";

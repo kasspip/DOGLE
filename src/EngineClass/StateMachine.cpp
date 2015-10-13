@@ -3,19 +3,25 @@
 
 IState	*StateMachine::_states[] =
 {
-	new Start
+	new Start,
+	new Physics,
+	new Inputs,
+	new GameLogic,
+	new Render,
+	new Gui,
+	new Pause,
+	new Destroy,
+	new Stop,
 };
 
 // CONSTRUCTOR DESTRUCTOR //
 
 StateMachine::StateMachine(void) :	_currentState(INITIALISATION)
 {
-
 }
 
 StateMachine::~StateMachine(void)
 {
-
 }
 
 // OVERLOADS //

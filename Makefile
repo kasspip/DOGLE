@@ -14,6 +14,14 @@ SRC +=	src/UtilsClass/RGB.cpp \
 SRC +=	src/EngineClass/Engine.cpp \
 		src/EngineClass/StateMachine.cpp \
 		src/EngineClass/Start.cpp \
+		src/EngineClass/Physics.cpp \
+		src/EngineClass/Inputs.cpp \
+		src/EngineClass/GameLogic.cpp \
+		src/EngineClass/Render.cpp \
+		src/EngineClass/Gui.cpp \
+		src/EngineClass/Pause.cpp \
+		src/EngineClass/Destroy.cpp \
+		src/EngineClass/Stop.cpp \
 
 
 OBJ = $(SRC:.cpp=.o)
@@ -34,7 +42,7 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-framework Cocoa\
 			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib\
 
-FLAGS = -Wall -Wextra -Werror -g -std=c++14
+FLAGS = -Wall -Wextra -Werror -std=c++14
 
 CC = clang++ 
 
@@ -58,4 +66,5 @@ fclean: clean
 	rm -f $(NAME)
 	rm -rf $(NAME).dSYM
 
-re: fclean all
+re: fclean 
+	make -j -j -j

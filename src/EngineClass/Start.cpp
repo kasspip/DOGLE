@@ -6,22 +6,11 @@ Start::Start(void)
 {
 }
 
-Start::Start(Start const & src)
-{
-	*this = src;
-}
-
 Start::~Start(void)
 {
 }
 
 // OVERLOADS //
-
-Start	&Start::operator=(Start const & rhs)
-{
-	(void)rhs;
-	return *this;
-}
 
 std::ostream	&operator<<(std::ostream & o, Start const & rhs)
 {
@@ -33,9 +22,9 @@ std::ostream	&operator<<(std::ostream & o, Start const & rhs)
 
 void			Start::RunState(Application & app, e_state & currentState)
 {
-	std::cout << "[MACHINE] <Start>" << std::endl;
+	PRINT_DEBUG("[MACHINE] <Start>");
 	app.LoadScene(app.GetCurrentScene());
-	currentState = EXIT;
+	currentState = PHYSICS;
 }
 
 std::string		Start::toString(void) const

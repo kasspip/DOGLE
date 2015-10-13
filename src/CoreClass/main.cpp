@@ -7,19 +7,22 @@ int main (void)
 {
 	try 
 	{
-		Application *app = new Application( "42run" );
-			GameObject *object3D = new GameObject( "Object3D" ); 
-				app->AddPrefab(object3D);
-				object3D->AddComponent( new Skin("triangle.dae") );
+		Application *app = new Application("42run");
 			
-			GameObject *camera = new GameObject( "Camera" );
-				app->AddPrefab(camera);
+			GameObject *object3D = new GameObject("Object3D"); 
+				object3D->AddComponent( new Skin("triangle.dae") );
+				app->AddPrefab(object3D);
+			
+			GameObject *camera = new GameObject("Camera");
 				camera->AddComponent( new Camera );
+				app->AddPrefab(camera);
 
-			Scene *scene1 = new Scene( "Level1" );
-				app->AddScene(scene1);
+			Scene *scene1 = new Scene("Level1");
 				scene1->InstanciatePrefab( app->FindPrefab("Object3D") );
 				scene1->InstanciatePrefab( app->FindPrefab("Camera") );
+				app->AddScene(scene1);
+
+
 
 		Engine		EG;
 		EG.StartOpenGL();
