@@ -3,8 +3,9 @@
 
 # include "DOGLE.hpp"
 # include "IState.hpp"
+# include "Engine.hpp"
 
-	class Pause : public IState
+	class Pause : public IState, public Engine
 	{
 		public:
 

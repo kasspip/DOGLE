@@ -26,7 +26,7 @@ void			Physics::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Physics>");
 	(void)app;
-	currentState = INPUTS;
+	currentState = STATE_INPUTS;
 }
 
 std::string		Physics::toString(void) const

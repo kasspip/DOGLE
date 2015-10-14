@@ -13,9 +13,13 @@
 			Engine &operator=(Engine const &rhs);
 			
 			std::string toString(void) const;
-			void		StartOpenGL(void);
-			void		StopOpenGL(void);
-			void		RunApplication(Application & app);
+			void		RunApplication(Application* app);
+			bool		KeyIsPressed(e_key key);
+			bool		KeyIsReleased(e_key key);
+
+		protected:
+	
+			static key_event		_key[];
 
 		private:
 			Engine(Engine const &src);
@@ -28,6 +32,9 @@
 			GLFWwindow		*_window;
 			int				_winW;
 			int				_winH;
+
+			void			_StartOpenGL(void);
+			void			_StopOpenGL(void);
 
 			// Opengl settings
 			const GLubyte	*_renderer;

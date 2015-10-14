@@ -24,7 +24,7 @@ void			Stop::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Stop>");
 	(void)app;
-	currentState = EXIT;
+	currentState = STATE_EXIT;
 }
 
 std::string		Stop::toString(void) const

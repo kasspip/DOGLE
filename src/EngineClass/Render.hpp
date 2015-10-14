@@ -3,8 +3,9 @@
 
 # include "DOGLE.hpp"
 # include "IState.hpp"
+# include "Engine.hpp"
 
-	class Render : public IState
+	class Render : public IState, public Engine
 	{
 		public:
 
@@ -18,6 +19,8 @@
 			
 			Render &operator=(Render const &rhs);
 			Render(Render const &src);
+
+			void			_renderSkin(Skin& skin);
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Render const &rhs);

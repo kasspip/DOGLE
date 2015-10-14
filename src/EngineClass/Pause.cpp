@@ -26,7 +26,7 @@ void			Pause::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Pause>");
 	(void)app;
-	currentState = DESTROY;
+	currentState = STATE_DESTROY;
 }
 
 std::string		Pause::toString(void) const

@@ -12,10 +12,8 @@
 
 			Application(void);
 			Application(std::string);
-			Application(Application const &src);
 			~Application(void);
 		
-			Application &operator=(Application const &rhs);
 			
 			std::string 	toString(void) const;
 			void			Save(void);
@@ -30,18 +28,31 @@
 			void			LoadScene(Scene* scene);
 			Scene*			GetCurrentScene(void);
 
-			
-			std::string			name;
-			GLuint				ShaderProgram3D;
-			bool				appShouldClose;
+			// Engine
 			GLFWwindow			*window;
+			GLuint				shaderProgram3D;
+			GLuint				shaderProgramDebug;
+			bool				appShouldClose;
+			
+
+			// Custom
+			std::string			name;
+			int					winW;
+			int					winH;
 
 		private:
+
+			Application(Application const &src);
+			Application &operator=(Application const &rhs);
+
 			std::list<GameObject*>	_listPrefab;
 			std::list<Scene*>		_listScene;
 			Scene*					_currentScene;
 
-			void		_SkinBindBuffers(Skin & skin);
+			void		_SkinVBO(Skin & skin);
+			void		_BindBuffer(GLfloat *data, GLuint dateSize, GLuint *id);
+			void		_BindAttribut(GLuint bufferId, GLuint attributId, int pSize);
+			void		_SkinVAO(Skin& skin);
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Application const &rhs);

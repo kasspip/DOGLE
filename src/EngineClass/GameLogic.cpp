@@ -26,7 +26,7 @@ void			GameLogic::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <GameLogic>");
 	(void)app;
-	currentState = RENDER;
+	currentState = STATE_RENDER;
 }
 
 std::string		GameLogic::toString(void) const

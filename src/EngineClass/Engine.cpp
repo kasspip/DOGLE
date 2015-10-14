@@ -1,14 +1,19 @@
 #include "Engine.hpp"
 
+// STATIC //
+
+key_event			Engine::_key[KEY_COUNT];
+
 // CONSTRUCTOR DESTRUCTOR //
 
 Engine::Engine()
 {
 	_setupOpenGL = false;
 	_app = NULL;
+
 	// TODO from config file ?
-	_winW = 1280;
-	_winH = 1280;
+	_winW = 0;
+	_winH = 0;
 	_versionMajor = 4;
 	_versionMinor = 1;
 	_aliasingSamples = 4;
@@ -36,23 +41,51 @@ std::ostream	&operator<<(std::ostream & o, Engine const & rhs)
 
 // PUBLIC //
 
-void			Engine::RunApplication(Application & app)
+void			Engine::RunApplication(Application* app)
 {
-	std::cout << "[ENGINE] <RunApplication> : " << app.name << std::endl;
+	std::cout << "[ENGINE] <RunApplication> : " << app->name << std::endl;
 
 	if (_app != NULL)
+	{
+		_StopOpenGL();
 		delete _app;
-	_app = &app;
+	}
+
+	_app = app;
 
 	if (_setupOpenGL == false)
-		throw DError() << msg("OpenGL is not setup. Use StartOpenGL().");
-	app.ShaderProgram3D = _CompileShader("3D"); // shader par defaut ?
-	app.window = _window;
-	_SM.RunApplication(app);
+	{
+		_winW = app->winW;
+		_winH = app->winH;
+		_StartOpenGL();
+	}
+	app->shaderProgram3D = _CompileShader("3D"); // shader par defaut ?
+	app->shaderProgramDebug = _CompileShader("Debug"); // shader par defaut ?
+	app->window = _window;
+	_SM.RunApplication(*app);
+	_StopOpenGL();
+}
+
+bool			Engine::KeyIsPressed(e_key key)
+{
+	return (_key[key] == KEY_EVENT_PRESSED);
+}
+
+bool			Engine::KeyIsReleased(e_key key)
+{
+	return (_key[key] == KEY_EVENT_RELEASED);
+}
+
+std::string		Engine::toString(void) const
+{
+	std::stringstream ss;
+	return ss.str();
 }
 
 
-void			Engine::StartOpenGL(void)
+// PRIVATE //
+
+void			Engine::_StartOpenGL(void)
 {
 	std::cout << std::endl << "[ENGINE] <StartOpenGL>" <<  std::endl;
 	if (_setupOpenGL == true)
@@ -72,35 +105,38 @@ void			Engine::StartOpenGL(void)
 		glfwTerminate();
 		throw DError() << msg("glfw could not open window");
 	}
+	
 	glfwMakeContextCurrent(_window);
+	
 	glewExperimental = GL_TRUE;
 	glewInit();
+	
 	std::cout << "Renderer: " <<  (char*)glGetString(GL_RENDERER) << std::endl;
 	std::cout << "OpenGL version supported " <<  (char*)glGetString(GL_VERSION) << std::endl;
 
 	// renderer attibuts
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-	glClearColor(0.0, 0.0, 0.0, 1);
-	glfwWindowHint(GLFW_SAMPLES, _aliasingSamples);
+	// glClearColor(0.0, 0.0, 0.0, 1);
+	// glfwWindowHint(GLFW_SAMPLES, _aliasingSamples);
 	
-	// culling mode
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	// // culling mode
+	// glEnable(GL_CULL_FACE);
+	// glCullFace(GL_BACK);
+	// glFrontFace(GL_CCW);
 
-	// texture setting
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// // texture setting
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	_setupOpenGL = true;
 }
 
-void			Engine::StopOpenGL(void)
+void			Engine::_StopOpenGL(void)
 {
 	std::cout << "[ENGINE] <StopOpenGL>" << std::endl <<  std::endl;
 	if (_app != NULL)
@@ -112,32 +148,25 @@ void			Engine::StopOpenGL(void)
 	}
 }
 
-std::string		Engine::toString(void) const
-{
-	std::stringstream ss;
-	return ss.str();
-}
-
-
-// PRIVATE //
-
-
 const char 		*Engine::_GetShaderCode(std::string filePath)
 {
-	FILE 	*file;
+	std::ifstream	file;
+	int			size;
+	char*		inBuf = nullptr;
 
-	if ((file = fopen(filePath.c_str(), "r")) == NULL)
+	file.open(filePath.c_str(),std::ios_base::binary);
+	if (file.is_open())
 	{
-		std::string error = "Shader File " + filePath + " not found.";
-		throw DError() << msg(error);
+		file.seekg(0,std::ios::end);		//get file size
+		size = file.tellg();            	//
+		file.seekg(0,std::ios::beg);        //
+
+		inBuf = new char[size + 1];
+		inBuf[size] = '\0';
+		file.read(inBuf,size);
+		file.close();
 	}
-	int len = 0;
-	fseek(file, 0, SEEK_END);
-	len = ftell(file);
-	fseek(file, 0, SEEK_SET);
-	char *content = new char[len + 1];
-	fread(content, len, 1, file);
-	return (content);
+	return const_cast<const char*>(inBuf);
 }
 
 GLuint			Engine::_CompileShader(std::string name)
@@ -168,7 +197,10 @@ GLuint			Engine::_CompileShader(std::string name)
 	glAttachShader(ShaderProgram, fragmentId);
 	glLinkProgram(ShaderProgram);
 
-	// TOCHECK free vertexCode & fragmentCode & vertexId & fragmentId?
+	glDeleteShader(vertexId);
+	glDeleteShader(fragmentId);
+	delete vertexCode;
+	delete fragmentCode;
 	return (ShaderProgram);
 }
 

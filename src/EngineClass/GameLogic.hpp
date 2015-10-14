@@ -3,8 +3,9 @@
 
 # include "DOGLE.hpp"
 # include "IState.hpp"
+# include "Engine.hpp"
 
-	class GameLogic : public IState
+	class GameLogic : public IState, public Engine
 	{
 		public:
 

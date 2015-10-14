@@ -25,6 +25,7 @@
 			void						AddComponent(IComponent *cmp);
 			std::string 				toString(void);
 			std::list<IComponent*>		GetListComponent() const;
+			
 			template < typename T > T*	GetComponent(void)
 			{
 				std::list<IComponent*>::iterator it = _listComponent.begin();

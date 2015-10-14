@@ -1,5 +1,7 @@
 NAME = dogle
 
+#SRC = 	OpenGL.cpp \
+
 SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Application.cpp \
 		src/CoreClass/Scene.cpp \
@@ -22,7 +24,6 @@ SRC +=	src/EngineClass/Engine.cpp \
 		src/EngineClass/Pause.cpp \
 		src/EngineClass/Destroy.cpp \
 		src/EngineClass/Stop.cpp \
-
 
 OBJ = $(SRC:.cpp=.o)
 

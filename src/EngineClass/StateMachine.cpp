@@ -1,5 +1,13 @@
 #include "StateMachine.hpp"
-
+#include "Start.hpp"
+#include "Physics.hpp"
+#include "Inputs.hpp"
+#include "GameLogic.hpp"
+#include "Render.hpp"
+#include "GUI.hpp"
+#include "Pause.hpp"
+#include "Destroy.hpp"
+#include "Stop.hpp"
 
 IState	*StateMachine::_states[] =
 {
@@ -16,7 +24,7 @@ IState	*StateMachine::_states[] =
 
 // CONSTRUCTOR DESTRUCTOR //
 
-StateMachine::StateMachine(void) :	_currentState(INITIALISATION)
+StateMachine::StateMachine(void) :	_currentState(STATE_START)
 {
 }
 
@@ -48,7 +56,7 @@ std::string		StateMachine::toString(void) const
 
 void			StateMachine::RunApplication(Application & app)
 {
-	while (_currentState != EXIT)
+	while (_currentState != STATE_EXIT)
 		_states[_currentState]->RunState(app, _currentState);
 }
 

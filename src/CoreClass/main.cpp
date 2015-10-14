@@ -3,14 +3,16 @@
 #include "Engine.hpp"
 #include "Skin.hpp"
 
-int main (void)
+int		main(void)
 {
 	try 
 	{
+		// ASSEMBLAGE //
+
 		Application *app = new Application("42run");
 			
 			GameObject *object3D = new GameObject("Object3D"); 
-				object3D->AddComponent( new Skin("triangle.dae") );
+				object3D->AddComponent( new Skin("cube.dae") );
 				app->AddPrefab(object3D);
 			
 			GameObject *camera = new GameObject("Camera");
@@ -22,14 +24,11 @@ int main (void)
 				scene1->InstanciatePrefab( app->FindPrefab("Camera") );
 				app->AddScene(scene1);
 
-
+		// INTERPRETATION //
 
 		Engine		EG;
-		EG.StartOpenGL();
-		EG.RunApplication(*app);
-		EG.StopOpenGL();
+		EG.RunApplication(app);
 
-		//throw DError() << msg("TEST");
 	}
 	catch (DError & e ) 
 	{

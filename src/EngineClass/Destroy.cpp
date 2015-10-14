@@ -25,11 +25,10 @@ std::ostream	&operator<<(std::ostream & o, Destroy const & rhs)
 void			Destroy::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Destroy>");
-	(void)app;
-	if (app.appShouldClose == false)
-		currentState = PHYSICS;
+	if (app.appShouldClose == true || glfwWindowShouldClose (app.window))
+		currentState = STATE_STOP;
 	else
-		currentState = STOP;
+		currentState = STATE_PHYSICS;
 }
 
 std::string		Destroy::toString(void) const

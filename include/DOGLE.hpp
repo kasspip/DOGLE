@@ -7,6 +7,7 @@
 # include <ctime>
 # include <list>
 # include <vector>
+# include <algorithm>
 # include <GL/glew.h>
 # include <GLFW/glfw3.h>
 # include <SOIL2.h>
@@ -24,24 +25,39 @@
 # define DEBUG 0
 # define PRINT_DEBUG(str) if (DEBUG == 1) { std::cout << str << std::endl; }
 
-typedef enum	state
-{
-	INITIALISATION,
-	PHYSICS,
-	INPUTS,
-	GAMELOGIC,
-	RENDER,
-	GUI,
-	PAUSING,
-	DESTROY,
-	STOP,
-	EXIT,
-	STATE_NBR
-}				e_state;
+	typedef enum	state
+	{
+		STATE_START,
+		STATE_PHYSICS,
+		STATE_INPUTS,
+		STATE_GAMELOGIC,
+		STATE_RENDER,
+		STATE_GUI,
+		STATE_PAUSING,
+		STATE_DESTROY,
+		STATE_STOP,
+		STATE_EXIT,
+		STATE_NBR
+	}				e_state;
 
-typedef enum	key
-{
-	KEY_ESC,
-}				e_key;
+	typedef enum	key
+	{
+		KEY_ESC,
+		KEY_W,
+		KEY_A,
+		KEY_S,
+		KEY_D,
+		KEY_SPACE,
+		KEY_SHIFT,
+		KEY_CONTROL,
+		KEY_COUNT,
+	}				e_key;
+
+	typedef enum	key_event
+	{
+		KEY_EVENT_NONE,
+		KEY_EVENT_PRESSED,
+		KEY_EVENT_RELEASED
+	}				e_key_event;
 
 #endif

@@ -12,10 +12,8 @@
 
 			Scene(void);
 			Scene(std::string);
-			Scene(Scene const &src);
 			~Scene(void);
 		
-			Scene &operator=(Scene const &rhs);
 			
 			std::string 			toString(void) const;
 			void					Save(std::ofstream &file);
@@ -24,8 +22,11 @@
 			std::list<GameObject*>	GetGameObjectList(void) const;
 
 			std::string					name;
-		
+
 		private:
+			Scene(Scene const &src);
+			Scene &operator=(Scene const &rhs);
+
 			size_t					_id;
 			std::list<GameObject*>	_listGameObject;
 	};

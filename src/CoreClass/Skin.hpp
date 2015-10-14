@@ -22,13 +22,23 @@
 		
 			Skin &operator=(Skin const &rhs);
 			
-			std::string toString(void) const;
-			void		Save(std::ofstream &file);
+			std::string 	toString(void) const;
+			void			Save(std::ofstream &file);
+			bool			GetIsBind();
+			void			SetIsBind(bool val);
 
 			unsigned int	nb_vertices;
-			GLfloat			*vertices;
+			GLfloat				*positions;
+			
+			GLfloat			*UVs;
 			GLfloat			*normals;
-			GLfloat			*textures;
+
+			GLuint			positionsBind;
+			GLuint			UVsBind;
+			GLuint			normalsBind;
+
+			GLuint			vao;
+
 			int				texture_h;
 			int				texture_w;
 			unsigned char	*texture_data;
@@ -48,6 +58,7 @@
 			static std::string	_3Dobjects_path;
 			static std::string	_images_path;
 			std::string			_dae_file;
+			bool				_isBind;
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Skin const &rhs);

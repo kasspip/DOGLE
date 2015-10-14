@@ -24,9 +24,9 @@ std::ostream	&operator<<(std::ostream & o, Gui const & rhs)
 
 void			Gui::RunState(Application & app, e_state & currentState)
 {
-	PRINT_DEBUG("MACHINE] <GUI>");
+	PRINT_DEBUG("[MACHINE] <GUI>");
 	(void)app;
-	currentState = PAUSING;
+	currentState = STATE_PAUSING;
 }
 
 std::string		Gui::toString(void) const

@@ -21,11 +21,6 @@ Scene::Scene(std::string n) : 	_id(counter)
 	std::cout << "construct "<< name << std::endl;
 }
 
-Scene::Scene(Scene const & src)
-{
-	*this = src;
-}
-
 Scene::~Scene(void)
 {
 	std::cout << "destruct " << name << std::endl; 
@@ -35,13 +30,6 @@ Scene::~Scene(void)
 }
 
 // OVERLOADS //
-
-Scene	&Scene::operator=(Scene const & rhs)
-{
-	(void)rhs;
-	throw DError() << msg ("Scene operator= not implemented");
-	return *this;
-}
 
 std::ostream	&operator<<(std::ostream & o, Scene const & rhs)
 {

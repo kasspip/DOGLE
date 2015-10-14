@@ -6,6 +6,10 @@ Application::Application(void) : name("AppName")
 {
 	_currentScene = NULL;
 	appShouldClose = false;
+	winW = 1280;
+	winH = 1280;
+	shaderProgram3D = 0;
+	shaderProgramDebug = 0;
 	std::cout << "construct " + name << std::endl;
 }
 
@@ -13,12 +17,11 @@ Application::Application(std::string name) : name(name)
 {
 	_currentScene = NULL;
 	appShouldClose = false;
+	winW = 1280;
+	winH = 1280;
+	shaderProgram3D = 0;
+	shaderProgramDebug = 0;
 	std::cout << "construct " + name << std::endl;
-}
-
-Application::Application(Application const & src)
-{
-	*this = src;
 }
 
 Application::~Application(void)
@@ -34,13 +37,6 @@ Application::~Application(void)
 }
 
 // OVERLOADS //
-
-Application	&Application::operator=(Application const & rhs)
-{
-	(void)rhs;
-	throw DError() << msg ("Application operator= not implemented");
-	return *this;
-}
 
 std::ostream	&operator<<(std::ostream & o, Application const & rhs)
 {
@@ -84,7 +80,16 @@ void			Application::LoadScene(Scene* scene)
 	{
 		PRINT_DEBUG( "> Loading \'" + (*go)->name + "\'");
 		if ((skin = (*go)->GetComponent<Skin>()))
-			_SkinBindBuffers(*skin);
+		{
+			if (skin->GetIsBind() == false)
+			{
+				PRINT_DEBUG( "\tBinding skin");
+				_SkinVBO(*skin);
+				_SkinVAO(*skin);
+				skin->SetIsBind(true);
+				skin = NULL;
+			}
+		}
 	}
 }
 
@@ -126,12 +131,39 @@ std::string		Application::toString(void) const
 
 // PRIVATE //
 
-void			Application::_SkinBindBuffers(Skin& skin)
+void			Application::_BindBuffer(GLfloat *data, GLuint dataSize, GLuint *id)
 {
-	(void)skin;
-	PRINT_DEBUG("bind buffer");
+	glGenBuffers(1, id);
+	glBindBuffer(GL_ARRAY_BUFFER, *id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * dataSize, data, GL_STATIC_DRAW);
 }
 
+void			Application::_SkinVBO(Skin& skin)
+{
+	PRINT_DEBUG("\tBind VBO");
+	_BindBuffer(skin.positions, skin.nb_vertices * 3, &(skin.positionsBind));
+	_BindBuffer(skin.UVs, skin.nb_vertices * 2, &(skin.UVsBind));
+	_BindBuffer(skin.normals, skin.nb_vertices * 3, &(skin.normalsBind));
+}
+
+void			Application::_BindAttribut(GLuint bufferId, GLuint attributId, int pSize)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+	glVertexAttribPointer(attributId, pSize, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(attributId);
+}
+
+void			Application::_SkinVAO(Skin& skin)
+{
+	PRINT_DEBUG("\tBind VAO");
+
+	glGenVertexArrays(1, &(skin.vao));
+	glBindVertexArray(skin.vao);
+	GLuint	attributId = 0;
+	_BindAttribut(skin.positionsBind, attributId++, 3);
+	_BindAttribut(skin.UVsBind, attributId++, 2);
+	_BindAttribut(skin.normalsBind, attributId++, 3);
+}
 
 // GETTER SETTER //
 

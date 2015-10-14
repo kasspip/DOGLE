@@ -4,19 +4,9 @@
 # include "DOGLE.hpp"
 # include "Application.hpp"
 # include "IState.hpp"
-# include "Start.hpp"
-# include "Physics.hpp"
-# include "Inputs.hpp"
-# include "GameLogic.hpp"
-# include "Render.hpp"
-# include "GUI.hpp"
-# include "Pause.hpp"
-# include "Destroy.hpp"
-# include "Stop.hpp"
 
 	class StateMachine
 	{
-
 		public:
 			StateMachine(void);
 			~StateMachine(void);

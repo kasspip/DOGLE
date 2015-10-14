@@ -26,9 +26,9 @@ Skin::Skin(std::string obj) : _dae_file(obj)
 	aiString		path;
 
 	nb_vertices = mesh->mNumVertices;
-	vertices = _Construct3DArray(mesh->mVertices, nb_vertices);
+	positions = _Construct3DArray(mesh->mVertices, nb_vertices);
 	normals = _Construct3DArray(mesh->mNormals, nb_vertices);
-	textures = _Construct2DArray(mesh->mTextureCoords[0], nb_vertices);
+	UVs = _Construct2DArray(mesh->mTextureCoords[0], nb_vertices);
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL);
 	texture_file = _images_path + std::string(path.C_Str());
 	if (!(texture_data = SOIL_load_image(texture_file.c_str(), &texture_w, &texture_h, 0, SOIL_LOAD_RGBA)))
@@ -37,6 +37,8 @@ Skin::Skin(std::string obj) : _dae_file(obj)
 	mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
 	mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
 	importer.FreeScene();
+
+	_isBind = false;
 }
 
 
@@ -48,9 +50,9 @@ Skin::Skin(Skin const & src)
 Skin::~Skin(void)
 {
 	SOIL_free_image_data(texture_data);
-	delete [] vertices;
+	delete [] positions;
 	delete [] normals;
-	delete [] textures;
+	delete [] UVs;
 	std::cout << "destruct Skin" << std::endl;
 }
 
@@ -94,15 +96,16 @@ Skin	&Skin::operator=(Skin const & rhs)
 {
 	_dae_file = rhs._dae_file;
 	nb_vertices = rhs.nb_vertices;
-	vertices = _CopyArray(rhs.vertices, nb_vertices * 3);
+	positions = _CopyArray(rhs.positions, nb_vertices * 3);
 	normals = _CopyArray(rhs.normals, nb_vertices * 3);
-	textures = _CopyArray(rhs.textures, nb_vertices * 2);
+	UVs = _CopyArray(rhs.UVs, nb_vertices * 2);
 	texture_file = rhs.texture_file;
 	if (!(texture_data = SOIL_load_image(texture_file.c_str(), &texture_w, &texture_h, 0, SOIL_LOAD_RGBA)))
 		throw DError() << msg("[Skin] " + _images_path + ": SOIL load image return NULL.");
 	diffuse = rhs.diffuse;
 	specular = rhs.specular;
 	ambient = rhs.ambient;
+	_isBind = false;
 	return *this;
 }
 
@@ -120,28 +123,29 @@ void		color_to_stream(std::stringstream &ss, const std::string nm, const aiColor
 std::string		Skin::toString(void) const
 {
 	std::stringstream ss;
-	ss << "# Component Light #" << std::endl;
+	ss << "# Component Skin #" << std::endl;
 
 	ss << "COLLADA file :" << _dae_file << "\n";
 	ss << "Texture file :" << texture_file << "\n";
-	ss << "Array vertices =\n";
+	ss << "Vertex count : " << nb_vertices << std::endl;
+	ss << "Array positions =\n";
 	for (unsigned int i = 0; i < nb_vertices; ++i)
-		ss << "v[" << i << "]\t" << vertices[i * 3] << "\t" << vertices[i * 3 + 1] << "\t" << vertices[i * 3 + 2] << "\n";
+		ss << "v[" << i << "]\t" << positions[i * 3] << "\t" << positions[i * 3 + 1] << "\t" << positions[i * 3 + 2] << "\n";
 	ss << "Array normals =\n";
 	for (unsigned int i = 0; i < nb_vertices; ++i)
 		ss << "v[" << i << "]\t" << normals[i * 3] << "\t" << normals[i * 3 + 1] << "\t" << normals[i * 3 + 2] << "\n";
-	ss << "Array textures =\n";
+	ss << "Array UVs =\n";
 	for (unsigned int i = 0; i < nb_vertices; ++i)
-		ss << "t[" << i << "]\t" << textures[i * 2] << "\t" << textures[i * 2 + 1] << "\n";
+		ss << "t[" << i << "]\t" << UVs[i * 2] << "\t" << UVs[i * 2 + 1] << "\n";
 	color_to_stream(ss, "diffuse", diffuse);
 	color_to_stream(ss, "specular", specular);
 	color_to_stream(ss, "ambient", ambient);
 	ss << "Texture : h = " << texture_h << " w = " << texture_w << std::endl;
-	for (int i = 0; i <= texture_w * texture_h; ++i)
-	{
-		if (!(i % texture_w) && i) ss << std::endl;
-		ss << (static_cast<unsigned int>(texture_data[i])) << " ";
-	}
+	// for (int i = 0; i <= texture_w * texture_h; ++i)
+	// {
+	// 	if (!(i % texture_w) && i) ss << std::endl;
+	// 	ss << (static_cast<unsigned int>(texture_data[i])) << " ";
+	// }
 	return ss.str();
 }
 
@@ -150,8 +154,9 @@ void			Skin::Save(std::ofstream &file)
 	file << "\t\t\tSKIN : " << _dae_file <<std::endl;
 }
 
+// GETTERS SETTERS //
 
-
-
+bool			Skin::GetIsBind() { return _isBind; }
+void			Skin::SetIsBind(bool val) { _isBind = val; }
 
 
