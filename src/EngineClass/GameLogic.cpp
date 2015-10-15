@@ -25,7 +25,9 @@ std::ostream	&operator<<(std::ostream & o, GameLogic const & rhs)
 void			GameLogic::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <GameLogic>");
-	(void)app;
+	
+(void)app;
+
 	currentState = STATE_RENDER;
 }
 

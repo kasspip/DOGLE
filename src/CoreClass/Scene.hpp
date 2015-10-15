@@ -20,8 +20,10 @@
 			void					InstanciatePrefab(GameObject *prefab);
 			GameObject*				FindGameObject(std::string name);
 			std::list<GameObject*>	GetGameObjectList(void) const;
-
-			std::string					name;
+			GameObject*				GetCurrentCamera() const;
+			void					SetCurrentCamera(GameObject* go);
+			
+			std::string				name;
 
 		private:
 			Scene(Scene const &src);
@@ -29,6 +31,7 @@
 
 			size_t					_id;
 			std::list<GameObject*>	_listGameObject;
+			GameObject*				_currentCamera;
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Scene const &rhs);

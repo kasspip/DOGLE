@@ -11,15 +11,13 @@ int		main(void)
 
 		Application *app = new Application("42run");
 			
-			GameObject *object3D = new GameObject("Object3D"); 
-				Skin* skin = new Skin("cube.dae");
-				std::cout << skin->toString() << std::endl;
-				object3D->AddComponent( skin );
-				app->AddPrefab(object3D);
-
 			GameObject *camera = new GameObject("Camera");
 				camera->AddComponent( new Camera );
 				app->AddPrefab(camera);
+
+			GameObject *object3D = new GameObject("Object3D");
+				object3D->AddComponent( new Skin("cube.dae") );
+				app->AddPrefab(object3D);
 
 			Scene *scene1 = new Scene("Level1");
 				scene1->InstanciatePrefab( app->FindPrefab("Object3D") );

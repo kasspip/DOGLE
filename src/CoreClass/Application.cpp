@@ -69,13 +69,18 @@ void			Application::LoadScene(Scene* scene)
 
 	// TODO 
 	// Nettoyer la scene precedente
+	//  Properly de-allocate all resources once they've outlived their purpose
+	//    glDeleteVertexArrays(1, &VAO);
+	//    glDeleteBuffers(1, &VBO);
+	//    glDeleteBuffers(1, &EBO);
+
 
 	_currentScene = scene;
 	std::list<GameObject*> GameObjects = scene->GetGameObjectList();
 	std::list<GameObject*>::iterator go = GameObjects.begin();
 
 	Skin* skin = NULL;
-
+	Camera* camera = NULL;
 	for (; go != GameObjects.end(); go++)
 	{
 		PRINT_DEBUG( "> Loading \'" + (*go)->name + "\'");
@@ -91,6 +96,13 @@ void			Application::LoadScene(Scene* scene)
 				skin->SetIsBind(true);
 				skin = NULL;
 			}
+		}
+		if (camera == NULL 
+			&& scene->GetCurrentCamera() == NULL
+			&& (camera = (*go)->GetComponent<Camera>()))
+		{
+			PRINT_DEBUG( "\tSetting scene camera = " + (*go)->name);
+			scene->SetCurrentCamera(*go);
 		}
 	}
 }

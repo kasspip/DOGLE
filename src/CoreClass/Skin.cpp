@@ -8,6 +8,9 @@ std::string	Skin::_images_path = std::string("resources/images/");
 
 Skin::Skin(std::string obj) : _dae_file(obj)
 {
+	std::cout << "construct Skin from " << obj << std::endl;
+
+
 	Assimp::Importer	importer;
 	const aiScene		*scene = importer.ReadFile((_3Dobjects_path + _dae_file).c_str(), aiProcess_Triangulate);
 
@@ -31,6 +34,7 @@ Skin::Skin(std::string obj) : _dae_file(obj)
 	UVs = _Construct2DArray(mesh->mTextureCoords[0], nb_vertices);
 
 	_flipYZAxis(positions, nb_vertices);
+	_flipYZAxis(normals, nb_vertices); // check if work well
 
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL);
 	
@@ -50,6 +54,7 @@ Skin::Skin(std::string obj) : _dae_file(obj)
 
 Skin::Skin(Skin const & src)
 {
+	std::cout << "construct copy Skin"  << std::endl;
 	*this = src;
 }
 
@@ -197,10 +202,9 @@ void	Skin::_flipYZAxis(GLfloat *data, unsigned int size)
 
 	for (unsigned int i = 0; i < size; i++)
 	{
-		std::cout << "Fliping " << data[i*3 +1] << " " << data[i*3 +2] << std::endl;
 		tmp = data[i*3 +1];
-		data[i*3 +1] = (data[i*3 + 2]);
-		data[i*3 +2] = tmp;
+		data[i*3 +1] = data[i*3 + 2];
+		data[i*3 +2] = tmp * -1;
 	}
 }
 

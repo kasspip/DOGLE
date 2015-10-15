@@ -25,7 +25,20 @@ std::ostream	&operator<<(std::ostream & o, Physics const & rhs)
 void			Physics::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Physics>");
-	(void)app;
+
+	std::list<GameObject*> GameObjects = app.GetCurrentScene()->GetGameObjectList();
+	std::list<GameObject*>::iterator go = GameObjects.begin();
+	
+	Transform* transform = NULL;
+	
+	for (; go != GameObjects.end(); go++)
+	{
+		if ((transform = (*go)->GetComponent<Transform>()))
+		{
+        	transform->CalculateTransform();
+			transform = NULL;
+		}
+	}
 	currentState = STATE_INPUTS;
 }
 

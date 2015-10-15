@@ -11,14 +11,16 @@ Scene::Scene(void) : 	_id(counter)
 	ss << "Scene" << _id;
 	name = ss.str();
 	counter++;
-	std::cout << "construct "<< name << std::endl;
+	_currentCamera = NULL;
+	std::cout << "construct Scene "<< name << std::endl;
 }
 
 Scene::Scene(std::string n) : 	_id(counter)
 {
 	name = n;
 	counter++;
-	std::cout << "construct "<< name << std::endl;
+	_currentCamera = NULL;
+	std::cout << "construct Scene "<< name << std::endl;
 }
 
 Scene::~Scene(void)
@@ -70,9 +72,17 @@ GameObject*				Scene::FindGameObject(std::string name)
 	throw DError() << msg("FindGameObject(), resquested GameObject not found.");
 }
 
-
 // PRIVATE //
 
 // GETTER SETTER //
 
 std::list<GameObject*>	Scene::GetGameObjectList() const {return _listGameObject;}
+GameObject*				Scene::GetCurrentCamera() const { return _currentCamera; }
+
+void					Scene::SetCurrentCamera(GameObject* go)  
+{ 
+	Camera* camera = go->GetComponent<Camera>();
+	if (camera == NULL)
+		throw DError() << msg("Scene.SetCurrentCamera(). No camera component found in " + go->name);
+	_currentCamera = go; 
+}

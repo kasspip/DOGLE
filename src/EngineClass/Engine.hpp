@@ -21,6 +21,7 @@
 	
 			static key_event		_key[];
 
+
 		private:
 			Engine(Engine const &src);
 
@@ -28,11 +29,10 @@
 			Application*	_app;
 
 			// openGL
-			bool			_setupOpenGL;
-			GLFWwindow		*_window;
 			int				_winW;
 			int				_winH;
-
+			bool			_setupOpenGL;
+			GLFWwindow		*_window;
 			void			_StartOpenGL(void);
 			void			_StopOpenGL(void);
 

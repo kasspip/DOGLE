@@ -12,22 +12,22 @@ GameObject::GameObject(void) :	_id(counter)
 	ss << "GameObject " << _id;
 	name = ss.str();
 	counter++;
-	std::cout << "construct GameObject" << std::endl;
-	AddComponent(new Transform);
+	std::cout << "construct GameObject " << std::endl;
+	AddComponent(new Transform(this));
 }
 
 GameObject::GameObject(std::string n) :	_id(counter)
 {
 	name = n;
 	counter++;
-	std::cout << "construct "<< name << std::endl;
-	AddComponent(new Transform);
+	std::cout << "construct GameObject " << name << std::endl;
+	AddComponent(new Transform(this));
 }
 
 GameObject::GameObject(GameObject const & src)
 {
+	std::cout << "construct copy GameObject " << src.name << std::endl;
 	*this = src;
-	std::cout << "construct " << name << std::endl;
 }
 
 GameObject::~GameObject(void)
@@ -49,7 +49,7 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 	for (; compo != list.end(); compo++)
 	{
 		if (dynamic_cast<Transform*>(*compo))
-			AddComponent(new Transform(*(dynamic_cast<Transform*>(*compo))));
+			AddComponent(new Transform(*(dynamic_cast<Transform*>(*compo)), this));
 		else if (dynamic_cast<Skin*>(*compo))
 			AddComponent(new Skin(*(dynamic_cast<Skin*>(*compo))));
 		else if (dynamic_cast<Camera*>(*compo))
@@ -92,9 +92,9 @@ void					GameObject::Save(std::ofstream &file)
 		(*compo)->Save(file);
 }
 
-void					GameObject::AddComponent(IComponent *compt)
+void					GameObject::AddComponent(IComponent *compo)
 {
-	_listComponent.push_back(compt);
+	_listComponent.push_back(compo);
 }
 
 // PRIVATE //
