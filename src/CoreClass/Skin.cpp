@@ -29,10 +29,16 @@ Skin::Skin(std::string obj) : _dae_file(obj)
 	positions = _Construct3DArray(mesh->mVertices, nb_vertices);
 	normals = _Construct3DArray(mesh->mNormals, nb_vertices);
 	UVs = _Construct2DArray(mesh->mTextureCoords[0], nb_vertices);
+
+	_flipYZAxis(positions, nb_vertices);
+
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL);
+	
 	texture_file = _images_path + std::string(path.C_Str());
+	
 	if (!(texture_data = SOIL_load_image(texture_file.c_str(), &texture_w, &texture_h, 0, SOIL_LOAD_RGBA)))
 		throw DError() << msg("[Skin] " + texture_file + ": SOIL load image return NULL.");
+	_flipTextureData(texture_data, texture_w, texture_h);
 	mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 	mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
 	mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
@@ -102,6 +108,7 @@ Skin	&Skin::operator=(Skin const & rhs)
 	texture_file = rhs.texture_file;
 	if (!(texture_data = SOIL_load_image(texture_file.c_str(), &texture_w, &texture_h, 0, SOIL_LOAD_RGBA)))
 		throw DError() << msg("[Skin] " + _images_path + ": SOIL load image return NULL.");
+	_flipTextureData(texture_data, texture_w, texture_h);
 	diffuse = rhs.diffuse;
 	specular = rhs.specular;
 	ambient = rhs.ambient;
@@ -115,7 +122,7 @@ std::ostream	&operator<<(std::ostream & o, Skin const & rhs)
 	return o;
 }
 
-void		color_to_stream(std::stringstream &ss, const std::string nm, const aiColor4D &c)
+void			color_to_stream(std::stringstream &ss, const std::string nm, const aiColor4D &c)
 {
 	ss << "[Color] " << nm << " : r = " << c.r << " g = " << c.g << " b = " << c.b << " a = " << c.a << std::endl; 
 }
@@ -141,17 +148,60 @@ std::string		Skin::toString(void) const
 	color_to_stream(ss, "specular", specular);
 	color_to_stream(ss, "ambient", ambient);
 	ss << "Texture : h = " << texture_h << " w = " << texture_w << std::endl;
-	// for (int i = 0; i <= texture_w * texture_h; ++i)
-	// {
-	// 	if (!(i % texture_w) && i) ss << std::endl;
-	// 	ss << (static_cast<unsigned int>(texture_data[i])) << " ";
-	// }
+	for (int i = 0; i <= texture_w * texture_h; ++i)
+	{
+		if (!(i % texture_w) && i) ss << std::endl;
+		ss << (static_cast<unsigned int>(texture_data[i])) << " ";
+	}
 	return ss.str();
 }
 
 void			Skin::Save(std::ofstream &file)
 {
 	file << "\t\t\tSKIN : " << _dae_file <<std::endl;
+}
+
+void		Skin::_flipTextureData(unsigned char *data, int w, int h)
+{
+	int				byte_w;
+	unsigned char	temp;
+	int				half_height;
+	int				row;
+	int				col;
+	unsigned char 	*top = NULL;
+	unsigned char 	*bottom = NULL;
+
+	byte_w = w * 4;
+	temp = 0;
+	half_height = h / 2;
+	row = -1;
+	while (++row < half_height)
+	{
+		top = data + row * byte_w;
+		bottom = data + (h - row - 1) * byte_w;
+		col = -1;
+		while (++col < byte_w)
+		{
+			temp = *top;
+			*top = *bottom;
+			*bottom = temp;
+			top++;
+			bottom++;
+		}
+	}
+}
+
+void	Skin::_flipYZAxis(GLfloat *data, unsigned int size)
+{
+	GLfloat tmp;
+
+	for (unsigned int i = 0; i < size; i++)
+	{
+		std::cout << "Fliping " << data[i*3 +1] << " " << data[i*3 +2] << std::endl;
+		tmp = data[i*3 +1];
+		data[i*3 +1] = (data[i*3 + 2]);
+		data[i*3 +2] = tmp;
+	}
 }
 
 // GETTERS SETTERS //

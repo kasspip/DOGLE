@@ -47,6 +47,7 @@ void main()
 	vec3 I_spec = L_spec * M_spec * specular_factor;
 
 	material = vec4(I_spec + I_diff + I_amb, 1.0);
+	
 	vec4 texel = texture(basic_texture, texture_coordinates);
 	frag_color = mix(vec4(vert_color, 1.0), texel, blend_coef) * material;
 }

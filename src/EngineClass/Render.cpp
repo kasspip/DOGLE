@@ -34,11 +34,13 @@ void			Render::RunState(Application & app, e_state & currentState)
 
 	Skin* skin = NULL;
 	glUseProgram(app.shaderProgramDebug);
+
 	for (; go != GameObjects.end(); go++)
 	{
 		if ((skin = (*go)->GetComponent<Skin>())
 			&& skin->GetIsBind() == true)
 		{
+			glBindTexture(GL_TEXTURE_2D, skin->textureBind);
 			glBindVertexArray(skin->vao);
 			glDrawArrays(GL_TRIANGLES, 0, skin->nb_vertices);
 			skin = NULL;

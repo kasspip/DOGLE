@@ -1,8 +1,13 @@
 #version 410
 
+uniform sampler2D skinTexture;
+
+in vec2 UV;
+
 out vec4 fragmentColor;
 
 void main ()
 {
-	fragmentColor = vec4 (0.5, 0.0, 0.5, 1.0);
+	vec4 texel = texture(skinTexture, UV);
+	fragmentColor = texel;
 }

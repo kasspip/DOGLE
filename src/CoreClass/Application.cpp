@@ -83,9 +83,11 @@ void			Application::LoadScene(Scene* scene)
 		{
 			if (skin->GetIsBind() == false)
 			{
-				PRINT_DEBUG( "\tBinding skin");
+				PRINT_DEBUG( "\tBinding buffers");
 				_SkinVBO(*skin);
 				_SkinVAO(*skin);
+				PRINT_DEBUG( "\tBinding texture");
+				_SkinTexture(*skin);
 				skin->SetIsBind(true);
 				skin = NULL;
 			}
@@ -163,6 +165,16 @@ void			Application::_SkinVAO(Skin& skin)
 	_BindAttribut(skin.positionsBind, attributId++, 3);
 	_BindAttribut(skin.UVsBind, attributId++, 2);
 	_BindAttribut(skin.normalsBind, attributId++, 3);
+}
+
+void			Application::_SkinTexture(Skin& skin)
+{
+	glGenTextures(1, &(skin.textureBind));
+	glActiveTexture (GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, skin.textureBind);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, skin.texture_h, skin.texture_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, skin.texture_data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // GETTER SETTER //

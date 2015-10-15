@@ -1,6 +1,6 @@
 NAME = dogle
 
-#SRC = 	OpenGL.cpp \
+# SRC = 	anton-triangle.cpp \
 
 SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Application.cpp \

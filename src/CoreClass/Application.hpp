@@ -53,6 +53,8 @@
 			void		_BindBuffer(GLfloat *data, GLuint dateSize, GLuint *id);
 			void		_BindAttribut(GLuint bufferId, GLuint attributId, int pSize);
 			void		_SkinVAO(Skin& skin);
+			void		_SkinTexture(Skin& skin);
+
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Application const &rhs);
