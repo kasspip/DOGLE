@@ -1,6 +1,6 @@
 NAME = dogle
 
-# SRC = 	anton-triangle.cpp \
+# SRC = 	example.cpp
 
 SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Application.cpp \

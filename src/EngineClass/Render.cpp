@@ -35,14 +35,29 @@ void			Render::RunState(Application & app, e_state & currentState)
 	Scene* scene = app.GetCurrentScene();
 	
 	// setting camera
-	GameObject* gameCamera = scene->GetCurrentCamera();
-	if (gameCamera)
+	GameObject* sceneCamera = scene->GetCurrentCamera();
+	if (sceneCamera)
 	{
-		Transform* transform = gameCamera->GetComponent<Transform>();
-		transform->position = glm::vec3(0.0f, 0.0f, -3.0f); // tmp
+		Transform* transform = sceneCamera->GetComponent<Transform>();
+
+
+		//TMP
+       		if (KeyIsPressed(KEY_A))
+       			transform->position += glm::vec3(0.05, 0, 0);
+       		if (KeyIsPressed(KEY_D))
+       			transform->position -= glm::vec3(0.05, 0, 0);
+       		if (KeyIsPressed(KEY_W))
+       			transform->position += glm::vec3(0.0, 0.0, 0.05);
+       		if (KeyIsPressed(KEY_S))
+       			transform->position -= glm::vec3(0.0, 0.0, 0.05);
+       		if (KeyIsPressed(KEY_SPACE))
+       			transform->position -= glm::vec3(0.0, 0.05, 0.0);
+       		if (KeyIsPressed(KEY_CONTROL))
+       			transform->position += glm::vec3(0.0, 0.05, 0.0);
+
 		variableLocation = glGetUniformLocation(app.shaderProgramDebug, "View");
 		glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr( transform->GetTransform() ));
-		Camera* camera = gameCamera->GetComponent<Camera>();
+		Camera* camera = sceneCamera->GetComponent<Camera>();
 		variableLocation = glGetUniformLocation(app.shaderProgramDebug, "Projection");
 		glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr( camera->GetProjection(app.winW, app.winH) ));
 	}
@@ -57,10 +72,14 @@ void			Render::RunState(Application & app, e_state & currentState)
 	Skin* skin = NULL;
 	for (; go != GameObjects.end(); go++)
 	{
+		if (*go == sceneCamera)
+			continue ;
 		if ((transform = (*go)->GetComponent<Transform>()))
 		{
+       		transform->position = glm::vec3(0, 0, -3); // TMP
+
+       		transform->rotation += glm::vec3(0, 0.04, 0); // TMP
        		variableLocation = glGetUniformLocation(app.shaderProgramDebug, "Transform");
-       		transform->rotation += glm::vec3(0.01f, 0.04f, 0.0f); // tmp
         	glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr(transform->GetTransform()));
 			transform = NULL;
 		}

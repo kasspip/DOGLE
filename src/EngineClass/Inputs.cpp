@@ -48,8 +48,8 @@ void			Inputs::_KeyCallback(GLFWwindow *window, int key, int scancode, int actio
 	_key[KEY_S] = Inputs::_SetEvent(GLFW_KEY_S, key, action);
 	_key[KEY_D] = Inputs::_SetEvent(GLFW_KEY_D, key, action);
 	_key[KEY_SPACE] = Inputs::_SetEvent(GLFW_KEY_SPACE, key, action);
-	// _key[KEY_SHIFT] = 
-	// _key[KEY_CONTROL] = 
+	_key[KEY_SHIFT] = Inputs::_SetEvent(GLFW_KEY_LEFT_SHIFT, key, action);
+	_key[KEY_CONTROL] = Inputs::_SetEvent(GLFW_KEY_LEFT_CONTROL, key, action);
 
 	if (_key[KEY_ESC] == true)
 		glfwSetWindowShouldClose(window, GL_TRUE);

@@ -46,14 +46,13 @@ std::ostream	&operator<<(std::ostream & o, Transform const & rhs)
 void			Transform::CalculateTransform() 
 { 
 	_local = glm::mat4(1.0);
-	_world = glm::mat4(1.0);
-    _world = glm::translate(_world, position);
-
 	_local = glm::rotate(_local, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 	_local = glm::rotate(_local, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 	_local = glm::rotate(_local, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-
    	_local = glm::scale(_local, scale);
+
+   	_world = glm::mat4(1.0);
+    _world = glm::translate(_world, position);
 	_transform = _world * _local;
 }
 

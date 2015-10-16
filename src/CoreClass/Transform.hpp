@@ -25,6 +25,7 @@ class GameObject;
 			void		Save(std::ofstream &file);
 			GameObject*	GetOwner();
 			glm::mat4	GetTransform();
+		
 		private:
 			Transform(void);
 
