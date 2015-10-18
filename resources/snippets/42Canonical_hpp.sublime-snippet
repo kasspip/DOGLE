@@ -1,0 +1,34 @@
+<snippet>
+	<content><![CDATA[
+#ifndef ${1:${TM_FILENAME/(.*)\.(.*)/\U$1_\U$2/}}
+# define ${1}
+
+# include "DOGLE.hpp"
+
+	class ${2:${TM_FILENAME/(.*)\..*/\u$1/}}
+	{
+		public:
+
+			${2}(void);
+			${2}(${2} const &src);
+			~${2}(void);
+		
+			${2} &operator=(${2} const &rhs);
+			
+			std::string toString(void) const;
+
+		private:
+	
+	};
+
+	std::ostream	&operator<<(std::ostream &o, ${2} const &rhs);
+
+#endif
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>Canonical_hpp</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>test.hpp</scope> -->
+	<!-- hppCano -->	
+</snippet>

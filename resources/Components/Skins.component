@@ -1,0 +1,13 @@
+{
+	Skin1
+	+obj = sapin.obj
+	+material_spec
+		diffuse = 
+		ambiant = 
+		specular = 
+	-normal_map = data[]
+	-mesh_map = data[]
+	texture
+		-UV_map = data[]
+		+image_map = mon_image.png
+}

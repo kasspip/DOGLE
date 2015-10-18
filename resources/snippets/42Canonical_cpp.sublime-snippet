@@ -1,0 +1,53 @@
+<snippet>
+	<content><![CDATA[
+#include "${1:${TM_FILENAME/(.*)\..*/\u$1/}}.hpp"
+
+// CONSTRUCTOR DESTRUCTOR //
+
+${2:${TM_FILENAME/(.*)\..*/\u$1/}}::${2}(void)
+{
+
+}
+
+${2}::${2}(${2} const & src)
+{
+	*this = src;
+}
+
+${2}::~${2}(void)
+{
+
+}
+
+// OVERLOADS //
+
+${2}	&${2}::operator=(${2} const & rhs)
+{
+	(void)rhs;
+	return *this;
+}
+
+std::ostream	&operator<<(std::ostream & o, ${2} const & rhs)
+{
+	o << rhs.toString();
+	return o;
+}
+
+// PUBLIC //
+
+std::string		${2}::toString(void) const
+{
+	std::stringstream ss;
+	return ss.str();
+}
+
+// PRIVATE //
+
+// GETTER SETTER //
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>Canonical_cpp</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
