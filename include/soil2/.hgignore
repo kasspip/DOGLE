@@ -1,7 +1,0 @@
-syntax: glob
-bin/soil2*
-obj/*
-make/*
-projects/*
-*.DS_Store*
-bin/SDL2.dll
