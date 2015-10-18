@@ -42,7 +42,7 @@
 
 		private:
 
-		bool					_isPrefab; //new
+		bool					_isPrefab;
 		size_t					_id;
 		std::list<IComponent*>	_listComponent;
 	};

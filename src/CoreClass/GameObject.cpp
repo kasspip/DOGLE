@@ -17,7 +17,7 @@ GameObject::GameObject(void) :	_id(counter)
 	name = ss.str();
 	counter++;
 	std::cout << "construct GameObject " << std::endl;
-	_isPrefab = true; //new
+	_isPrefab = true;
 
 	AddComponent(new Transform());
 }
@@ -27,7 +27,7 @@ GameObject::GameObject(std::string n) :	_id(counter)
 	name = n;
 	counter++;
 	std::cout << "construct GameObject " << name << std::endl;
-	_isPrefab = true; //new
+	_isPrefab = true;
 
 	AddComponent(new Transform());
 }
@@ -35,7 +35,7 @@ GameObject::GameObject(std::string n) :	_id(counter)
 GameObject::GameObject(GameObject const & src)
 {
 	std::cout << "construct copy GameObject " << src.name << std::endl;
-	_isPrefab = false; //new
+	_isPrefab = false;
 	
 	*this = src;
 }
@@ -46,7 +46,7 @@ GameObject::~GameObject(void)
 	std::list<IComponent*>::iterator it = _listComponent.begin();
 	for (; it != _listComponent.end(); it++)
 	{
-		if (dynamic_cast<Script*>(*it) && !_isPrefab) // new
+		if (*it && dynamic_cast<Script*>(*it) && _isPrefab)
 			continue;
 		delete *it;
 	}

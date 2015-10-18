@@ -27,7 +27,7 @@ SRC +=	src/EngineClass/Engine.cpp \
 		src/EngineClass/Destroy.cpp \
 		src/EngineClass/Stop.cpp \
 
-SCRIPTS_PATH = resources/Scripts
+GAMESCRIPTS = resources/Scripts/GameScripts.a
 
 OBJ = 	$(SRC:.cpp=.o)
 
@@ -47,6 +47,7 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-framework OpenGL\
 			-framework Cocoa\
 			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib\
+			resources/Scripts/GameScripts.a \
 
 FLAGS = -Wall -Wextra -Werror -std=c++14
 
@@ -56,15 +57,14 @@ SOIL2 = include/soil2/lib/macosx/libsoil2-debug.a
 
 all: $(NAME)
 
-$(NAME): $(SOIL2) $(OBJ) GameScript
-	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) $(SCRIPTS_PATH)/*.o -o $(NAME)
+$(NAME): $(SOIL2) $(GAMESCRIPTS) $(OBJ) 
+	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) -o $(NAME)
 
 %.o: %.cpp
 	$(CC) -c $(FLAGS) $(INCLUDES) $< -o $@
 
-GameScript:
-	$(CC) -c $(SCRIPTS_PATH)/*.cpp $(INCLUDES)
-	@mv *.o  $(SCRIPTS_PATH)
+$(GAMESCRIPTS):
+	make -C resources/Scripts/
 
 $(SOIL2):
 	make -C include/soil2/make/macosx soil2-static-lib
@@ -72,10 +72,13 @@ $(SOIL2):
 clean:
 	rm -f $(OBJ)
 	rm -f $(SCRIPTS_PATH)/*.o
+	make -C resources/Scripts/ clean
+
 
 fclean: clean
 	rm -f $(NAME)
 	rm -rf $(NAME).dSYM
+	make -C resources/Scripts/ fclean
 
 re: fclean
 	make -j -j -j
