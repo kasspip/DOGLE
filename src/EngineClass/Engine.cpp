@@ -1,9 +1,5 @@
 #include "Engine.hpp"
 
-// STATIC //
-
-key_event			Engine::_key[KEY_COUNT];
-
 // CONSTRUCTOR DESTRUCTOR //
 
 Engine::Engine()
@@ -62,16 +58,6 @@ void			Engine::RunApplication(Application* app)
 	app->window = _window;
 	_SM.RunApplication(*app);
 	_StopOpenGL();
-}
-
-bool			Engine::KeyIsPressed(e_key key)
-{
-	return (_key[key] == KEY_EVENT_PRESSED);
-}
-
-bool			Engine::KeyIsReleased(e_key key)
-{
-	return (_key[key] == KEY_EVENT_RELEASED);
 }
 
 std::string		Engine::toString(void) const
@@ -173,8 +159,8 @@ GLuint			Engine::_CompileShader(std::string name)
 	std::stringstream 	vertexFilePath; 
 	std::stringstream 	fragmentFilePath;
 
-	vertexFilePath << "resources/shaders/" << name << ".vert";
-	fragmentFilePath << "resources/shaders/" << name << ".frag";
+	vertexFilePath << "resources/Shaders/" << name << ".vert";
+	fragmentFilePath << "resources/Shaders/" << name << ".frag";
 	const char * vertexCode = _GetShaderCode(vertexFilePath.str());
 	const char * fragmentCode = _GetShaderCode(fragmentFilePath.str());
 

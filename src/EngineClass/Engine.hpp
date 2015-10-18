@@ -4,6 +4,7 @@
 # include "DOGLE.hpp"
 # include "StateMachine.hpp"
 # include "Application.hpp"
+# include "Script.hpp"
 
 	class Engine
 	{
@@ -14,12 +15,10 @@
 			
 			std::string toString(void) const;
 			void		RunApplication(Application* app);
-			bool		KeyIsPressed(e_key key);
-			bool		KeyIsReleased(e_key key);
+
 
 		protected:
 	
-			static key_event		_key[];
 
 
 		private:

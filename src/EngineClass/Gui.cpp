@@ -1,4 +1,5 @@
 #include "Gui.hpp"
+#include "Script.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 

@@ -3,9 +3,8 @@
 
 # include "DOGLE.hpp"
 # include "IState.hpp"
-# include "Engine.hpp"
 
-	class Render : public IState, public Engine
+	class Render : public IState
 	{
 		public:
 

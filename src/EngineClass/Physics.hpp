@@ -3,9 +3,8 @@
 
 # include "DOGLE.hpp"
 # include "IState.hpp"
-# include "Engine.hpp"
 
-	class Physics : public IState, public Engine
+	class Physics : public IState
 	{
 		public:
 

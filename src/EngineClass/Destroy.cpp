@@ -1,4 +1,5 @@
 #include "Destroy.hpp"
+#include "Script.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -28,7 +29,7 @@ void			Destroy::RunState(Application & app, e_state & currentState)
 	if (app.appShouldClose == true || glfwWindowShouldClose (app.window))
 		currentState = STATE_STOP;
 	else
-		currentState = STATE_PHYSICS;
+		currentState = STATE_START;
 }
 
 std::string		Destroy::toString(void) const

@@ -3,12 +3,10 @@
 
 # include "DOGLE.hpp"
 # include "IState.hpp"
-# include "Engine.hpp"
 
-	class Stop : public IState, public Engine
+	class Stop : public IState
 	{
 		public:
-
 			Stop(void);
 			~Stop(void);
 					
@@ -19,7 +17,6 @@
 			Stop(Stop const &src);
 			Stop &operator=(Stop const &rhs);
 	};
-
 	std::ostream	&operator<<(std::ostream &o, Stop const &rhs);
 
 #endif

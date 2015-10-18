@@ -3,9 +3,8 @@
 
 # include "DOGLE.hpp"
 # include "IState.hpp"
-# include "Engine.hpp"
 
-	class GameLogic : public IState, public Engine
+	class GameLogic : public IState
 	{
 		public:
 
@@ -19,6 +18,8 @@
 
 			GameLogic &operator=(GameLogic const &rhs);
 			GameLogic(GameLogic const &src);
+
+			GameObject*		_prefab;
 	};
 
 	std::ostream	&operator<<(std::ostream &o, GameLogic const &rhs);

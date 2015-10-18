@@ -3,14 +3,12 @@
 // CONSTRUCTOR DESTRUCTOR //
 
 std::string	Skin::_3Dobjects_path = std::string("resources/3D objects/");
-std::string	Skin::_images_path = std::string("resources/images/");
+std::string	Skin::_images_path = std::string("resources/Images/");
 
 
 Skin::Skin(std::string obj) : _dae_file(obj)
 {
 	std::cout << "construct Skin from " << obj << std::endl;
-
-
 	Assimp::Importer	importer;
 	const aiScene		*scene = importer.ReadFile((_3Dobjects_path + _dae_file).c_str(), aiProcess_Triangulate);
 
@@ -30,19 +28,19 @@ Skin::Skin(std::string obj) : _dae_file(obj)
 
 	nb_vertices = mesh->mNumVertices;
 	positions = _Construct3DArray(mesh->mVertices, nb_vertices);
-	normals = _Construct3DArray(mesh->mNormals, nb_vertices);
-	UVs = _Construct2DArray(mesh->mTextureCoords[0], nb_vertices);
+	normals = 	_Construct3DArray(mesh->mNormals, nb_vertices);
+	UVs = 		_Construct2DArray(mesh->mTextureCoords[0], nb_vertices);
 
 	_flipYZAxis(positions, nb_vertices);
 	_flipYZAxis(normals, nb_vertices); // check if work well
 
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL);
-	
 	texture_file = _images_path + std::string(path.C_Str());
 	
 	if (!(texture_data = SOIL_load_image(texture_file.c_str(), &texture_w, &texture_h, 0, SOIL_LOAD_RGBA)))
 		throw DError() << msg("[Skin] " + texture_file + ": SOIL load image return NULL.");
 	_flipTextureData(texture_data, texture_w, texture_h);
+	
 	mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 	mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
 	mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
@@ -136,7 +134,6 @@ std::string		Skin::toString(void) const
 {
 	std::stringstream ss;
 	ss << "# Component Skin #" << std::endl;
-
 	ss << "COLLADA file :" << _dae_file << "\n";
 	ss << "Texture file :" << texture_file << "\n";
 	ss << "Vertex count : " << nb_vertices << std::endl;

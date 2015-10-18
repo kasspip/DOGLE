@@ -2,11 +2,12 @@
 # define GAMEOBJECT_HPP
 
 # include "DOGLE.hpp"
-# include "IComponent.hpp"
 # include "Transform.hpp"
 # include "Skin.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
+
+	class IComponent;
 
 	class GameObject
 	{
@@ -41,6 +42,7 @@
 
 		private:
 
+		bool					_isPrefab; //new
 		size_t					_id;
 		std::list<IComponent*>	_listComponent;
 	};

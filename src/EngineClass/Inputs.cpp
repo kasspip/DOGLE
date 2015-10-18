@@ -1,9 +1,16 @@
 #include "Inputs.hpp"
+#include "Script.hpp"
+
+// STATIC //
+
+Inputs*				Inputs::singleton = NULL;
+key_event			Inputs::_key[KEY_COUNT];
 
 // CONSTRUCTOR DESTRUCTOR //
 
 Inputs::Inputs(void)
 {
+	singleton = this;
 }
 
 Inputs::~Inputs(void)
@@ -28,6 +35,16 @@ void			Inputs::RunState(Application & app, e_state & currentState)
 	glfwSetKeyCallback(app.window, _KeyCallback);
 	app.appShouldClose = _key[KEY_ESC];
 	currentState = STATE_GAMELOGIC;
+}
+
+bool			Inputs::KeyPressed(e_key key)
+{
+	return (_key[key] == KEY_EVENT_PRESSED);
+}
+
+bool			Inputs::KeyReleased(e_key key)
+{
+	return (_key[key] == KEY_EVENT_RELEASED);
 }
 
 std::string		Inputs::toString(void) const

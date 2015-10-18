@@ -3,9 +3,8 @@
 
 # include "DOGLE.hpp"
 # include "IState.hpp"
-# include "Engine.hpp"
 
-	class Pause : public IState, public Engine
+	class Pause : public IState
 	{
 		public:
 
@@ -14,7 +13,6 @@
 
 			std::string toString(void) const;
 			void		RunState(Application & app, e_state	& currentState);
-
 
 		private:
 

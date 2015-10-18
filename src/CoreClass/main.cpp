@@ -1,6 +1,10 @@
 #include "DOGLE.hpp"
-#include "Application.hpp"
 #include "Engine.hpp"
+
+// ASSEMBLAGE //
+#include "SCRIPTS.hpp"
+#include "Script.hpp"
+#include "Application.hpp"
 #include "Skin.hpp"
 
 int		main(void)
@@ -17,6 +21,7 @@ int		main(void)
 
 			GameObject *object3D = new GameObject("Object3D");
 				object3D->AddComponent( new Skin("cube.dae") );
+				object3D->AddComponent( new MaClass("MaClass") );
 				app->AddPrefab(object3D);
 
 			Scene *scene1 = new Scene("Level1");

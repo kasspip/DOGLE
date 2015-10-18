@@ -10,6 +10,8 @@ SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Skin.cpp \
 		src/CoreClass/Camera.cpp \
 		src/CoreClass/Light.cpp \
+		src/CoreClass/Script.cpp \
+
 
 SRC +=	src/UtilsClass/RGB.cpp \
 
@@ -25,9 +27,12 @@ SRC +=	src/EngineClass/Engine.cpp \
 		src/EngineClass/Destroy.cpp \
 		src/EngineClass/Stop.cpp \
 
-OBJ = $(SRC:.cpp=.o)
+SCRIPTS_PATH = resources/Scripts
+
+OBJ = 	$(SRC:.cpp=.o)
 
 INCLUDES = 	-Iinclude \
+			-Iresources/Scripts \
 			-Isrc/CoreClass \
 			-Isrc/EngineClass \
 			-Isrc/UtilsClass \
@@ -51,21 +56,26 @@ SOIL2 = include/soil2/lib/macosx/libsoil2-debug.a
 
 all: $(NAME)
 
-$(NAME): $(SOIL2) $(OBJ)
-	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) -o $(NAME)
+$(NAME): $(SOIL2) $(OBJ) GameScript
+	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) $(SCRIPTS_PATH)/*.o -o $(NAME)
 
 %.o: %.cpp
 	$(CC) -c $(FLAGS) $(INCLUDES) $< -o $@
+
+GameScript:
+	$(CC) -c $(SCRIPTS_PATH)/*.cpp $(INCLUDES)
+	@mv *.o  $(SCRIPTS_PATH)
 
 $(SOIL2):
 	make -C include/soil2/make/macosx soil2-static-lib
 
 clean:
 	rm -f $(OBJ)
+	rm -f $(SCRIPTS_PATH)/*.o
 
 fclean: clean
 	rm -f $(NAME)
 	rm -rf $(NAME).dSYM
 
-re: fclean 
+re: fclean
 	make -j -j -j

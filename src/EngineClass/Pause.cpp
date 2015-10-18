@@ -1,4 +1,5 @@
 #include "Pause.hpp"
+#include "Script.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 

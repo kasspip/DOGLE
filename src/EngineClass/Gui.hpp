@@ -5,7 +5,7 @@
 # include "IState.hpp"
 # include "Engine.hpp"
 
-	class Gui : public IState, public Engine
+	class Gui : public IState
 	{
 		public:
 

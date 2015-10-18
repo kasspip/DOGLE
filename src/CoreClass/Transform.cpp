@@ -3,19 +3,17 @@
 
 // CONSTRUCTOR DESTRUCTOR //
 
-Transform::Transform(GameObject* owner)
+Transform::Transform()
 {
-	std::cout << "construct Transform of " << owner->name << std::endl;
-	_owner = owner;
-	position = glm::vec3(0.0f);
+	std::cout << "construct Transform " << std::endl;
+	position = glm::vec3(0.0, 0.0, 0.0);
 	rotation = glm::vec3(0.0f);
 	scale = glm::vec3(1.0f);
 }
 
-Transform::Transform(Transform const & src, GameObject* owner)
+Transform::Transform(Transform const & src)
 {
-	std::cout << "construct Transform of " << owner->name << std::endl;
-	_owner = owner;
+	std::cout << "construct Transform " << std::endl;
 	*this = src;
 }
 
@@ -31,7 +29,6 @@ Transform		&Transform::operator=(Transform const & rhs)
 	position = rhs.position; 
 	rotation = rhs.rotation;
 	scale = rhs.scale;
-	parent = rhs.parent;
 	return *this;
 }
 
@@ -63,11 +60,6 @@ std::string		Transform::toString(void) const
 	ss	<< "Position(" << position.x << "," << position.y << "," << position.z << ")" << std::endl;
 	ss	<< "Rotation (" << rotation.x << "," << rotation.y << "," << rotation.z << ")" << std::endl;
 	ss	<< "Scale (" << scale.x << "," << scale.y << "," << scale.z << ")" << std::endl;
-	ss	<< "Parent : ";
-	if (!parent)
-		ss 	<< "None" << std::endl;
-	else 
-		ss 	<< parent->_owner->name << std::endl;
 	return ss.str();
 }
 
@@ -77,11 +69,6 @@ void			Transform::Save(std::ofstream &file)
 	file	<< "POS : " << position.x << " " << position.y << " " << position.z << std::endl;
 	file	<< "ROT : " << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
 	file	<< "SCALE : " << scale.x << " " << scale.y << " " << scale.z << std::endl;
-	file	<< "Parent : ";
-	if (!parent)
-		file 	<< "" << std::endl;
-	else 
-		file 	<< parent->_owner->name << std::endl;
 }
 
 // PRIVATE //
@@ -89,5 +76,4 @@ void			Transform::Save(std::ofstream &file)
 
 // GETTER SETTER //
 
-GameObject*		Transform::GetOwner() { return _owner; }
-glm::mat4		Transform::GetTransform() { return _transform; }
+glm::mat4		Transform::GetMatrice() { return _transform; }

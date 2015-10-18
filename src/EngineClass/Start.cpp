@@ -1,4 +1,5 @@
 #include "Start.hpp"
+#include "Script.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -23,7 +24,9 @@ std::ostream	&operator<<(std::ostream & o, Start const & rhs)
 void			Start::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Start>");
+	
 	app.LoadScene(app.GetCurrentScene());
+	
 	currentState = STATE_PHYSICS;
 }
 

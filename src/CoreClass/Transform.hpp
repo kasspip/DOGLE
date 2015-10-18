@@ -4,13 +4,14 @@
 # include "DOGLE.hpp"
 # include "IComponent.hpp"
 
-class GameObject;
 
 	class Transform : public IComponent
 	{
+		static size_t	counter;
+
 		public:
-			Transform(GameObject * owner);
-			Transform(Transform const &src, GameObject* owner);
+			Transform();
+			Transform(Transform const &src);
 			~Transform(void);
 		
 			Transform &operator=(Transform const &rhs);
@@ -23,13 +24,10 @@ class GameObject;
 			void		CalculateTransform();
 			std::string toString(void) const;
 			void		Save(std::ofstream &file);
-			GameObject*	GetOwner();
-			glm::mat4	GetTransform();
-		
-		private:
-			Transform(void);
+			glm::mat4	GetMatrice();
 
-			GameObject	*_owner;
+		private:
+
 			glm::mat4	_transform;
 			glm::mat4	_local;
 			glm::mat4	_world;
