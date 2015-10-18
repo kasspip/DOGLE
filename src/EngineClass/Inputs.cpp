@@ -4,7 +4,7 @@
 // STATIC //
 
 Inputs*				Inputs::singleton = NULL;
-key_event			Inputs::_key[KEY_COUNT];
+int					Inputs::_key[KEY_COUNT];
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -39,12 +39,12 @@ void			Inputs::RunState(Application & app, e_state & currentState)
 
 bool			Inputs::KeyPressed(e_key key)
 {
-	return (_key[key] == KEY_EVENT_PRESSED);
+	return (_key[key] == GLFW_PRESS);
 }
 
 bool			Inputs::KeyReleased(e_key key)
 {
-	return (_key[key] == KEY_EVENT_RELEASED);
+	return (_key[key] == GLFW_RELEASE);
 }
 
 std::string		Inputs::toString(void) const
@@ -58,27 +58,20 @@ std::string		Inputs::toString(void) const
 void			Inputs::_KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
 	(void)scancode;
+	(void)action;
 	(void)mods;
-	_key[KEY_ESC] = Inputs::_SetEvent(GLFW_KEY_ESCAPE, key, action);
-	_key[KEY_W] = Inputs::_SetEvent(GLFW_KEY_W, key, action);
-	_key[KEY_A] = Inputs::_SetEvent(GLFW_KEY_A, key, action);
-	_key[KEY_S] = Inputs::_SetEvent(GLFW_KEY_S, key, action);
-	_key[KEY_D] = Inputs::_SetEvent(GLFW_KEY_D, key, action);
-	_key[KEY_SPACE] = Inputs::_SetEvent(GLFW_KEY_SPACE, key, action);
-	_key[KEY_SHIFT] = Inputs::_SetEvent(GLFW_KEY_LEFT_SHIFT, key, action);
-	_key[KEY_CONTROL] = Inputs::_SetEvent(GLFW_KEY_LEFT_CONTROL, key, action);
+	(void)key;
+	_key[KEY_ESC] = glfwGetKey(window, GLFW_KEY_ESCAPE);
+	_key[KEY_W] = glfwGetKey(window, GLFW_KEY_W);
+	_key[KEY_A] = glfwGetKey(window, GLFW_KEY_A);
+	_key[KEY_S] = glfwGetKey(window, GLFW_KEY_S);
+	_key[KEY_D] = glfwGetKey(window, GLFW_KEY_D);
+	_key[KEY_SPACE] = glfwGetKey(window, GLFW_KEY_SPACE);
+	_key[KEY_SHIFT] = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT);
+	_key[KEY_CONTROL] = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL);
 
 	if (_key[KEY_ESC] == true)
 		glfwSetWindowShouldClose(window, GL_TRUE);
-}
-
-key_event			Inputs::_SetEvent(int key_name, int key, int action)
-{
-		if (key == key_name && (action == GLFW_REPEAT || action == GLFW_PRESS))
-			return KEY_EVENT_PRESSED;
-		else if (key == key_name && action == GLFW_RELEASE)
-			return KEY_EVENT_RELEASED;
-		return KEY_EVENT_NONE;
 }
 
 // GETTER SETTER //

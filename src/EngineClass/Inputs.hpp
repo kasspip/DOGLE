@@ -17,7 +17,7 @@
 			bool		KeyReleased(e_key key);
 
 			static Inputs		*singleton;
-			static key_event	_key[];
+			static int			_key[];
 
 		private:
 
