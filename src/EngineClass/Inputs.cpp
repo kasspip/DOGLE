@@ -1,10 +1,12 @@
 #include "Inputs.hpp"
 #include "Script.hpp"
 
+#define KEY_DOWN -5
+
 // STATIC //
 
 Inputs*				Inputs::singleton = NULL;
-int					Inputs::_key[KEY_COUNT];
+int					Inputs::_key[GLFW_KEY_LAST];
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -31,18 +33,42 @@ std::ostream	&operator<<(std::ostream & o, Inputs const & rhs)
 void			Inputs::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Inputs>");
+
 	glfwPollEvents();
-	glfwSetKeyCallback(app.window, _KeyCallback);
-	app.appShouldClose = _key[KEY_ESC];
+	KeyState(app.window, GLFW_KEY_ESCAPE);
+	KeyState(app.window, GLFW_KEY_Q);
+	KeyState(app.window, GLFW_KEY_W);
+	KeyState(app.window, GLFW_KEY_E);
+	KeyState(app.window, GLFW_KEY_R);
+
+	KeyState(app.window, GLFW_KEY_A);
+	KeyState(app.window, GLFW_KEY_S);
+	KeyState(app.window, GLFW_KEY_D);
+	KeyState(app.window, GLFW_KEY_F);
+
+
+	
+	KeyState(app.window, GLFW_KEY_SPACE);
+	KeyState(app.window, GLFW_KEY_LEFT_SHIFT);
+	KeyState(app.window, GLFW_KEY_LEFT_CONTROL);
+	if (KeyPressed(GLFW_KEY_ESCAPE))
+		app.appShouldClose = GL_TRUE;
+	if (_key[GLFW_KEY_ESCAPE] == GL_TRUE)
+		glfwSetWindowShouldClose(app.window, GL_TRUE);
 	currentState = STATE_GAMELOGIC;
 }
 
-bool			Inputs::KeyPressed(e_key key)
+bool			Inputs::KeyPressed(int key)
 {
-	return (_key[key] == GLFW_PRESS);
+	return (_key[key] == GLFW_PRESS || _key[key] == KEY_DOWN);
 }
 
-bool			Inputs::KeyReleased(e_key key)
+bool			Inputs::KeyDown(int key)
+{
+	return (_key[key] == KEY_DOWN);
+}
+
+bool			Inputs::KeyReleased(int key)
 {
 	return (_key[key] == GLFW_RELEASE);
 }
@@ -53,25 +79,25 @@ std::string		Inputs::toString(void) const
 	return ss.str();
 }
 
-// PRIVATE //
-
-void			Inputs::_KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+void			Inputs::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
+	(void)window;
 	(void)scancode;
 	(void)action;
 	(void)mods;
 	(void)key;
-	_key[KEY_ESC] = glfwGetKey(window, GLFW_KEY_ESCAPE);
-	_key[KEY_W] = glfwGetKey(window, GLFW_KEY_W);
-	_key[KEY_A] = glfwGetKey(window, GLFW_KEY_A);
-	_key[KEY_S] = glfwGetKey(window, GLFW_KEY_S);
-	_key[KEY_D] = glfwGetKey(window, GLFW_KEY_D);
-	_key[KEY_SPACE] = glfwGetKey(window, GLFW_KEY_SPACE);
-	_key[KEY_SHIFT] = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT);
-	_key[KEY_CONTROL] = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL);
+}
 
-	if (_key[KEY_ESC] == true)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+// PRIVATE //
+
+void		Inputs::KeyState(GLFWwindow *window, int id)
+{
+	int		ret = 0;
+
+	if ((ret = glfwGetKey(window, id)) == GLFW_PRESS && (_key[id] != GLFW_PRESS && _key[id] != KEY_DOWN))
+		_key[id] = KEY_DOWN;
+	else
+		_key[id] = ret;
 }
 
 // GETTER SETTER //

@@ -31,16 +31,14 @@ void			Start::RunState(Application & app, e_state & currentState)
 
 	for (GameObject *go : lst_bind)
 	{
-		std::cout << ("> Loading \'" + go->name + "\'\n");
-
+		PRINT_DEBUG("> Loading GameObject: \'" + go->name + "\'\n");
 		if ((skin = go->GetComponent<Skin>()))
 		{
 			if (skin->GetIsBind() == false)
 			{
-				PRINT_DEBUG( "\tBinding buffers");
+				PRINT_DEBUG("Binding skin");
 				skin->SkinVBO();
 				skin->SkinVAO();
-				PRINT_DEBUG( "\tBinding texture");
 				skin->SkinTexture();
 				skin->SetIsBind(true);
 				skin = NULL;
@@ -48,15 +46,15 @@ void			Start::RunState(Application & app, e_state & currentState)
 		}
 		if ((script = go->GetComponent<Script>()))
 		{
+			PRINT_DEBUG("Calling Awake() from " + script->name);
 			script->Awake();
 			script = NULL;
 		}
 	}
 	lst_cur.insert(lst_cur.end(), lst_bind.begin(), lst_bind.end());
 	lst_bind.clear();
-	
-	currentState = STATE_PHYSICS;
 
+	currentState = STATE_PHYSICS;
 }
 
 std::string		Start::toString(void) const

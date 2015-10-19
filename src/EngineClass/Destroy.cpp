@@ -26,6 +26,24 @@ std::ostream	&operator<<(std::ostream & o, Destroy const & rhs)
 void			Destroy::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Destroy>");
+	Script				*script = NULL;
+	std::list<GameObject*>	&list = app.GetCurrentScene()->GetGameObjectList();
+	std::list<GameObject*>::iterator it = list.begin();
+	for (; it != list.end(); ++it)
+	{
+		if ((*it)->GetDestroy() == true)
+		{
+			if ((script = (*it)->GetComponent<Script>()))
+			{
+				PRINT_DEBUG("Calling Destroy() from " + (*it)->name);
+				script->OnDestroy();
+				script = NULL;
+			}
+			delete *it;
+			it = list.erase(it);
+		}
+	}
+
 	if (app.appShouldClose == true || glfwWindowShouldClose (app.window))
 		currentState = STATE_STOP;
 	else

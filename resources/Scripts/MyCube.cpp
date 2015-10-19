@@ -9,9 +9,15 @@ class MyCube : public Script
 
 		void			Awake()
 		{
-			Camera::GetMainCamera()->GetComponent<Camera>()->transform->position = transform->position + glm::vec3(0,0,-3);
+			transform->position = (Camera::GetMainCamera()->GetComponent<Camera>()->transform->position * glm::vec3(-1,-1,-1)) + glm::vec3(0,0,-2);
 		}
 
+
+
+		void			OnDestroy()
+		{
+			std::cout << "Boom !" << name << std::endl;
+		}
 
 	private:
 

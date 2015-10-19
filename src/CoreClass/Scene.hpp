@@ -13,7 +13,6 @@
 			Scene(void);
 			Scene(std::string);
 			~Scene(void);
-		
 			
 			std::string 			toString(void) const;
 			void					Save(std::ofstream &file);

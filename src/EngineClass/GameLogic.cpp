@@ -36,7 +36,7 @@ void			GameLogic::RunState(Application & app, e_state & currentState)
 	{
 		if ((script = (*go)->GetComponent<Script>()))
 		{
-        	script->Update();
+			script->Update();
 			script = NULL;
 		}
 	}

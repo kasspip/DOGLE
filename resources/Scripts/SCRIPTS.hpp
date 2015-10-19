@@ -2,5 +2,7 @@
 #include "Scene.hpp"
 #include "GameObject.hpp"
 
-#include "MaClass.cpp"
+// Insert your script link below //
+
+#include "ControlCamera.cpp"
 #include "MyCube.cpp"

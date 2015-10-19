@@ -40,24 +40,4 @@
 		STATE_NBR
 	}				e_state;
 
-	typedef enum	key
-	{
-		KEY_ESC,
-		KEY_W,
-		KEY_A,
-		KEY_S,
-		KEY_D,
-		KEY_SPACE,
-		KEY_SHIFT,
-		KEY_CONTROL,
-		KEY_COUNT,
-	}				e_key;
-
-	typedef enum	key_event
-	{
-		KEY_EVENT_NONE,
-		KEY_EVENT_PRESSED,
-		KEY_EVENT_RELEASED
-	}				e_key_event;
-
 #endif

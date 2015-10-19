@@ -56,6 +56,7 @@ void			Engine::RunApplication(Application* app)
 	app->shaderProgram3D = _CompileShader("3D"); // shader par defaut ?
 	app->shaderProgramDebug = _CompileShader("Debug"); // shader par defaut ?
 	app->window = _window;
+	glfwSetKeyCallback(app->window, Inputs::KeyCallback);
 	_SM.RunApplication(*app);
 	_StopOpenGL();
 }

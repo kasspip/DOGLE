@@ -25,7 +25,7 @@
 			void						AddComponent(IComponent *cmp);
 			std::string 				toString(void);
 			std::list<IComponent*>		GetListComponent() const;
-			
+
 			template < typename T > T*	GetComponent(void)
 			{
 				std::list<IComponent*>::iterator it = _listComponent.begin();
@@ -37,7 +37,11 @@
 				return NULL;
 			}
 
-			std::string		name;
+			std::string				name;
+
+			bool						GetDestroy();
+			void						SetDestroy(bool set);
+
 
 		private:
 
@@ -47,6 +51,8 @@
 		bool					_isPrefab;
 		size_t					_id;
 		std::list<IComponent*>	_listComponent;
+		bool					_destroyMe;
+
 	};
 
 	std::ostream	&operator<<(std::ostream &o, GameObject &rhs);

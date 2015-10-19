@@ -15,7 +15,7 @@ GameObject::GameObject(std::string n) :	_id(counter)
 	counter++;
 	std::cout << "construct GameObject " << name << std::endl;
 	_isPrefab = true;
-
+	_destroyMe = false;
 	AddComponent(new Transform());
 }
 
@@ -23,7 +23,6 @@ GameObject::GameObject(GameObject const & src)
 {
 	std::cout << "construct copy GameObject " << src.name << std::endl;
 	_isPrefab = false;
-	
 	*this = src;
 }
 
@@ -46,7 +45,6 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 {
 	name = rhs.name + " (Copy)";
 	std::list<IComponent*> list = rhs.GetListComponent();
-	
 	std::list<IComponent*>::iterator compo = list.begin();
 	for (; compo != list.end(); compo++)
 	{
@@ -59,10 +57,11 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 		else if (dynamic_cast<Light*>(*compo))
 			AddComponent(new Light(*(dynamic_cast<Light*>(*compo))));
 		else if (dynamic_cast<Script*>(*compo))
-			AddComponent( *compo );
+			AddComponent(*compo);
 		else
 			throw DError() << msg("GameObject operator= overload. Missing component");
 	}
+	_destroyMe = rhs._destroyMe;
 	return *this;
 }
 
@@ -84,7 +83,6 @@ std::string				GameObject::toString(void)
 		<< "Components :"	<< std::endl;
 	for (; compo != _listComponent.end(); compo++)
 		ss	<< (*compo)->toString() << std::endl;
-	;
 	return ss.str();
 }
 
@@ -103,13 +101,13 @@ void					GameObject::AddComponent(IComponent *compo)
 		compo->transform = this->GetComponent<Transform>();
 	else
 	{
-		std::cout << "TRANSFORM " <<  std::endl;
 		compo->transform = dynamic_cast<Transform*>(compo);
 		for (IComponent *i : _listComponent) 
 			i->transform = dynamic_cast<Transform*>(compo);
 	}
 	_listComponent.push_back(compo);
 }
+
 
 // PRIVATE //
 
@@ -125,4 +123,6 @@ std::string				GameObject::_GetDefaultName()
 // GETTER SETTER //
 
 std::list<IComponent*>	GameObject::GetListComponent() const { return _listComponent;}
+void					GameObject::SetDestroy(bool set) { _destroyMe = set; }
+bool					GameObject::GetDestroy() { return _destroyMe; }
 

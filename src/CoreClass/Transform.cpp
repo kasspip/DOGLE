@@ -48,7 +48,7 @@ std::ostream	&operator<<(std::ostream & o, Transform const & rhs)
 
 // PUBLIC //
 
-void			Transform::CalculateTransform() 
+void			Transform::CalculateTransform()
 { 
 	_local = glm::mat4(1.0);
 	_local = glm::rotate(_local, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));

@@ -3,7 +3,6 @@
 
 # include "DOGLE.hpp"
 # include "IComponent.hpp"
-//# include "Engine.hpp"
 # include "Inputs.hpp"
 
 
@@ -17,10 +16,13 @@
 
 			virtual void			Update();
 			virtual void			Awake();
+			virtual void			OnDestroy();
 
 			
 			virtual void			Save(std::ofstream &file);
 			virtual std::string 	toString(void) const;
+
+			void					Destroy(GameObject *go);
 
 			std::string name;
 

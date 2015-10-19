@@ -14,25 +14,25 @@ int		main(void)
 		// ASSEMBLAGE //
 
 		Application *app = new Application("42run");
-			
+
+
 			GameObject *camera = new GameObject("Camera");
 				camera->AddComponent( new Camera );
-				camera->AddComponent( new MaClass );
+				camera->AddComponent( new ControlCamera );
 				app->AddPrefab(camera);
 
-			GameObject *object3D = new GameObject("Object3D");
-				object3D->AddComponent( new Skin("cube.dae") );
-				object3D->AddComponent( new MyCube );
-				app->AddPrefab(object3D);
+
+			GameObject *MonCube = new GameObject("MonCube");
+				MonCube->AddComponent( new Skin("cube.dae") );
+				MonCube->AddComponent( new MyCube );
+				app->AddPrefab(MonCube);
+
 
 			Scene *scene1 = new Scene("Level1");
-			//Transform tr;
-			//Transform tr;
-			//tr.position.x = 0.5;
-				scene1->InstanciatePrefab( app->FindPrefab("Object3D"), Transform(glm::vec3(0, 0.0, -3.0)));
+				scene1->InstanciatePrefab( app->FindPrefab("MonCube"), Transform(glm::vec3(0, 0, 0)));
 				GameObject *tmp = scene1->InstanciatePrefab( app->FindPrefab("Camera") );
 				app->AddScene(scene1);
-			Camera::SetMainCamera(tmp);
+				Camera::SetMainCamera(tmp);
 
 		// INTERPRETATION //
 

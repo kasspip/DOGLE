@@ -29,19 +29,27 @@ Script& 		Script::operator=(Script const &rhs)
 
 std::string		Script::toString(void) const
 {
-	return "";
+	std::stringstream ss;
+	ss << "# Component Camera #" << std::endl;
+	ss << name << std::endl;
+	return ss.str();
 }
 
 void			Script::Save(std::ofstream &file)
 {
-	file << "ERROR SAVE MOTHER SCRIPT" << std::endl;
+	file <<"\t\t\tSCRIPT : " << name << std::endl;
 }
 
 void			Script::Awake() {}
 
 void			Script::Update() {}
 
+void			Script::OnDestroy() {}
 
+void			Script::Destroy(GameObject *go)
+{
+	go->SetDestroy(true);
+}
 
 // PRIVATE //
 

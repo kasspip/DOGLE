@@ -1,0 +1,24 @@
+<snippet>
+	<content><![CDATA[
+# include "DOGLE.hpp"
+# include "Script.hpp"
+
+	class ${2:${TM_FILENAME/(.*)\..*/\u$1/}} : public Script
+	{
+		public:
+
+			${2}() : Script("${2}") {}
+
+			void	Update()
+			{
+
+			}	
+	};
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>Canonical_hpp</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>test.hpp</scope> -->
+	<!-- hppCano -->	
+</snippet>

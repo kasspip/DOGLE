@@ -13,9 +13,13 @@
 			
 			std::string toString(void) const;
 			void		RunState(Application & app, e_state	& currentState);
-			bool		KeyPressed(e_key key);
-			bool		KeyReleased(e_key key);
+			bool		KeyPressed(int key);
+			bool		KeyReleased(int key);
+			bool		KeyDown(int key);
 
+			
+			static void			KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+			static void			KeyState(GLFWwindow *window, int id);
 			static Inputs		*singleton;
 			static int			_key[];
 
@@ -23,9 +27,7 @@
 
 			Inputs &operator=(Inputs const &rhs);
 			Inputs(Inputs const &src);
-
-			static void			_KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
-			static key_event	_SetEvent(int key_name, int key, int action);
+			
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Inputs const &rhs);
