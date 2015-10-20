@@ -4,7 +4,7 @@
 #include "Inputs.hpp"
 #include "GameLogic.hpp"
 #include "Render.hpp"
-#include "GUI.hpp"
+#include "Gui.hpp"
 #include "Pause.hpp"
 #include "Destroy.hpp"
 #include "Stop.hpp"
