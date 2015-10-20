@@ -19,7 +19,11 @@
 			
 			Start(Start const &src);
 			Start &operator=(Start const &rhs);
-	
+
+			void			_AwakeNewGameObects(Application & app);
+			void			_SwapScene(Application & app);
+			void			_CleanOldScene(Scene* scene);
+			GameObject*		_FindFirstCamera(Scene* scene);
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Start const &rhs);

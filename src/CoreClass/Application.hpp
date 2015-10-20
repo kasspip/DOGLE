@@ -26,13 +26,17 @@
 			void			AddScene(Scene* scene);
 			Scene*			FindScene(std::string name);
 			void			LoadScene(Scene* scene);
+			void			LoadScene(std::string name);
 			Scene*			GetCurrentScene(void);
+			void			SetCurrentScene(Scene* scene);
+			Scene*			GetSceneToLoad();
 
 			// Engine
 			GLFWwindow			*window;
 			GLuint				shaderProgram3D;
 			GLuint				shaderProgramDebug;
 			bool				appShouldClose;
+			Scene*				sceneToLoad;
 			
 
 			// Custom
@@ -50,6 +54,7 @@
 			std::list<GameObject*>	_listPrefab;
 			std::list<Scene*>		_listScene;
 			Scene*					_currentScene;
+			Scene*					_sceneToLoad;
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Application const &rhs);

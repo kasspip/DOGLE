@@ -7,6 +7,7 @@ Application	*Application::singleton = NULL;
 Application::Application(void) : name("AppName")
 {
 	_currentScene = NULL;
+	_sceneToLoad = NULL;
 	appShouldClose = false;
 	winW = 1280;
 	winH = 1280;
@@ -19,6 +20,7 @@ Application::Application(void) : name("AppName")
 Application::Application(std::string name) : name(name)
 {
 	_currentScene = NULL;
+	_sceneToLoad = NULL;
 	appShouldClose = false;
 	winW = 1280;
 	winH = 1280;
@@ -52,6 +54,16 @@ std::ostream	&operator<<(std::ostream & o, Application const & rhs)
 
 // PUBLIC //
 
+void			Application::LoadScene(Scene* scene)
+{
+	_sceneToLoad = scene;
+}
+
+void			Application::LoadScene(std::string name)
+{
+	_sceneToLoad = FindScene(name);
+}
+
 void			Application::AddPrefab(GameObject* gameObject) 
 { 
 	_listPrefab.push_back(gameObject);
@@ -83,8 +95,8 @@ void			Application::Save(void)
 void			Application::AddScene(Scene* scene)
 { 
 	_listScene.push_back(scene);
-	if (_currentScene == NULL)
-		_currentScene = scene;
+	if (_sceneToLoad == NULL)
+		_sceneToLoad = scene;
 }
 
 Scene*			Application::FindScene(std::string name)
@@ -109,3 +121,5 @@ std::string		Application::toString(void) const
 // GETTER SETTER //
 
 Scene*			Application::GetCurrentScene() { return _currentScene; }
+void			Application::SetCurrentScene(Scene* scene) { _currentScene = scene; }
+Scene*			Application::GetSceneToLoad() { return _sceneToLoad ; }
