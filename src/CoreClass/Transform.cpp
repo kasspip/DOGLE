@@ -84,4 +84,8 @@ void			Transform::Save(std::ofstream &file)
 
 // GETTER SETTER //
 
-glm::mat4		Transform::GetMatrice() { return _transform; }
+glm::mat4		Transform::GetMatrice() 
+{ 
+	CalculateTransform();
+	return _transform; 
+}

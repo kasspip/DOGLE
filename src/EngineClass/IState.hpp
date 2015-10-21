@@ -2,12 +2,9 @@
 # define ISTATE_HPP
 
 # include "DOGLE.hpp"
-# include "Application.hpp"
-# include "Scene.hpp" 
-
+# include "Scene.hpp"
 
 class Application;
-
 
 	class IState
 	{

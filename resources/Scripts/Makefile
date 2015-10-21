@@ -1,7 +1,6 @@
 NAME =	GameScripts.a
 
-SRC =	ControlCamera.cpp \
-		MyCube.cpp \
+SRC =	*.cpp
 
 OBJ = 	$(SRC:.cpp=.o)
 

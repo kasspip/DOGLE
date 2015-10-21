@@ -27,15 +27,17 @@
 			Scene*			FindScene(std::string name);
 			void			LoadScene(Scene* scene);
 			void			LoadScene(std::string name);
+			void			Stop();
+
 			Scene*			GetCurrentScene(void);
 			void			SetCurrentScene(Scene* scene);
 			Scene*			GetSceneToLoad();
+			bool			GetStop();
 
 			// Engine
 			GLFWwindow			*window;
 			GLuint				shaderProgram3D;
 			GLuint				shaderProgramDebug;
-			bool				appShouldClose;
 			Scene*				sceneToLoad;
 			
 
@@ -55,6 +57,7 @@
 			std::list<Scene*>		_listScene;
 			Scene*					_currentScene;
 			Scene*					_sceneToLoad;
+			bool					_appShouldClose;
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Application const &rhs);

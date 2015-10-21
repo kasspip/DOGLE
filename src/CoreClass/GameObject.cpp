@@ -31,12 +31,7 @@ GameObject::~GameObject(void)
 	std::cout << "destruct " + name << std::endl;
 	std::list<IComponent*>::iterator it = _listComponent.begin();
 	for (; it != _listComponent.end(); it++)
-	{
-		if (*it && dynamic_cast<Script*>(*it) && !_isPrefab)
-			continue ;
-		else
-			delete *it;
-	}
+		delete *it;
 }
 
 // OVERLOADS //
@@ -57,7 +52,7 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 		else if (dynamic_cast<Light*>(*compo))
 			AddComponent(new Light(*(dynamic_cast<Light*>(*compo))));
 		else if (dynamic_cast<Script*>(*compo))
-			AddComponent(*compo);
+			AddComponent(dynamic_cast<Script*>(*compo)->Clone());
 		else
 			throw DError() << msg("GameObject operator= overload. Missing component");
 	}

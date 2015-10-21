@@ -34,7 +34,7 @@
 					if (dynamic_cast<T*>(*it))
 						return dynamic_cast<T*>(*it);
 				}
-				return NULL;
+				return nullptr;
 			}
 
 			std::string				name;

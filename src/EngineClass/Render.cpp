@@ -32,10 +32,8 @@ void			Render::RunState(Application & app, e_state & currentState)
 	glViewport(0, 0, app.winW, app.winH);
 	glUseProgram(app.shaderProgramDebug);
 
-
-	Scene* scene = app.GetCurrentScene();
-	
 	// setting camera
+	Scene* scene = app.GetCurrentScene();
 	GameObject* sceneCamera = Camera::GetMainCamera();
 	if (sceneCamera)
 	{
@@ -52,8 +50,8 @@ void			Render::RunState(Application & app, e_state & currentState)
 	// rendering Skins
 	std::list<GameObject*> GameObjects = scene->GetGameObjectList();
 	std::list<GameObject*>::iterator go = GameObjects.begin();
-	Transform* transform = NULL;
-	Skin* skin = NULL;
+	Transform* transform = nullptr;
+	Skin* skin = nullptr;
 	for (; go != GameObjects.end(); go++)
 	{
 		if (*go == sceneCamera)
@@ -62,7 +60,7 @@ void			Render::RunState(Application & app, e_state & currentState)
 		{
        		variableLocation = glGetUniformLocation(app.shaderProgramDebug, "Transform");
         	glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr(transform->GetMatrice()));
-			transform = NULL;
+			transform = nullptr;
 		}
 		if ((skin = (*go)->GetComponent<Skin>())
 			&& skin->GetIsBind() == true)
@@ -71,7 +69,7 @@ void			Render::RunState(Application & app, e_state & currentState)
 			glBindTexture(GL_TEXTURE_2D, skin->textureBind);
 			glBindVertexArray(skin->vao);
 			glDrawArrays(GL_TRIANGLES, 0, skin->nb_vertices);
-			skin = NULL;
+			skin = nullptr;
 		}
 	}
 	glfwSwapBuffers(app.window);

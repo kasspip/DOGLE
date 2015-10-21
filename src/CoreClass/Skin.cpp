@@ -34,11 +34,11 @@ Skin::Skin(std::string obj) : _dae_file(obj)
 	_flipYZAxis(positions, nb_vertices);
 	_flipYZAxis(normals, nb_vertices); // check if work well
 
-	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL);
+	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr);
 	texture_file = _images_path + std::string(path.C_Str());
 	
 	if (!(texture_data = SOIL_load_image(texture_file.c_str(), &texture_w, &texture_h, 0, SOIL_LOAD_RGBA)))
-		throw DError() << msg("[Skin] " + texture_file + ": SOIL load image return NULL.");
+		throw DError() << msg("[Skin] " + texture_file + ": SOIL load image return nullptr.");
 	_flipTextureData(texture_data, texture_w, texture_h);
 	
 	mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
@@ -110,7 +110,7 @@ Skin	&Skin::operator=(Skin const & rhs)
 	UVs = _CopyArray(rhs.UVs, nb_vertices * 2);
 	texture_file = rhs.texture_file;
 	if (!(texture_data = SOIL_load_image(texture_file.c_str(), &texture_w, &texture_h, 0, SOIL_LOAD_RGBA)))
-		throw DError() << msg("[Skin] " + _images_path + ": SOIL load image return NULL.");
+		throw DError() << msg("[Skin] " + _images_path + ": SOIL load image return nullptr.");
 	_flipTextureData(texture_data, texture_w, texture_h);
 	diffuse = rhs.diffuse;
 	specular = rhs.specular;
@@ -170,8 +170,8 @@ void		Skin::_flipTextureData(unsigned char *data, int w, int h)
 	int				half_height;
 	int				row;
 	int				col;
-	unsigned char 	*top = NULL;
-	unsigned char 	*bottom = NULL;
+	unsigned char 	*top = nullptr;
+	unsigned char 	*bottom = nullptr;
 
 	byte_w = w * 4;
 	temp = 0;
@@ -223,7 +223,7 @@ void			Skin::SkinVBO()
 void			Skin::_BindAttribut(GLuint bufferId, GLuint attributId, int pSize)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-	glVertexAttribPointer(attributId, pSize, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(attributId, pSize, GL_FLOAT, GL_FALSE, 0, nullptr);
 	glEnableVertexAttribArray(attributId);
 }
 

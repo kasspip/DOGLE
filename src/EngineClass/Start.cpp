@@ -25,7 +25,7 @@ void			Start::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Start>");
 	
-	if (app.GetSceneToLoad() != NULL)
+	if (app.GetSceneToLoad() != nullptr)
 		_SwapScene(app);
 	if (app.GetCurrentScene()->GetBindGameObjectList().size() > 0)
 		_AwakeNewGameObects(app);
@@ -49,44 +49,44 @@ void			Start::_CleanOldScene(Scene* scene)
 
 GameObject*			Start::_FindFirstCamera(Scene* scene)
 {
-	Camera* cam = NULL;
-	for(GameObject* go : scene->GetBindGameObjectList())
-	{
-		if ((cam = go->GetComponent<Camera>()))
-		{
-			std::cout << "Set Main camera on " << go->name << std::endl;
-			return go;
-		}
-	}
+	Camera* cam = nullptr;
 	for(GameObject* go : scene->GetGameObjectList())
 	{
 		if ((cam = go->GetComponent<Camera>()))
 		{
-			std::cout << "Set Main camera on " << go->name << std::endl;
+			std::cout << "-> Set Main camera on " << go->name << std::endl;
 			return go;
 		}
 	}
-	return NULL;
+	for(GameObject* go : scene->GetBindGameObjectList())
+	{
+		if ((cam = go->GetComponent<Camera>()))
+		{
+			std::cout << "-> Set Main camera on " << go->name << std::endl;
+			return go;
+		}
+	}
+	return nullptr;
 }
 
 void			Start::_SwapScene(Application & app)
 {
-	if (app.GetCurrentScene() != NULL)	
+	if (app.GetCurrentScene() != nullptr)	
 		_CleanOldScene(app.GetCurrentScene());
 	
 	app.SetCurrentScene(app.GetSceneToLoad());
-
+	std::cout << "LoadScene(): " << app.GetCurrentScene()->name << std::endl;
 	GameObject* cam = _FindFirstCamera(app.GetCurrentScene());
-	if (cam == NULL)
+	if (cam == nullptr)
 		throw DError() << msg("Can't find a Camera in scene " + app.GetCurrentScene()->name);
 	Camera::SetMainCamera(cam);
-	app.LoadScene(NULL);
+	app.LoadScene(nullptr);
 }
 
 void			Start::_AwakeNewGameObects(Application & app)
 {
-	Skin				*skin = NULL;
-	Script				*script = NULL;
+	Skin					*skin = nullptr;
+	Script					*script = nullptr;
 	std::list<GameObject*>	&lst_bind = app.GetCurrentScene()->GetBindGameObjectList();
 	std::list<GameObject*>	&lst_cur = app.GetCurrentScene()->GetGameObjectList();
 
@@ -102,14 +102,14 @@ void			Start::_AwakeNewGameObects(Application & app)
 				skin->SkinVAO();
 				skin->SkinTexture();
 				skin->SetIsBind(true);
-				skin = NULL;
+				skin = nullptr;
 			}
 		}
 		if ((script = go->GetComponent<Script>()))
 		{
 			PRINT_DEBUG("Calling Awake() from " + script->name);
 			script->Awake();
-			script = NULL;
+			script = nullptr;
 		}
 	}
 	lst_cur.insert(lst_cur.end(), lst_bind.begin(), lst_bind.end());

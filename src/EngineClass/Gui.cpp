@@ -27,7 +27,7 @@ void			Gui::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <GUI>");
 	(void)app;
-	currentState = STATE_PAUSING;
+	currentState = STATE_PAUSE;
 }
 
 std::string		Gui::toString(void) const

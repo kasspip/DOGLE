@@ -3,11 +3,12 @@
 
 	class ControlCamera : public Script
 	{
-		GameObject* cube = NULL;
+		GameObject* cube = nullptr;
 
 		public:
 
 			ControlCamera() : Script("ControlCamera") {}
+			Script* 		Clone() { return new ControlCamera(); }
 
 			void			Awake()
 			{
@@ -20,6 +21,9 @@
 				PopCube();
 				RemoveCube();
 				ChangeScene();
+				pauseGame();
+				if (Inputs::singleton->KeyDown(GLFW_KEY_ESCAPE))
+				 	Application::singleton->Stop();
 			}
 
 			void			Navigation()
@@ -41,7 +45,7 @@
 			void			PopCube()
 			{
 				if (!cube && Inputs::singleton->KeyDown(GLFW_KEY_E))
-					cube = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("MonCube"));
+					cube = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("MonTriangle"));
 			}
 
 			void			RemoveCube()
@@ -49,7 +53,7 @@
 				if (cube && Inputs::singleton->KeyDown(GLFW_KEY_R))
 				{
 					Destroy(cube);
-					cube = NULL;
+					cube = nullptr;
 				}
 			}
 
@@ -63,5 +67,11 @@
 					else
 						Application::singleton->LoadScene("Level1");
 				}
+			}
+
+			void		pauseGame()
+			{
+				if (Inputs::singleton->KeyDown(GLFW_KEY_P))
+					Engine::singleton->Pause();
 			}
 	};

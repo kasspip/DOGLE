@@ -6,17 +6,22 @@ class MyCube : public Script
 	public:
 
 		MyCube() : Script("MyCube") {}
-
-		void			Awake()
-		{
-			transform->position = (Camera::GetMainCamera()->GetComponent<Camera>()->transform->position * glm::vec3(-1,-1,-1)) + glm::vec3(0,0,-2);
-		}
+		Script* 		Clone() { return new MyCube(); }
 
 		void			OnDestroy()
 		{
 			std::cout << " OnDestroy() " << name << " says Boom !" << std::endl;
 		}
 
+		void			Update()
+		{
+			transform->rotation += glm::vec3(0, 0.002, 0);
+		}
+
+		void			OnStop()
+		{
+			std::cout << "script OnStop() " << std::endl;
+		}
 	private:
 
 };

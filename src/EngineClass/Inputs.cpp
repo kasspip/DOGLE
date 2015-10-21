@@ -5,7 +5,7 @@
 
 // STATIC //
 
-Inputs*				Inputs::singleton = NULL;
+Inputs*				Inputs::singleton = nullptr;
 int					Inputs::_key[GLFW_KEY_LAST];
 
 // CONSTRUCTOR DESTRUCTOR //
@@ -40,22 +40,41 @@ void			Inputs::RunState(Application & app, e_state & currentState)
 	KeyState(app.window, GLFW_KEY_W);
 	KeyState(app.window, GLFW_KEY_E);
 	KeyState(app.window, GLFW_KEY_R);
+	KeyState(app.window, GLFW_KEY_T);
+	KeyState(app.window, GLFW_KEY_Y);
+	KeyState(app.window, GLFW_KEY_U);
+	KeyState(app.window, GLFW_KEY_I);
+	KeyState(app.window, GLFW_KEY_O);
+	KeyState(app.window, GLFW_KEY_P);
 
 	KeyState(app.window, GLFW_KEY_A);
 	KeyState(app.window, GLFW_KEY_S);
 	KeyState(app.window, GLFW_KEY_D);
 	KeyState(app.window, GLFW_KEY_F);
-
-
+	KeyState(app.window, GLFW_KEY_G);
+	KeyState(app.window, GLFW_KEY_H);
+	KeyState(app.window, GLFW_KEY_J);
+	KeyState(app.window, GLFW_KEY_K);
+	KeyState(app.window, GLFW_KEY_L);
 	
+	KeyState(app.window, GLFW_KEY_Z);
+	KeyState(app.window, GLFW_KEY_X);
+	KeyState(app.window, GLFW_KEY_C);
+	KeyState(app.window, GLFW_KEY_V);
+	KeyState(app.window, GLFW_KEY_B);
+	KeyState(app.window, GLFW_KEY_N);
+	KeyState(app.window, GLFW_KEY_M);
+	
+	KeyState(app.window, GLFW_KEY_TAB);
+	KeyState(app.window, GLFW_KEY_ENTER);
 	KeyState(app.window, GLFW_KEY_SPACE);
 	KeyState(app.window, GLFW_KEY_LEFT_SHIFT);
 	KeyState(app.window, GLFW_KEY_LEFT_CONTROL);
-	if (KeyPressed(GLFW_KEY_ESCAPE))
-		app.appShouldClose = GL_TRUE;
-	if (_key[GLFW_KEY_ESCAPE] == GL_TRUE)
-		glfwSetWindowShouldClose(app.window, GL_TRUE);
-	currentState = STATE_GAMELOGIC;
+	
+	if (Engine::singleton->pause == true && KeyPressed(GLFW_KEY_ENTER))
+		Engine::singleton->pause = false;
+	else
+		(Engine::singleton->pause == false) ? currentState = STATE_GAMELOGIC : currentState = STATE_PAUSE ;
 }
 
 bool			Inputs::KeyPressed(int key)

@@ -15,7 +15,10 @@
 			
 			std::string toString(void) const;
 			void		RunApplication(Application* app);
+			void		Pause();
 
+			static Engine*	singleton;
+			bool			pause;
 
 		protected:
 	
@@ -45,6 +48,7 @@
 			// shaders
 			GLuint			_CompileShader(std::string name);
 			const char 		*_GetShaderCode(std::string filePath);
+
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Engine const &rhs);

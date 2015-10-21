@@ -24,7 +24,15 @@ std::ostream	&operator<<(std::ostream & o, Stop const & rhs)
 void			Stop::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Stop>");
-	(void)app;
+	Script* script = nullptr;
+	for (GameObject* go : app.GetCurrentScene()->GetGameObjectList())
+	{
+		if ((script = go->GetComponent<Script>()))
+		{
+			script->OnStop();
+			script = nullptr;
+		}
+	}
 	currentState = STATE_EXIT;
 }
 

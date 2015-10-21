@@ -11,7 +11,7 @@ Scene::Scene(void) : 	_id(counter)
 	ss << "Scene" << _id;
 	name = ss.str();
 	counter++;
-	_currentCamera = NULL;
+	_currentCamera = nullptr;
 	std::cout << "construct Scene "<< name << std::endl;
 }
 
@@ -19,7 +19,7 @@ Scene::Scene(std::string n) : 	_id(counter)
 {
 	name = n;
 	counter++;
-	_currentCamera = NULL;
+	_currentCamera = nullptr;
 	std::cout << "construct Scene "<< name << std::endl;
 }
 

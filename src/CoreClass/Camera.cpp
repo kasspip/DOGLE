@@ -1,7 +1,7 @@
 #include "Camera.hpp"
 #include "GameObject.hpp"
 
-Camera	*Camera::_main = NULL;
+Camera	*Camera::_main = nullptr;
 
 
 // CONSTRUCTOR DESTRUCTOR //
@@ -84,7 +84,7 @@ GameObject*				Camera::GetMainCamera() { return _main->gameObject; }
 void					Camera::SetMainCamera(GameObject* go)  
 { 
 	Camera* camera = go->GetComponent<Camera>();
-	if (camera == NULL)
+	if (camera == nullptr)
 		throw DError() << msg("Camera.SetMainCamera(). No camera component found in " + go->name);
 	_main = camera; 
 }

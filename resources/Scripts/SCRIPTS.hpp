@@ -6,3 +6,4 @@
 
 #include "ControlCamera.cpp"
 #include "MyCube.cpp"
+#include "ScriptTriangle.cpp"

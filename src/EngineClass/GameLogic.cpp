@@ -27,17 +27,13 @@ void			GameLogic::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <GameLogic>");
 	
-	std::list<GameObject*> GameObjects = app.GetCurrentScene()->GetGameObjectList();
-	std::list<GameObject*>::iterator go = GameObjects.begin();
-	
-	Script* script = NULL;
-	
-	for (; go != GameObjects.end(); go++)
+	Script* script = nullptr;
+	for (GameObject* go : app.GetCurrentScene()->GetGameObjectList())
 	{
-		if ((script = (*go)->GetComponent<Script>()))
+		if ((script = go->GetComponent<Script>()))
 		{
 			script->Update();
-			script = NULL;
+			script = nullptr;
 		}
 	}
 	currentState = STATE_RENDER;

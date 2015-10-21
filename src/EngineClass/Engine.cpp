@@ -1,11 +1,18 @@
 #include "Engine.hpp"
 
+// STATIC //
+
+Engine*		Engine::singleton = nullptr;
+
 // CONSTRUCTOR DESTRUCTOR //
 
 Engine::Engine()
 {
+	if (!singleton)
+		singleton = this;
 	_setupOpenGL = false;
-	_app = NULL;
+	_app = nullptr;
+	pause = false;
 
 	// TODO from config file ?
 	_winW = 0;
@@ -18,7 +25,6 @@ Engine::Engine()
 
 Engine::~Engine(void)
 {
-
 }
 
 // OVERLOADS //
@@ -41,7 +47,7 @@ void			Engine::RunApplication(Application* app)
 {
 	std::cout << "[ENGINE] <RunApplication> : " << app->name << std::endl;
 
-	if (_app != NULL)
+	if (_app != nullptr)
 	{
 		_StopOpenGL();
 		delete _app;
@@ -67,6 +73,10 @@ std::string		Engine::toString(void) const
 	return ss.str();
 }
 
+void			Engine::Pause()
+{
+	pause = true;
+}
 
 // PRIVATE //
 
@@ -85,7 +95,7 @@ void			Engine::_StartOpenGL(void)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// window and GLFW context
-	if ((_window = glfwCreateWindow(_winW, _winH, "GOGLE", NULL, NULL)) == NULL)
+	if ((_window = glfwCreateWindow(_winW, _winH, "GOGLE", nullptr, nullptr)) == nullptr)
 	{
 		glfwTerminate();
 		throw DError() << msg("glfw could not open window");
@@ -124,7 +134,7 @@ void			Engine::_StartOpenGL(void)
 void			Engine::_StopOpenGL(void)
 {
 	std::cout << "[ENGINE] <StopOpenGL>" << std::endl <<  std::endl;
-	if (_app != NULL)
+	if (_app != nullptr)
 		delete _app;
 	if (_setupOpenGL == true)
 	{
@@ -167,12 +177,12 @@ GLuint			Engine::_CompileShader(std::string name)
 
 	// compile vertex shader code
 	GLuint vertexId = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexId, 1, &(vertexCode), NULL);
+	glShaderSource(vertexId, 1, &(vertexCode), nullptr);
 	glCompileShader(vertexId);
 
 	// compile fragment shader code
 	GLuint fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentId, 1, &(fragmentCode), NULL);
+	glShaderSource(fragmentId, 1, &(fragmentCode), nullptr);
 	glCompileShader(fragmentId);
 	
 	// create shader program

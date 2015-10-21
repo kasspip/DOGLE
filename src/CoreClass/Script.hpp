@@ -4,7 +4,7 @@
 # include "DOGLE.hpp"
 # include "IComponent.hpp"
 # include "Inputs.hpp"
-
+# include "Engine.hpp"
 
 	class Script : public IComponent
 	{
@@ -14,10 +14,13 @@
 			virtual ~Script(void);
 			Script &operator=(Script const &rhs);
 
+			virtual Script* 		Clone() = 0; 
+
 			virtual void			Update();
 			virtual void			Awake();
+			virtual void			OnPause();
 			virtual void			OnDestroy();
-
+			virtual void			OnStop();
 			
 			virtual void			Save(std::ofstream &file);
 			virtual std::string 	toString(void) const;

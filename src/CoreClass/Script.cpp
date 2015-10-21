@@ -40,16 +40,16 @@ void			Script::Save(std::ofstream &file)
 	file <<"\t\t\tSCRIPT : " << name << std::endl;
 }
 
-void			Script::Awake() {}
-
-void			Script::Update() {}
-
-void			Script::OnDestroy() {}
-
 void			Script::Destroy(GameObject *go)
 {
 	go->SetDestroy(true);
 }
+
+void			Script::Awake() 	{}
+void			Script::Update() 	{}
+void			Script::OnPause()	{}
+void			Script::OnDestroy() {}
+void			Script::OnStop() 	{}
 
 // PRIVATE //
 

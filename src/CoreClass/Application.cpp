@@ -1,14 +1,14 @@
 #include "Application.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
-Application	*Application::singleton = NULL;
+Application	*Application::singleton = nullptr;
 
 
 Application::Application(void) : name("AppName")
 {
-	_currentScene = NULL;
-	_sceneToLoad = NULL;
-	appShouldClose = false;
+	_currentScene = nullptr;
+	_sceneToLoad = nullptr;
+	_appShouldClose = false;
 	winW = 1280;
 	winH = 1280;
 	shaderProgram3D = 0;
@@ -19,9 +19,9 @@ Application::Application(void) : name("AppName")
 
 Application::Application(std::string name) : name(name)
 {
-	_currentScene = NULL;
-	_sceneToLoad = NULL;
-	appShouldClose = false;
+	_currentScene = nullptr;
+	_sceneToLoad = nullptr;
+	_appShouldClose = false;
 	winW = 1280;
 	winH = 1280;
 	shaderProgram3D = 0;
@@ -69,13 +69,18 @@ void			Application::AddPrefab(GameObject* gameObject)
 	_listPrefab.push_back(gameObject);
 }
 
+void			Application::Stop()
+{
+	_appShouldClose = true;
+	glfwSetWindowShouldClose(window, GL_TRUE);
+}
+
 GameObject*		Application::FindPrefab(std::string name)
 {
-	std::list<GameObject*>::iterator it = _listPrefab.begin();
-	for (; it != _listPrefab.end(); it ++)
+	for (GameObject* go : _listPrefab)
 	{
-		if ((*it)->name == name)
-			return *it;
+		if (go->name == name)
+			return go;
 	}
 	throw DError() << msg("FindPrefab(), resquested prefab not found.");
 }
@@ -95,17 +100,16 @@ void			Application::Save(void)
 void			Application::AddScene(Scene* scene)
 { 
 	_listScene.push_back(scene);
-	if (_sceneToLoad == NULL)
+	if (_sceneToLoad == nullptr)
 		_sceneToLoad = scene;
 }
 
 Scene*			Application::FindScene(std::string name)
 {
-	std::list<Scene*>::iterator it = _listScene.begin();
-	for (; it != _listScene.end(); it++)
+	for (Scene* scene : _listScene)
 	{
-		if ((*it)->name == name)
-			return *it;
+		if (scene->name == name)
+			return scene;
 	}
 	throw DError() << msg("FindScene(), resquested scene not found.");
 }
@@ -121,5 +125,6 @@ std::string		Application::toString(void) const
 // GETTER SETTER //
 
 Scene*			Application::GetCurrentScene() { return _currentScene; }
-void			Application::SetCurrentScene(Scene* scene) { _currentScene = scene; }
 Scene*			Application::GetSceneToLoad() { return _sceneToLoad ; }
+void			Application::SetCurrentScene(Scene* scene) { _currentScene = scene; }
+bool			Application::GetStop() { return _appShouldClose; }
