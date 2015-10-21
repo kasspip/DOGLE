@@ -70,10 +70,16 @@ std::string		Camera::toString(void) const
 
 void			Camera::Save(std::ofstream &file)
 {
-	file << "\t\t\tCAMERA : " << std::endl;
-	file << "\t\t\tFOV : " << _fov << std::endl;
-	file << "\t\t\tCLIPN : " << _clipNear << std::endl;
-	file << "\t\t\tCLIPF : " << _clipFar << std::endl;
+	std::string TABS;
+	if (gameObject->IsPrefab() == true)
+		TABS = "\t\t";
+	else
+		TABS = "\t\t\t";
+
+	file << TABS << "CAMERA : " << std::endl;
+	file << TABS << "fov : " << _fov << std::endl;
+	file << TABS << "clip_near : " << _clipNear << std::endl;
+	file << TABS << "clip_far : " << _clipFar << std::endl;
 }
 
 // PRIVATE //

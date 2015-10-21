@@ -18,6 +18,7 @@
 
 			virtual void			Update();
 			virtual void			Awake();
+			virtual void			OnGUI();
 			virtual void			OnPause();
 			virtual void			OnDestroy();
 			virtual void			OnStop();

@@ -12,7 +12,7 @@ size_t GameObject::counter = 0;
 GameObject::GameObject(std::string n) :	_id(counter)
 {
 	name = n;
-	counter++;
+	_id = counter++;
 	std::cout << "construct GameObject " << name << std::endl;
 	_isPrefab = true;
 	_destroyMe = false;
@@ -21,38 +21,38 @@ GameObject::GameObject(std::string n) :	_id(counter)
 
 GameObject::GameObject(GameObject const & src)
 {
-	std::cout << "construct copy GameObject " << src.name << std::endl;
+	_id = counter++;
 	_isPrefab = false;
 	*this = src;
+	std::cout << "construct GameObject " << name << " from " << src.name << std::endl;
 }
 
 GameObject::~GameObject(void)
 {
 	std::cout << "destruct " + name << std::endl;
-	std::list<IComponent*>::iterator it = _listComponent.begin();
-	for (; it != _listComponent.end(); it++)
-		delete *it;
+	for (IComponent* compo : _listComponent)
+		delete compo;
 }
 
 // OVERLOADS //
 
 GameObject&				GameObject::operator=(GameObject const & rhs)
 {
-	name = rhs.name + " (Copy)";
-	std::list<IComponent*> list = rhs.GetListComponent();
-	std::list<IComponent*>::iterator compo = list.begin();
-	for (; compo != list.end(); compo++)
+	std::stringstream ss;
+	ss << rhs.name + " (" << _id << ")";
+	name = ss.str();
+	for (IComponent* compo : rhs.GetListComponent())
 	{
-		if (dynamic_cast<Transform*>(*compo))
-			AddComponent(new Transform(*(dynamic_cast<Transform*>(*compo))));
-		else if (dynamic_cast<Skin*>(*compo))
-			AddComponent(new Skin(*(dynamic_cast<Skin*>(*compo))));
-		else if (dynamic_cast<Camera*>(*compo))
-			AddComponent(new Camera(*(dynamic_cast<Camera*>(*compo))));
-		else if (dynamic_cast<Light*>(*compo))
-			AddComponent(new Light(*(dynamic_cast<Light*>(*compo))));
-		else if (dynamic_cast<Script*>(*compo))
-			AddComponent(dynamic_cast<Script*>(*compo)->Clone());
+		if (dynamic_cast<Transform*>(compo))
+			AddComponent(new Transform(*(dynamic_cast<Transform*>(compo))));
+		else if (dynamic_cast<Skin*>(compo))
+			AddComponent(new Skin(*(dynamic_cast<Skin*>(compo))));
+		else if (dynamic_cast<Camera*>(compo))
+			AddComponent(new Camera(*(dynamic_cast<Camera*>(compo))));
+		else if (dynamic_cast<Light*>(compo))
+			AddComponent(new Light(*(dynamic_cast<Light*>(compo))));
+		else if (dynamic_cast<Script*>(compo))
+			AddComponent(dynamic_cast<Script*>(compo)->Clone());
 		else
 			throw DError() << msg("GameObject operator= overload. Missing component");
 	}
@@ -70,23 +70,32 @@ std::ostream&			operator<<(std::ostream & o, GameObject & rhs)
 
 std::string				GameObject::toString(void)
 {
-	std::list<IComponent*>::iterator compo = _listComponent.begin();
-
 	std::stringstream ss;
 	ss 	<< "<" + name + ">" << std::endl
 		<< "id : " << _id	<< std::endl
 		<< "Components :"	<< std::endl;
-	for (; compo != _listComponent.end(); compo++)
-		ss	<< (*compo)->toString() << std::endl;
+	for (IComponent* compo : _listComponent)
+		ss	<< compo->toString() << std::endl;
 	return ss.str();
 }
 
 void					GameObject::Save(std::ofstream &file)
 {
-	file << "\t\tGAMEOBJECT : " << name << std::endl;
-	std::list<IComponent*>::iterator compo = _listComponent.begin();
-	for (;compo != _listComponent.end();compo++)
-		(*compo)->Save(file);
+	std::string TABS;
+	std::string TYPE;
+	if (_isPrefab == true)
+	{
+		TABS = "\t";
+		TYPE = "PREFAB";
+	}
+	else
+	{
+		TABS = "\t\t";
+		TYPE = "GAMEOBJECT";
+	}
+	file << TABS << TYPE << " : " << name << std::endl;
+	for (IComponent* compo : _listComponent)
+		compo->Save(file);
 }
 
 void					GameObject::AddComponent(IComponent *compo)
@@ -102,7 +111,6 @@ void					GameObject::AddComponent(IComponent *compo)
 	}
 	_listComponent.push_back(compo);
 }
-
 
 // PRIVATE //
 
@@ -120,4 +128,5 @@ std::string				GameObject::_GetDefaultName()
 std::list<IComponent*>	GameObject::GetListComponent() const { return _listComponent;}
 void					GameObject::SetDestroy(bool set) { _destroyMe = set; }
 bool					GameObject::GetDestroy() { return _destroyMe; }
+bool					GameObject::IsPrefab() { return _isPrefab; }
 

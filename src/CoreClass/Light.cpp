@@ -1,4 +1,5 @@
 #include "Light.hpp"
+#include "GameObject.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -42,7 +43,12 @@ std::string		Light::toString(void) const
 
 void			Light::Save(std::ofstream &file)
 {
-	file << "\t\t\tLIGHT : " << std::endl;
+	std::string TABS;
+	if (gameObject->IsPrefab() == true)
+		TABS = "\t\t";
+	else
+	 	TABS = "\t\t\t";
+	file << TABS << "LIGHT : " << std::endl;
 }
 
 // PRIVATE //

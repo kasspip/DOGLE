@@ -26,7 +26,17 @@ std::ostream	&operator<<(std::ostream & o, Gui const & rhs)
 void			Gui::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <GUI>");
-	(void)app;
+
+	Script* script = nullptr;
+	for (GameObject* go : app.GetCurrentScene()->GetGameObjectList())
+	{
+		if ((script = go->GetComponent<Script>()))
+		{
+			script->OnGUI();
+			script = nullptr;
+		}
+	}
+
 	currentState = STATE_PAUSE;
 }
 

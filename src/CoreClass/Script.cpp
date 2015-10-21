@@ -1,4 +1,5 @@
 #include "Script.hpp"
+#include "GameObject.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -37,7 +38,12 @@ std::string		Script::toString(void) const
 
 void			Script::Save(std::ofstream &file)
 {
-	file <<"\t\t\tSCRIPT : " << name << std::endl;
+	std::string TABS;
+	if (gameObject->IsPrefab() == true)
+		TABS = "\t\t";
+	else
+	 	TABS = "\t\t\t";
+	file << TABS <<"SCRIPT : " << name << std::endl;
 }
 
 void			Script::Destroy(GameObject *go)
@@ -47,6 +53,7 @@ void			Script::Destroy(GameObject *go)
 
 void			Script::Awake() 	{}
 void			Script::Update() 	{}
+void			Script::OnGUI()		{}
 void			Script::OnPause()	{}
 void			Script::OnDestroy() {}
 void			Script::OnStop() 	{}

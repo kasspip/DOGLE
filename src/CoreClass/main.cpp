@@ -6,6 +6,7 @@
 #include "Script.hpp"
 #include "Application.hpp"
 #include "Skin.hpp"
+#include "ScriptFactory.hpp"
 
 int		main(void)
 {
@@ -13,22 +14,27 @@ int		main(void)
 	{
 		// ASSEMBLAGE //
 
-		Application *app = new Application("42run");
+		ScriptFactory	factory;
 
+		ScriptFactory::Register("ControlCamera", new ControlCamera);
+		ScriptFactory::Register("MyCube", new MyCube);
+		ScriptFactory::Register("ScriptTriangle", new ScriptTriangle);
+
+		Application *app = new Application("42run");
 
 			GameObject *camera1 = new GameObject("Camera1");
 				camera1->AddComponent( new Camera );
-				camera1->AddComponent( new ControlCamera );
+				camera1->AddComponent( factory.Create("ControlCamera") );
 				app->AddPrefab(camera1);
 
 			GameObject *MonCube = new GameObject("MonCube");
 				MonCube->AddComponent( new Skin("cube.dae") );
-				MonCube->AddComponent( new MyCube );
+				MonCube->AddComponent( factory.Create("MyCube")  );
 				app->AddPrefab(MonCube);
 
 			GameObject *triangle = new GameObject("MonTriangle");
 				triangle->AddComponent( new Skin("triangle.dae") );
-				triangle->AddComponent( new ScriptTriangle );
+				triangle->AddComponent( factory.Create("ScriptTriangle") );
 				app->AddPrefab(triangle);
 
 			Scene *scene1 = new Scene("Level1");

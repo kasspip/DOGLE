@@ -48,21 +48,19 @@ void			Render::RunState(Application & app, e_state & currentState)
 		throw DError() << msg("No current camera in scene " + scene->name);
 
 	// rendering Skins
-	std::list<GameObject*> GameObjects = scene->GetGameObjectList();
-	std::list<GameObject*>::iterator go = GameObjects.begin();
 	Transform* transform = nullptr;
 	Skin* skin = nullptr;
-	for (; go != GameObjects.end(); go++)
+	for (GameObject* go : scene->GetGameObjectList())
 	{
-		if (*go == sceneCamera)
+		if (go == sceneCamera)
 			continue ;
-		if ((transform = (*go)->GetComponent<Transform>()))
+		if ((transform = go->GetComponent<Transform>()))
 		{
        		variableLocation = glGetUniformLocation(app.shaderProgramDebug, "Transform");
         	glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr(transform->GetMatrice()));
 			transform = nullptr;
 		}
-		if ((skin = (*go)->GetComponent<Skin>())
+		if ((skin = go->GetComponent<Skin>())
 			&& skin->GetIsBind() == true)
 		{
 

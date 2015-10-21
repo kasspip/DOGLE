@@ -1,4 +1,5 @@
 #include "Skin.hpp"
+#include "GameObject.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -160,7 +161,12 @@ std::string		Skin::toString(void) const
 
 void			Skin::Save(std::ofstream &file)
 {
-	file << "\t\t\tSKIN : " << _dae_file <<std::endl;
+	std::string TABS;
+	if (gameObject->IsPrefab() == true)
+		TABS = "\t\t";
+	else
+		TABS = "\t\t\t";
+	file << TABS << "SKIN : " << _dae_file <<std::endl;
 }
 
 void		Skin::_flipTextureData(unsigned char *data, int w, int h)

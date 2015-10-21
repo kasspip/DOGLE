@@ -7,9 +7,6 @@
 # include <assimp/scene.h>
 # include <assimp/postprocess.h>
 # include <assimp/Importer.hpp>
-# include <iterator>
-#include <iostream>
-#include <vector>
 
 	class Skin : public IComponent
 	{

@@ -8,7 +8,7 @@
 		public:
 
 			${2}() : Script("${2}") {}
-			Script* 		Clone() { return new ${2}(); }
+			Script* Clone() { return new ${2}(); }
 
 			void	Update()
 			{

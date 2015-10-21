@@ -26,9 +26,8 @@ Scene::Scene(std::string n) : 	_id(counter)
 Scene::~Scene(void)
 {
 	std::cout << "destruct " << name << std::endl; 
-	std::list<GameObject*>::iterator go = _listGameObject.begin();
-	for (; go != _listGameObject.end(); go++)
-		delete *go;
+	for (GameObject* go : _listGameObject)
+		delete go;
 }
 
 // OVERLOADS //
@@ -44,9 +43,10 @@ std::ostream	&operator<<(std::ostream & o, Scene const & rhs)
 void					Scene::Save(std::ofstream &file)
 {
 	file << "\tSCENE : " << name << std::endl;
-	std::list<GameObject *>::iterator it = _listGameObject.begin();
-	for (;it != _listGameObject.end();it++)
-		(*it)->Save(file);
+	for (GameObject* go : _listBindGameObject)
+		go->Save(file);
+	for (GameObject* go : _listGameObject)
+		go->Save(file);
 }
 
 GameObject				*Scene::InstanciatePrefab(GameObject *prefab) 
@@ -72,11 +72,10 @@ std::string				Scene::toString(void) const
 
 GameObject*				Scene::FindGameObject(std::string name)
 {
-	std::list<GameObject*>::iterator go = _listGameObject.begin();
-	for (; go != _listGameObject.end(); go++)
+	for (GameObject* go : _listGameObject)
 	{
-		if ((*go)->name == name)
-			return *go;
+		if (go->name == name)
+			return go;
 	}
 	throw DError() << msg("FindGameObject(), resquested GameObject not found.");
 }

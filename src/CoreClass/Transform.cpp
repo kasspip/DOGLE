@@ -73,10 +73,15 @@ std::string		Transform::toString(void) const
 
 void			Transform::Save(std::ofstream &file)
 {
-	file << "\t\t\tTRANSFORM : " << std::endl;
-	file	<< "POS : " << position.x << " " << position.y << " " << position.z << std::endl;
-	file	<< "ROT : " << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
-	file	<< "SCALE : " << scale.x << " " << scale.y << " " << scale.z << std::endl;
+	std::string TABS;
+	if (gameObject->IsPrefab() == true)
+		TABS = "\t\t";
+	else
+		TABS = "\t\t\t";
+	file << TABS << "TRANSFORM : " << std::endl;
+	file << TABS << "position : " << position.x << " " << position.y << " " << position.z << std::endl;
+	file << TABS << "rotation : " << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
+	file << TABS << "scale : " << scale.x << " " << scale.y << " " << scale.z << std::endl;
 }
 
 // PRIVATE //

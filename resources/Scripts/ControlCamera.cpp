@@ -8,7 +8,7 @@
 		public:
 
 			ControlCamera() : Script("ControlCamera") {}
-			Script* 		Clone() { return new ControlCamera(); }
+			Script* Clone() { return new ControlCamera(); }
 
 			void			Awake()
 			{
@@ -21,9 +21,11 @@
 				PopCube();
 				RemoveCube();
 				ChangeScene();
-				pauseGame();
+				PauseEngine();
 				if (Inputs::singleton->KeyDown(GLFW_KEY_ESCAPE))
 				 	Application::singleton->Stop();
+				if (Inputs::singleton->KeyDown(GLFW_KEY_Q))
+					Application::singleton->Save();
 			}
 
 			void			Navigation()
@@ -62,14 +64,13 @@
 				if (Inputs::singleton->KeyDown(GLFW_KEY_F))
 				{
 					if (Application::singleton->GetCurrentScene()->name == "Level1")
-						
 						Application::singleton->LoadScene("Level2");
 					else
 						Application::singleton->LoadScene("Level1");
 				}
 			}
 
-			void		pauseGame()
+			void		PauseEngine()
 			{
 				if (Inputs::singleton->KeyDown(GLFW_KEY_P))
 					Engine::singleton->Pause();

@@ -41,7 +41,7 @@
 
 			bool						GetDestroy();
 			void						SetDestroy(bool set);
-
+			bool						IsPrefab();
 
 		private:
 

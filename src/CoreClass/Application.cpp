@@ -33,15 +33,10 @@ Application::Application(std::string name) : name(name)
 Application::~Application(void)
 {
 	std::cout << "destuct " + name << std::endl;
-
-
-	std::list<Scene*>::iterator scene = _listScene.begin();
-	for (; scene != _listScene.end(); scene++)
-		delete *scene;
-
-	std::list<GameObject*>::iterator prefab = _listPrefab.begin();
-	for (; prefab != _listPrefab.end(); prefab++)
-		delete *prefab;
+	for (Scene*	scene : _listScene)
+		delete scene;
+	for (GameObject* prefab : _listPrefab)
+		delete prefab;
 }
 
 // OVERLOADS //
@@ -88,12 +83,16 @@ GameObject*		Application::FindPrefab(std::string name)
 void			Application::Save(void)
 {
 	std::ofstream	file;
-
+	
+	std::cout << "Saving application in : " << name << ".dogle" << std::endl;
 	file.open(name + ".dogle");
 	file << "APPLICATION : " << name << std::endl;
-	std::list<Scene *>::iterator it = _listScene.begin();
-	for (;it != _listScene.end();it++)
-		(*it)->Save(file);
+	file << "window_w : " << winW << std::endl;
+	file << "window_h : " << winH << std::endl;
+	for (GameObject* prefab : _listPrefab)
+		prefab->Save(file);
+	for (Scene* scene : _listScene)
+		scene->Save(file);
 	file.close();
 }
 
