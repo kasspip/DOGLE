@@ -3,27 +3,11 @@
 // CONSTRUCTOR DESTRUCTOR //
 Application	*Application::singleton = nullptr;
 
-
-Application::Application(void) : name("AppName")
+Application::Application(std::string name, int width, int height) : name(name), winW(width), winH(height)
 {
 	_currentScene = nullptr;
 	_sceneToLoad = nullptr;
 	_appShouldClose = false;
-	winW = 1280;
-	winH = 1280;
-	shaderProgram3D = 0;
-	shaderProgramDebug = 0;
-	std::cout << "construct " + name << std::endl;
-	singleton = this;
-}
-
-Application::Application(std::string name) : name(name)
-{
-	_currentScene = nullptr;
-	_sceneToLoad = nullptr;
-	_appShouldClose = false;
-	winW = 1280;
-	winH = 1280;
 	shaderProgram3D = 0;
 	shaderProgramDebug = 0;
 	std::cout << "construct " + name << std::endl;
@@ -86,9 +70,10 @@ void			Application::Save(void)
 	
 	std::cout << "Saving application in : " << name << ".dogle" << std::endl;
 	file.open(name + ".dogle");
-	file << "APPLICATION : " << name << std::endl;
-	file << "window_w : " << winW << std::endl;
-	file << "window_h : " << winH << std::endl;
+	file << "APPLICATION" << std::endl;
+	file << "name = " << name << std::endl;
+	file << "window_w = " << winW << std::endl;
+	file << "window_h = " << winH << std::endl;
 	for (GameObject* prefab : _listPrefab)
 		prefab->Save(file);
 	for (Scene* scene : _listScene)

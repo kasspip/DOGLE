@@ -48,7 +48,7 @@ void			Light::Save(std::ofstream &file)
 		TABS = "\t\t";
 	else
 	 	TABS = "\t\t\t";
-	file << TABS << "LIGHT : " << std::endl;
+	file << TABS << "LIGHT" << std::endl;
 }
 
 // PRIVATE //

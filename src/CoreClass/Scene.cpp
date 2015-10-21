@@ -42,7 +42,8 @@ std::ostream	&operator<<(std::ostream & o, Scene const & rhs)
 
 void					Scene::Save(std::ofstream &file)
 {
-	file << "\tSCENE : " << name << std::endl;
+	file << "\tSCENE" << std::endl;
+	file << "\tname = " << name << std::endl;
 	for (GameObject* go : _listBindGameObject)
 		go->Save(file);
 	for (GameObject* go : _listGameObject)

@@ -10,11 +10,9 @@
 	{
 		public:
 
-			Application(void);
-			Application(std::string);
+			Application(std::string = "<AppName>", int width = 1280, int height = 1280);
 			~Application(void);
-		
-			
+					
 			std::string 	toString(void) const;
 			void			Save(void);
 
@@ -49,7 +47,8 @@
 			static Application	*singleton;
 
 		private:
-
+			
+			Application(void);
 			Application(Application const &src);
 			Application &operator=(Application const &rhs);
 

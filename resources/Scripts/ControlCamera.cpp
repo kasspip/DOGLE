@@ -8,7 +8,7 @@
 		public:
 
 			ControlCamera() : Script("ControlCamera") {}
-			Script* Clone() { return new ControlCamera(); }
+			Script* Clone() { return new ControlCamera(*this); }
 
 			void			Awake()
 			{

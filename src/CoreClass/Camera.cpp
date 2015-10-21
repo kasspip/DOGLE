@@ -6,14 +6,6 @@ Camera	*Camera::_main = nullptr;
 
 // CONSTRUCTOR DESTRUCTOR //
 
-Camera::Camera(void)
-{
-	std::cout << "Construct camera" << std::endl;
-	_fov = 45.0f;
-	_clipNear = 0.1f;
-	_clipFar = 100.0f;
-}
-
 Camera::Camera(float FOV, float clipN, float clipF)
 {
 	std::cout << "Construct camera" << std::endl;
@@ -27,7 +19,6 @@ Camera::Camera(Camera const &src)
 	std::cout << "Construct camera" << std::endl;
 	*this = src;
 }
-
 
 Camera::~Camera(void)
 {
@@ -76,10 +67,10 @@ void			Camera::Save(std::ofstream &file)
 	else
 		TABS = "\t\t\t";
 
-	file << TABS << "CAMERA : " << std::endl;
-	file << TABS << "fov : " << _fov << std::endl;
-	file << TABS << "clip_near : " << _clipNear << std::endl;
-	file << TABS << "clip_far : " << _clipFar << std::endl;
+	file << TABS << "CAMERA" << std::endl;
+	file << TABS << "fov = " << _fov << std::endl;
+	file << TABS << "clip_near = " << _clipNear << std::endl;
+	file << TABS << "clip_far = " << _clipFar << std::endl;
 }
 
 // PRIVATE //

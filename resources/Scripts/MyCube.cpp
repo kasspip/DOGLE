@@ -6,7 +6,7 @@ class MyCube : public Script
 	public:
 
 		MyCube() : Script("MyCube") {}
-		Script* 		Clone() { return new MyCube(); }
+		Script* 		Clone() { return new MyCube(*this); }
 
 		void			OnDestroy()
 		{

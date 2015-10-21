@@ -22,7 +22,7 @@ Script::Script(Script const &src)
 
 Script& 		Script::operator=(Script const &rhs)
 {
-	(void)rhs;
+	name = rhs.name;
 	return *this;
 }
 
@@ -31,7 +31,7 @@ Script& 		Script::operator=(Script const &rhs)
 std::string		Script::toString(void) const
 {
 	std::stringstream ss;
-	ss << "# Component Camera #" << std::endl;
+	ss << "# Component Script #" << std::endl;
 	ss << name << std::endl;
 	return ss.str();
 }
@@ -43,7 +43,9 @@ void			Script::Save(std::ofstream &file)
 		TABS = "\t\t";
 	else
 	 	TABS = "\t\t\t";
-	file << TABS <<"SCRIPT : " << name << std::endl;
+	file << TABS <<"SCRIPT" << std::endl;
+	file << TABS <<"name = " << name << std::endl;
+
 }
 
 void			Script::Destroy(GameObject *go)

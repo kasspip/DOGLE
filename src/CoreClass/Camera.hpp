@@ -8,8 +8,7 @@ class Transform;
 	class Camera : public IComponent
 	{
 		public:
-			Camera(void);
-			Camera(float FOV, float clipN, float clipF);
+			Camera(float FOV = 45.0f, float clipN = 0.1f, float clipF = 100.0f);
 			Camera(Camera const &src);
 			~Camera(void);
 			
@@ -24,7 +23,7 @@ class Transform;
 			static void			SetMainCamera(GameObject* go);
 
 		private:
-
+			
 			static Camera		*_main;
 		
 			float		_fov;

@@ -93,7 +93,8 @@ void					GameObject::Save(std::ofstream &file)
 		TABS = "\t\t";
 		TYPE = "GAMEOBJECT";
 	}
-	file << TABS << TYPE << " : " << name << std::endl;
+	file << TABS << TYPE << std::endl;
+	file << TABS << "name = " << name << std::endl;
 	for (IComponent* compo : _listComponent)
 		compo->Save(file);
 }
