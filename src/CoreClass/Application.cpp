@@ -70,10 +70,20 @@ void			Application::Save(void)
 	
 	std::cout << "Saving application in : " << name << ".dogle" << std::endl;
 	file.open(name + ".dogle");
-	file << "APPLICATION" << std::endl;
-	file << "name = " << name << std::endl;
-	file << "window_w = " << winW << std::endl;
-	file << "window_h = " << winH << std::endl;
+
+	file 	<< "# APPLICATION 			<name> <window W> <window H>" << std::endl
+			<< "# SCENE 				<name>" << std::endl
+			<< "# PREFAB | GAMEOBJECT 	<name>" << std::endl
+			<< "# TRANSFORM 			<vec3 position> <vec3 rotation> <vec3 scale>" << std::endl
+			<< "# SKIN 					<file name .dae>" << std::endl
+			<< "# SCRIPT 				<class name>" << std::endl
+			<< "# CAMERA 				<fov> <clip near> <clip far>" << std::endl
+			<< std::endl;
+
+	file << "APPLICATION:"
+	<< name << SEPARATOR
+	<< winW << SEPARATOR
+	<< winH << std::endl;
 	for (GameObject* prefab : _listPrefab)
 		prefab->Save(file);
 	for (Scene* scene : _listScene)

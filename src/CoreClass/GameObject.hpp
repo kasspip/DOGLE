@@ -40,8 +40,9 @@
 			std::string				name;
 
 			bool						GetDestroy();
-			void						SetDestroy(bool set);
+			void						SetDestroy(bool val);
 			bool						IsPrefab();
+			void						SetIsPrefab(bool val);
 
 		private:
 

@@ -78,10 +78,10 @@ void			Transform::Save(std::ofstream &file)
 		TABS = "\t\t";
 	else
 		TABS = "\t\t\t";
-	file << TABS << "TRANSFORM" << std::endl;
-	file << TABS << "position = " << position.x << " " << position.y << " " << position.z << std::endl;
-	file << TABS << "rotation = " << rotation.x << " " << rotation.y << " " << rotation.z << std::endl;
-	file << TABS << "scale = " << scale.x << " " << scale.y << " " << scale.z << std::endl;
+	file << TABS << "TRANSFORM:" 
+	<< position.x 	<< SEPARATOR_F << position.y 	<< SEPARATOR_F << position.z << SEPARATOR
+	<< rotation.x 	<< SEPARATOR_F << rotation.y 	<< SEPARATOR_F << rotation.z << SEPARATOR
+	<< scale.x 		<< SEPARATOR_F << scale.y 		<< SEPARATOR_F << scale.z << std::endl;
 }
 
 // PRIVATE //

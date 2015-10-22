@@ -13,6 +13,8 @@
 # include <SOIL2.h>
 # include <fcntl.h>
 # include <string.h>
+# include <utility>
+# include <vector>
 
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"
@@ -24,6 +26,8 @@
 # define C_DEFAULT "\x1B[0m"
 # define DEBUG 0
 # define PRINT_DEBUG(str) if (DEBUG == 1) { std::cout << str << std::endl; }
+# define SEPARATOR '|'
+# define SEPARATOR_F ','
 
 	typedef enum	state
 	{

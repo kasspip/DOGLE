@@ -86,15 +86,15 @@ void					GameObject::Save(std::ofstream &file)
 	if (_isPrefab == true)
 	{
 		TABS = "\t";
-		TYPE = "PREFAB";
+		TYPE = "PREFAB:";
 	}
 	else
 	{
 		TABS = "\t\t";
-		TYPE = "GAMEOBJECT";
+		TYPE = "GAMEOBJECT:";
 	}
-	file << TABS << TYPE << std::endl;
-	file << TABS << "name = " << name << std::endl;
+	file << TABS << TYPE 
+	<< name << std::endl;
 	for (IComponent* compo : _listComponent)
 		compo->Save(file);
 }
@@ -130,4 +130,5 @@ std::list<IComponent*>	GameObject::GetListComponent() const { return _listCompon
 void					GameObject::SetDestroy(bool set) { _destroyMe = set; }
 bool					GameObject::GetDestroy() { return _destroyMe; }
 bool					GameObject::IsPrefab() { return _isPrefab; }
+void					GameObject::SetIsPrefab(bool val) { _isPrefab = val; }
 

@@ -152,15 +152,17 @@ const char 		*Engine::_GetShaderCode(std::string filePath)
 	file.open(filePath.c_str(),std::ios_base::binary);
 	if (file.is_open())
 	{
-		file.seekg(0,std::ios::end);		//get file size
-		size = file.tellg();            	//
-		file.seekg(0,std::ios::beg);        //
+		file.seekg(0,std::ios::end);
+		size = file.tellg();
+		file.seekg(0,std::ios::beg);
 
 		inBuf = new char[size + 1];
 		inBuf[size] = '\0';
 		file.read(inBuf,size);
 		file.close();
 	}
+	else
+		throw DError() << msg("GetShaderCode() failed. " + filePath + " not found.") ;
 	return const_cast<const char*>(inBuf);
 }
 

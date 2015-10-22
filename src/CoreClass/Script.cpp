@@ -43,8 +43,8 @@ void			Script::Save(std::ofstream &file)
 		TABS = "\t\t";
 	else
 	 	TABS = "\t\t\t";
-	file << TABS <<"SCRIPT" << std::endl;
-	file << TABS <<"name = " << name << std::endl;
+	file << TABS <<"SCRIPT:" 
+	<< name << std::endl;
 
 }
 

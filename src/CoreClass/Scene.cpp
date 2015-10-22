@@ -42,12 +42,18 @@ std::ostream	&operator<<(std::ostream & o, Scene const & rhs)
 
 void					Scene::Save(std::ofstream &file)
 {
-	file << "\tSCENE" << std::endl;
-	file << "\tname = " << name << std::endl;
+	file << "\tSCENE:"
+	<< name << std::endl;
 	for (GameObject* go : _listBindGameObject)
 		go->Save(file);
 	for (GameObject* go : _listGameObject)
 		go->Save(file);
+}
+
+GameObject				*Scene::AddGameObject(GameObject* go)
+{
+	_listBindGameObject.push_back(go);
+	return (go);
 }
 
 GameObject				*Scene::InstanciatePrefab(GameObject *prefab) 

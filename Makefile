@@ -12,9 +12,10 @@ SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Light.cpp \
 		src/CoreClass/Script.cpp \
 
+SRC +=	src/BuilderClass/ScriptFactory.cpp \
+		src/BuilderClass/Builder.cpp \
 
 SRC +=	src/UtilsClass/RGB.cpp \
-		src/UtilsClass/ScriptFactory.cpp \
 
 SRC +=	src/EngineClass/Engine.cpp \
 		src/EngineClass/StateMachine.cpp \
@@ -36,6 +37,7 @@ INCLUDES = 	-Iinclude \
 			-Iresources/Scripts \
 			-Isrc/CoreClass \
 			-Isrc/EngineClass \
+			-Isrc/BuilderClass \
 			-Isrc/UtilsClass \
 			-Isrc/EditorClass \
 			-Isrc/EngineClass \

@@ -67,10 +67,10 @@ void			Camera::Save(std::ofstream &file)
 	else
 		TABS = "\t\t\t";
 
-	file << TABS << "CAMERA" << std::endl;
-	file << TABS << "fov = " << _fov << std::endl;
-	file << TABS << "clip_near = " << _clipNear << std::endl;
-	file << TABS << "clip_far = " << _clipFar << std::endl;
+	file << TABS << "CAMERA:" 
+	<< _fov << SEPARATOR
+	<< _clipNear << SEPARATOR
+	<< _clipFar << std::endl;
 }
 
 // PRIVATE //

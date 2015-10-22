@@ -166,8 +166,8 @@ void			Skin::Save(std::ofstream &file)
 		TABS = "\t\t";
 	else
 		TABS = "\t\t\t";
-	file << TABS << "SKIN" << std::endl;
-	file << TABS << "file = " << _dae_file << std::endl;
+	file << TABS << "SKIN:"
+	<< _dae_file << std::endl;
 }
 
 void		Skin::_flipTextureData(unsigned char *data, int w, int h)
