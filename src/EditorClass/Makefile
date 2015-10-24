@@ -24,14 +24,14 @@ FRAMEWORKS = -framework Cocoa -framework OpenGL -framework IOKit -lGlew
 
 all: $(NAME)
 
-$(NAME): $(SRC:.c=.o)
+$(NAME): $(SRC:.cpp=.o)
 	g++ -std=c++11 -o $@ $^ -Wall -Wextra -Werror ${INCLUDE} ${LIBRARIES}
 
 %.o: %.cpp
 	g++ -c $^ -o $@ -Wall -Wextra -Werror -g ${INCLUDE}
 
 clean:
-	rm -rf $(SRC:.c=.o)
+	rm -rf $(SRC:.cpp=.o)
 
 fclean: clean
 	rm -rf $(NAME)
