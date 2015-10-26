@@ -1,3 +1,4 @@
+
 #ifndef RGB_HPP
 # define RGB_HPP
 

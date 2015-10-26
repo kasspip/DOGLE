@@ -44,6 +44,7 @@ INCLUDES = 	-Iinclude \
 			-I$(HOME)/.brew/include \
 			-Iinclude/soil2/src/SOIL2 \
 
+
 LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-L$(HOME)/.brew/lib/ -lGLEW\
 			-Linclude/soil2/lib/macosx/ -lsoil2-debug\
@@ -51,6 +52,7 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-framework Cocoa\
 			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib\
 			resources/Scripts/GameScripts.a \
+
 
 FLAGS = -Wall -Wextra -Werror -std=c++14 -g
 
@@ -60,7 +62,7 @@ SOIL2 = include/soil2/lib/macosx/libsoil2-debug.a
 
 all: $(NAME)
 
-$(NAME): $(SOIL2) $(GAMESCRIPTS) $(OBJ) 
+$(NAME): $(SOIL2) $(GAMESCRIPTS) $(OBJ)
 	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) -o $(NAME)
 
 %.o: %.cpp
@@ -76,7 +78,6 @@ clean:
 	rm -f $(OBJ)
 	rm -f $(SCRIPTS_PATH)/*.o
 	make -C resources/Scripts/ clean
-
 
 fclean: clean
 	rm -f $(NAME)

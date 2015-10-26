@@ -47,7 +47,6 @@
 			static Application	*singleton;
 
 		private:
-			
 			Application(void);
 			Application(Application const &src);
 			Application &operator=(Application const &rhs);
