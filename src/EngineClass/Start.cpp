@@ -86,10 +86,8 @@ void			Start::_SwapScene(Application & app)
 void			Start::_AwakeNewGameObects(Application & app)
 {
 	Skin					*skin = nullptr;
-	Script					*script = nullptr;
 	std::list<GameObject*>	&lst_bind = app.GetCurrentScene()->GetBindGameObjectList();
 	std::list<GameObject*>	&lst_cur = app.GetCurrentScene()->GetGameObjectList();
-
 	for (GameObject *go : lst_bind)
 	{
 		PRINT_DEBUG("> Awaking GameObject: \'" + go->name + "\'\n");
@@ -105,11 +103,18 @@ void			Start::_AwakeNewGameObects(Application & app)
 				skin = nullptr;
 			}
 		}
-		if ((script = go->GetComponent<Script>()))
+	}
+	Script			*script = nullptr;
+	for (GameObject *go : lst_bind)
+	{
+		for (IComponent* compo : go->GetListComponent())
 		{
-			PRINT_DEBUG("Calling Awake() from " + script->name);
-			script->Awake();
-			script = nullptr;
+			if ((script = dynamic_cast<Script*>(compo)))
+			{
+				PRINT_DEBUG("Calling Awake() from " + script->name);
+				script->Awake();
+				script = nullptr;
+			}
 		}
 	}
 	lst_cur.insert(lst_cur.end(), lst_bind.begin(), lst_bind.end());

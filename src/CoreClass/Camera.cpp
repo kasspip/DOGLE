@@ -1,5 +1,6 @@
 #include "Camera.hpp"
 #include "GameObject.hpp"
+#include "Engine.hpp"
 
 Camera	*Camera::_main = nullptr;
 
@@ -9,9 +10,12 @@ Camera	*Camera::_main = nullptr;
 Camera::Camera(float FOV, float clipN, float clipF)
 {
 	std::cout << "Construct camera" << std::endl;
-	_fov = FOV;
-	_clipNear = clipN;
-	_clipFar = clipF;
+	fov = FOV;
+	clipNear = clipN;
+	clipFar = clipF;
+
+	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
 Camera::Camera(Camera const &src)
@@ -29,9 +33,11 @@ Camera::~Camera(void)
 
 Camera& 		Camera::operator=(Camera const &rhs)
 {
-	_fov = rhs._fov;
-	_clipNear = rhs._clipNear;
-	_clipFar = rhs._clipFar;
+	fov = rhs.fov;
+	clipNear = rhs.clipNear;
+	clipFar = rhs.clipFar;
+	cameraFront = rhs.cameraFront;
+	cameraUp = rhs.cameraUp;
 	return *this;
 }
 
@@ -44,18 +50,45 @@ std::ostream	&operator<<(std::ostream & o, Camera const & rhs)
 
 // PUBLIC //
 
-glm::mat4		Camera::GetProjection(int winW, int winH)
+void			Camera::MoveZ(float speed)
 {
-	return glm::perspective(_fov, (GLfloat)winW / (GLfloat)winH, _clipNear, _clipFar);
+    transform->position += cameraFront * (speed * Engine::singleton->deltaTime);
+}
+
+void			Camera::MoveX(float speed)
+{
+    transform->position += glm::normalize(glm::cross(cameraFront, cameraUp)) * (speed * Engine::singleton->deltaTime);
+}
+
+glm::mat4		Camera::Projection(int winW, int winH)
+{
+	return glm::perspective(fov, (GLfloat)winW / (GLfloat)winH, clipNear, clipFar);
+}
+
+glm::mat4		Camera::View()
+{
+	// glm::vec3 front;
+    
+	// std::cout << transform->rotation << std::endl;
+
+ //    front.x = cos(glm::radians(transform->rotation.y)) * cos(glm::radians(transform->rotation.x));
+ //    front.y = sin(glm::radians(transform->rotation.x));
+ //    front.z = sin(glm::radians(transform->rotation.y)) * cos(glm::radians(transform->rotation.x));
+    
+   // cameraFront = glm::normalize(front);
+	
+	return glm::lookAt(	transform->position, 
+						transform->position + cameraFront,
+						cameraUp);
 }
 
 std::string		Camera::toString(void) const
 {
 	std::stringstream ss;
 	ss << "# Component Camera #" << std::endl;
-	ss << "FOV : " << _fov << std::endl;
-	ss << "Near clipping : " << _clipNear << std::endl;
-	ss << "Far clipping : " << _clipFar << std::endl;
+	ss << "FOV : " << fov << std::endl;
+	ss << "Near clipping : " << clipNear << std::endl;
+	ss << "Far clipping : " << clipFar << std::endl;
 	return ss.str();
 }
 
@@ -68,17 +101,19 @@ void			Camera::Save(std::ofstream &file)
 		TABS = "\t\t\t";
 
 	file << TABS << "CAMERA:" 
-	<< _fov << SEPARATOR
-	<< _clipNear << SEPARATOR
-	<< _clipFar << std::endl;
+	<< fov << SEPARATOR
+	<< clipNear << SEPARATOR
+	<< clipFar << std::endl;
 }
+
+
 
 // PRIVATE //
 
 // GETTER SETTER //
-GameObject*				Camera::GetMainCamera() { return _main->gameObject; }
+GameObject*		Camera::GetMainCamera() { return _main->gameObject; }
 
-void					Camera::SetMainCamera(GameObject* go)  
+void			Camera::SetMainCamera(GameObject* go)  
 { 
 	Camera* camera = go->GetComponent<Camera>();
 	if (camera == nullptr)

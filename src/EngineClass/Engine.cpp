@@ -12,6 +12,8 @@ Engine::Engine()
 		singleton = this;
 	_setupOpenGL = false;
 	_app = nullptr;
+	deltaTime = 0;
+	lastFrame = 0;
 	pause = false;
 
 	// TODO from config file ?

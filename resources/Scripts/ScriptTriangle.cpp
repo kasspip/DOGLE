@@ -8,9 +8,13 @@
 			ScriptTriangle() : Script("ScriptTriangle") {}
 			Script* Clone() { return new ScriptTriangle(*this); }
 
-			void			Awake()
+
+
+			void	Update()
 			{
-				transform->position = (Camera::GetMainCamera()->GetComponent<Camera>()->transform->position * glm::vec3(-1,-1,-1)) + glm::vec3(0,0,-2);
+
 			}
+
+
 
 	};

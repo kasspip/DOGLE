@@ -1,5 +1,6 @@
 #include "Physics.hpp"
 #include "Script.hpp"
+#include "Engine.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -27,6 +28,11 @@ void			Physics::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Physics>");
 	(void)app;
+
+	float currentFrame = glfwGetTime();
+	Engine::singleton->deltaTime = currentFrame - Engine::singleton->lastFrame;
+	Engine::singleton->lastFrame = currentFrame; 
+
 	currentState = STATE_INPUTS;
 }
 

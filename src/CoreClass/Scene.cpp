@@ -84,6 +84,11 @@ GameObject*				Scene::FindGameObject(std::string name)
 		if (go->name == name)
 			return go;
 	}
+		for (GameObject* go : _listBindGameObject)
+	{
+		if (go->name == name)
+			return go;
+	}
 	throw DError() << msg("FindGameObject(), resquested GameObject not found.");
 }
 

@@ -14,21 +14,29 @@ class Transform;
 			
 			Camera 		&operator=(Camera const &rhs);
 
-
-			std::string toString(void) const;
-			void		Save(std::ofstream &file);
-			glm::mat4	GetProjection(int winW, int winH);
-
 			static GameObject*	GetMainCamera();
 			static void			SetMainCamera(GameObject* go);
+
+			void				MoveX(float speed);
+			void				MoveZ(float speed);
+
+			glm::mat4			Projection(int winW, int winH);
+			glm::mat4			View();
+
+			std::string 		toString(void) const;
+			void				Save(std::ofstream &file);
+
+			float		fov;
+			float		clipNear;
+			float		clipFar;
+
+			glm::vec3	cameraFront;
+			glm::vec3	cameraUp;
 
 		private:
 			
 			static Camera		*_main;
-		
-			float		_fov;
-			float		_clipNear;
-			float		_clipFar;
+
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Camera const &rhs);

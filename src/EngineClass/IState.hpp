@@ -11,6 +11,7 @@ class Application;
 		public:
 			virtual ~IState(void){};
 			virtual void	RunState(Application & app, e_state	& currentState) = 0;
+
 		private:
 	};
 

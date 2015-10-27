@@ -19,10 +19,10 @@
 
 			static Engine*	singleton;
 			bool			pause;
-
-		protected:
-	
-
+			
+			// time
+			float deltaTime;	// Time between current frame and last frame
+			float lastFrame;	// Time of last frame
 
 		private:
 			Engine(Engine const &src);
@@ -48,6 +48,7 @@
 			// shaders
 			GLuint			_CompileShader(std::string name);
 			const char 		*_GetShaderCode(std::string filePath);
+
 
 	};
 

@@ -30,10 +30,13 @@ void			GameLogic::RunState(Application & app, e_state & currentState)
 	Script* script = nullptr;
 	for (GameObject* go : app.GetCurrentScene()->GetGameObjectList())
 	{
-		if ((script = go->GetComponent<Script>()))
+		for (IComponent* compo : go->GetListComponent())
 		{
-			script->Update();
-			script = nullptr;
+			if ((script = dynamic_cast<Script*>(compo)))
+			{
+				script->Update();
+				script = nullptr;
+			}
 		}
 	}
 	currentState = STATE_RENDER;
