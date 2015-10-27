@@ -31,10 +31,13 @@ void			Pause::RunState(Application & app, e_state & currentState)
 	Script* script = nullptr;
 	for (GameObject* go : app.GetCurrentScene()->GetGameObjectList())
 	{
-		if ((script = go->GetComponent<Script>()))
+		for (IComponent* compo : go->GetListComponent())
 		{
-			script->OnPause();
-			script = nullptr;
+			if ((script = dynamic_cast<Script*>(compo)))
+			{
+				script->OnPause();
+				script = nullptr;
+			}
 		}
 	}
 	(Engine::singleton->pause == false) ? currentState = STATE_DESTROY : currentState = STATE_INPUTS ;

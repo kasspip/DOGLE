@@ -111,7 +111,6 @@ void			Start::_AwakeNewGameObects(Application & app)
 		{
 			if ((script = dynamic_cast<Script*>(compo)))
 			{
-				PRINT_DEBUG("Calling Awake() from " + script->name);
 				script->Awake();
 				script = nullptr;
 			}

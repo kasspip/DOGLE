@@ -27,10 +27,13 @@ void			Stop::RunState(Application & app, e_state & currentState)
 	Script* script = nullptr;
 	for (GameObject* go : app.GetCurrentScene()->GetGameObjectList())
 	{
-		if ((script = go->GetComponent<Script>()))
+		for (IComponent* compo : go->GetListComponent())
 		{
-			script->OnStop();
-			script = nullptr;
+			if ((script = dynamic_cast<Script*>(compo)))
+			{
+				script->OnStop();
+				script = nullptr;
+			}
 		}
 	}
 	currentState = STATE_EXIT;
