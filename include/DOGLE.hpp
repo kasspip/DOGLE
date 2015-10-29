@@ -15,6 +15,7 @@
 # include <string.h>
 # include <utility>
 # include <vector>
+# include <cstdio>
 
 # include "glm/glm.hpp"
 # include "glm/gtc/matrix_transform.hpp"

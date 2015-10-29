@@ -54,14 +54,14 @@ void			Application::Stop()
 	glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-GameObject*		Application::FindPrefab(std::string name)
+GameObject*		Application::FindPrefab(std::string n)
 {
 	for (GameObject* go : _listPrefab)
 	{
-		if (go->name == name)
+		if (go->name == n)
 			return go;
 	}
-	throw DError() << msg("FindPrefab(), resquested prefab not found.");
+	throw DError() << msg("FindPrefab(): no Prefab " + n + " in application " + name);
 }
 
 void			Application::Save(void)
@@ -73,7 +73,7 @@ void			Application::Save(void)
 
 	file 	<< "# APPLICATION 			<name> <window W> <window H>" << std::endl
 			<< "# SCENE 				<name>" << std::endl
-			<< "# PREFAB | GAMEOBJECT 	<name>" << std::endl
+			<< "# PREFAB | GAMEOBJECT 	<name> <parent>" << std::endl
 			<< "# TRANSFORM 			<vec3 position> <vec3 rotation> <vec3 scale>" << std::endl
 			<< "# SKIN 					<file name .dae>" << std::endl
 			<< "# SCRIPT 				<class name>" << std::endl
@@ -118,7 +118,9 @@ std::string		Application::toString(void) const
 
 // GETTER SETTER //
 
-Scene*			Application::GetCurrentScene() { return _currentScene; }
-Scene*			Application::GetSceneToLoad() { return _sceneToLoad ; }
-void			Application::SetCurrentScene(Scene* scene) { _currentScene = scene; }
-bool			Application::GetStop() { return _appShouldClose; }
+Scene*				Application::GetCurrentScene() { return _currentScene; }
+Scene*				Application::GetSceneToLoad() { return _sceneToLoad ; }
+void				Application::SetCurrentScene(Scene* scene) { _currentScene = scene; }
+bool				Application::GetStop() { return _appShouldClose; }
+std::list<GameObject*>	Application::GetListPrefab() { return _listPrefab; }
+std::list<Scene*>	Application::GetListScene() { return _listScene; }

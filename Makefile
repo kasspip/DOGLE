@@ -14,6 +14,7 @@ SRC = 	src/CoreClass/main.cpp \
 
 SRC +=	src/BuilderClass/ScriptFactory.cpp \
 		src/BuilderClass/Builder.cpp \
+		src/BuilderClass/ScriptManager.cpp \
 
 SRC +=	src/UtilsClass/RGB.cpp \
 

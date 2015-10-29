@@ -1,0 +1,4 @@
+SRC = 	\
+		ControlCamera.cpp\
+		MyCube.cpp\
+		ScriptTriangle.cpp\

@@ -7,25 +7,28 @@
 # include "Camera.hpp"
 # include "Light.hpp"
 
-	class IComponent;
+class IComponent;
 
 	class GameObject
 	{
-		static size_t	counter;
-
 		public:
 
 			GameObject(std::string name = _GetDefaultName());
 			GameObject(GameObject const &src);
 			~GameObject(void);
 
-			GameObject &operator=(GameObject const &rhs);
+			GameObject&					operator=(GameObject const &rhs);
 
 			void						Save(std::ofstream &file);
 			void						AddComponent(IComponent *cmp);
 			std::string 				toString(void);
 			std::list<IComponent*>		GetListComponent() const;
-
+			void						SetParent(GameObject* go);
+			GameObject*					GetParent();
+			bool						GetDestroy();
+			void						SetDestroy(bool val);
+			bool						IsPrefab();
+			void						SetIsPrefab(bool val);
 			template < typename T > T*	GetComponent(void)
 			{
 				std::list<IComponent*>::iterator it = _listComponent.begin();
@@ -36,24 +39,19 @@
 				}
 				return nullptr;
 			}
-
-			std::string				name;
-
-			bool						GetDestroy();
-			void						SetDestroy(bool val);
-			bool						IsPrefab();
-			void						SetIsPrefab(bool val);
+			std::string					name;
 
 		private:
 
-		GameObject(void);
-		static std::string				_GetDefaultName();
+			GameObject(void);
 
-		bool					_isPrefab;
-		size_t					_id;
-		std::list<IComponent*>	_listComponent;
-		bool					_destroyMe;
-
+			static std::string				_GetDefaultName();
+			static size_t					_counter;
+			bool							_isPrefab;
+			size_t							_id;
+			std::list<IComponent*>			_listComponent;
+			bool							_destroyMe;
+			GameObject*						_parentObject;
 	};
 
 	std::ostream	&operator<<(std::ostream &o, GameObject &rhs);

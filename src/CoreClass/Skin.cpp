@@ -60,9 +60,16 @@ Skin::Skin(Skin const & src)
 Skin::~Skin(void)
 {
 	SOIL_free_image_data(texture_data);
+	if (_isBind == true)
+	{
+		glDeleteBuffers(1, &positionsBind);
+		glDeleteBuffers(1, &UVsBind);
+		glDeleteBuffers(1, &normalsBind);
+		glDeleteTextures(1, &textureBind);
+	}
 	delete [] positions;
-	delete [] normals;
 	delete [] UVs;
+	delete [] normals;
 	std::cout << "destruct Skin" << std::endl;
 }
 

@@ -15,7 +15,7 @@ Transform::Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc)
 {
 	position = pos;
 	rotation = rot;
-	scale = sc;	
+	scale = sc;
 }
 
 
@@ -32,7 +32,7 @@ Transform::~Transform(void)
 
 // OVERLOADS //
 
-Transform		&Transform::operator=(Transform const & rhs)
+Transform       &Transform::operator=(Transform const & rhs)
 {
 	position = rhs.position; 
 	rotation = rhs.rotation;
@@ -40,7 +40,7 @@ Transform		&Transform::operator=(Transform const & rhs)
 	return *this;
 }
 
-std::ostream	&operator<<(std::ostream & o, Transform const & rhs)
+std::ostream    &operator<<(std::ostream & o, Transform const & rhs)
 {
 	o << rhs.toString();
 	return o;
@@ -48,30 +48,52 @@ std::ostream	&operator<<(std::ostream & o, Transform const & rhs)
 
 // PUBLIC //
 
-void			Transform::CalculateTransform()
+glm::mat4            Transform::CalculateTransform()
 { 
-	_local = glm::mat4(1.0);
-	_local = glm::rotate(_local, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	_local = glm::rotate(_local, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	_local = glm::rotate(_local, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
-   	_local = glm::scale(_local, scale);
+	if (gameObject->GetParent() == nullptr)
+	{
+		_local = glm::mat4(1.0);
+		_local = glm::rotate(_local, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		_local = glm::rotate(_local, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		_local = glm::rotate(_local, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+		_local = glm::scale(_local, scale);
 
-   	_world = glm::mat4(1.0);
-    _world = glm::translate(_world, position);
-	_transform = _world * _local;
+		glm::vec3 pos = position;
+		pos.z *= -1;
+		_world = glm::mat4(1.0);
+		_world = glm::translate(_world, pos);
+		return _world * _local;
+	}
+	else
+	{
+		_local = glm::mat4(1.0);
+		_local = glm::rotate(_local, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		_local = glm::rotate(_local, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		_local = glm::rotate(_local, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+		_local = glm::scale(_local, scale);
+
+		glm::vec3 pos = position;
+		pos.z *= -1;
+		_world = glm::mat4(1.0);
+		_world = glm::translate(_world, pos);
+		
+		// update pos,rot,scale
+		
+		return gameObject->GetParent()->GetComponent<Transform>()->CalculateTransform() * (_world * _local);
+	}
 }
 
-std::string		Transform::toString(void) const
+std::string     Transform::toString(void) const
 {
 	std::stringstream ss;
-	ss 	<< "# Component Transform #" << std::endl;
-	ss	<< "Position(" << position.x << "," << position.y << "," << position.z << ")" << std::endl;
-	ss	<< "Rotation (" << rotation.x << "," << rotation.y << "," << rotation.z << ")" << std::endl;
-	ss	<< "Scale (" << scale.x << "," << scale.y << "," << scale.z << ")" << std::endl;
+	ss  << "# Component Transform #" << std::endl;
+	ss  << "Position(" << position.x << "," << position.y << "," << position.z << ")" << std::endl;
+	ss  << "Rotation (" << rotation.x << "," << rotation.y << "," << rotation.z << ")" << std::endl;
+	ss  << "Scale (" << scale.x << "," << scale.y << "," << scale.z << ")" << std::endl;
 	return ss.str();
 }
 
-void			Transform::Save(std::ofstream &file)
+void            Transform::Save(std::ofstream &file)
 {
 	std::string TABS;
 	if (gameObject->IsPrefab() == true)
@@ -79,9 +101,9 @@ void			Transform::Save(std::ofstream &file)
 	else
 		TABS = "\t\t\t";
 	file << TABS << "TRANSFORM:" 
-	<< position.x 	<< SEPARATOR_F << position.y 	<< SEPARATOR_F << position.z << SEPARATOR
-	<< rotation.x 	<< SEPARATOR_F << rotation.y 	<< SEPARATOR_F << rotation.z << SEPARATOR
-	<< scale.x 		<< SEPARATOR_F << scale.y 		<< SEPARATOR_F << scale.z << std::endl;
+	<< position.x   << SEPARATOR_F << position.y    << SEPARATOR_F << position.z 	<< SEPARATOR
+	<< rotation.x   << SEPARATOR_F << rotation.y    << SEPARATOR_F << rotation.z 	<< SEPARATOR
+	<< scale.x      << SEPARATOR_F << scale.y       << SEPARATOR_F << scale.z 		<< std::endl;
 }
 
 // PRIVATE //
@@ -89,8 +111,7 @@ void			Transform::Save(std::ofstream &file)
 
 // GETTER SETTER //
 
-glm::mat4		Transform::GetMatrice() 
-{ 
-	CalculateTransform();
-	return _transform; 
+glm::mat4       Transform::GetMatrice() 
+{
+	return CalculateTransform(); 
 }

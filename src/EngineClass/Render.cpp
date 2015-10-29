@@ -5,12 +5,10 @@
 
 Render::Render(void)
 {
-
 }
 
 Render::~Render(void)
 {
-
 }
 
 // OVERLOADS //
@@ -38,16 +36,6 @@ void			Render::RunState(Application & app, e_state & currentState)
 	if (sceneCamera)
 	{
 		Camera* camera = sceneCamera->GetComponent<Camera>();
-		
-		//Transform* transform = sceneCamera->GetComponent<Transform>();
-		//glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr( transform->GetMatrice() ));
-
-		// GLfloat radius = 10.0f;
-		// GLfloat camX = sin(glfwGetTime()) * radius;
-		// GLfloat camZ = cos(glfwGetTime()) * radius;
-		// glm::mat4 view;
-		// view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));  
-		
 		variableLocation = glGetUniformLocation(app.shaderProgramDebug, "View");
 		glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr( camera->View() ));
 		variableLocation = glGetUniformLocation(app.shaderProgramDebug, "Projection");
@@ -72,7 +60,6 @@ void			Render::RunState(Application & app, e_state & currentState)
 		if ((skin = go->GetComponent<Skin>())
 			&& skin->GetIsBind() == true)
 		{
-
 			glBindTexture(GL_TEXTURE_2D, skin->textureBind);
 			glBindVertexArray(skin->vao);
 			glDrawArrays(GL_TRIANGLES, 0, skin->nb_vertices);

@@ -1,6 +1,6 @@
 NAME =	GameScripts.a
 
-SRC =	*.cpp
+include makefile_sources
 
 OBJ = 	$(SRC:.cpp=.o)
 

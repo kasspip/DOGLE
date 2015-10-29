@@ -5,23 +5,24 @@
 
 #define FUNC(class)   
 
-size_t GameObject::counter = 0;
+size_t GameObject::_counter = 0;
 
 // CONSTRUCTOR DESTRUCTOR /
 
-GameObject::GameObject(std::string n) :	_id(counter)
+GameObject::GameObject(std::string n) :	_id(_counter)
 {
 	name = n;
-	_id = counter++;
-	std::cout << "construct GameObject " << name << std::endl;
+	_id = _counter++;
 	_isPrefab = true;
 	_destroyMe = false;
+	_parentObject = nullptr;
 	AddComponent(new Transform());
+	std::cout << "construct GameObject " << name << std::endl;
 }
 
 GameObject::GameObject(GameObject const & src)
 {
-	_id = counter++;
+	_id = _counter++;
 	_isPrefab = false;
 	*this = src;
 	std::cout << "construct GameObject " << name << " from " << src.name << std::endl;
@@ -57,6 +58,7 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 			throw DError() << msg("GameObject operator= overload. Missing component");
 	}
 	_destroyMe = rhs._destroyMe;
+	_parentObject = rhs._parentObject;
 	return *this;
 }
 
@@ -93,8 +95,11 @@ void					GameObject::Save(std::ofstream &file)
 		TABS = "\t\t";
 		TYPE = "GAMEOBJECT:";
 	}
-	file << TABS << TYPE 
-	<< name << std::endl;
+	file << TABS << TYPE << name << SEPARATOR;
+	if (_parentObject)
+		file << _parentObject->name << std::endl;
+	else
+		file << "" << std::endl;
 	for (IComponent* compo : _listComponent)
 		compo->Save(file);
 }
@@ -119,7 +124,7 @@ std::string				GameObject::_GetDefaultName()
 {
 	std::stringstream	ss;
 
-	ss << "GameObject " << counter;
+	ss << "GameObject " << _counter;
 	return (ss.str());
 }
 
@@ -131,4 +136,6 @@ void					GameObject::SetDestroy(bool set) { _destroyMe = set; }
 bool					GameObject::GetDestroy() { return _destroyMe; }
 bool					GameObject::IsPrefab() { return _isPrefab; }
 void					GameObject::SetIsPrefab(bool val) { _isPrefab = val; }
+void					GameObject::SetParent(GameObject* go) { _parentObject = go; }
+GameObject*				GameObject::GetParent() { return _parentObject; }
 

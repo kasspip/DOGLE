@@ -24,16 +24,16 @@
 
 			Builder &operator=(Builder const &rhs);
 			Builder(Builder const &src);
-			void		_ParseLine(std::string& line);
-
-			void		_ParseApplication(std::string& line);
-			void		_ParsePrefab(std::string& line);
-			void		_ParseGameObject(std::string& line);
-			void		_ParseScene(std::string& line);
-			void		_ParseTransform(std::string& line);
-			void		_ParseCamera(std::string& line);
-			void		_ParseScript(std::string& line);
-			void		_ParseSkin(std::string& line);
+			
+			void			_ParseLine(std::string& line);
+			void			_ParseApplication(std::string& line);
+			void			_ParsePrefab(std::string& line);
+			void			_ParseGameObject(std::string& line);
+			void			_ParseScene(std::string& line);
+			void			_ParseTransform(std::string& line);
+			void			_ParseCamera(std::string& line);
+			void			_ParseScript(std::string& line);
+			void			_ParseSkin(std::string& line);
 
 			std::string*	_GetAttributs(std::string& line, int count);
 			glm::vec3		_AttributToVec3(std::string& attribut);

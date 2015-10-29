@@ -13,24 +13,26 @@
 			Application(std::string = "<AppName>", int width = 1280, int height = 1280);
 			~Application(void);
 					
-			std::string 	toString(void) const;
-			void			Save(void);
+			std::string 		toString(void) const;
+			void				Save(void);
 
 			// Prefab
-			void			AddPrefab(GameObject* gameObject);
-			GameObject*		FindPrefab(std::string name);
+			void				AddPrefab(GameObject* gameObject);
+			GameObject*			FindPrefab(std::string name);
 
 			//	Scene
-			void			AddScene(Scene* scene);
-			Scene*			FindScene(std::string name);
-			void			LoadScene(Scene* scene);
-			void			LoadScene(std::string name);
-			void			Stop();
+			void				AddScene(Scene* scene);
+			Scene*				FindScene(std::string name);
+			void				LoadScene(Scene* scene);
+			void				LoadScene(std::string name);
+			void				Stop();
 
-			Scene*			GetCurrentScene(void);
-			void			SetCurrentScene(Scene* scene);
-			Scene*			GetSceneToLoad();
-			bool			GetStop();
+			std::list<GameObject*>	GetListPrefab();
+			std::list<Scene*>	GetListScene();
+			Scene*				GetCurrentScene(void);
+			void				SetCurrentScene(Scene* scene);
+			Scene*				GetSceneToLoad();
+			bool				GetStop();
 
 			// Engine
 			GLFWwindow			*window;

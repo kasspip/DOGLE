@@ -5,22 +5,29 @@ class MyCube : public Script
 {
 	public:
 
-			GameObject* obj = nullptr;
-
+		GameObject* child = nullptr;
 
 		MyCube() : Script("MyCube") {}
 		Script* 		Clone() { return new MyCube(*this); }
 
-		void			OnDestroy()
+		void			Awake()
 		{
-			std::cout << " OnDestroy() " << name << " says Boom !" << std::endl;
+			child = Application::singleton->GetCurrentScene()->InstanciatePrefab(
+			 		Application::singleton->FindPrefab("child"));
+
+			child->GetComponent<Transform>()->position += glm::vec3(1.5,0,0);
+			child->SetParent(gameObject);
+			
+			//Camera::GetMainCamera()->SetParent(gameObject);
 		}
 
 		void			Update()
 		{
-			//transform->rotation += glm::vec3(0, 0.002, 0);
-			PopObj();
-			RemoveObj();
+
+			
+			transform->rotation += glm::vec3(0,0.005,0.001);
+			
+
 
 			if (Inputs::singleton->KeyPressed(GLFW_KEY_J))
 				transform->position -= glm::vec3(0.05, 0, 0);
@@ -30,31 +37,24 @@ class MyCube : public Script
 				transform->position += glm::vec3(0.0, 0.0, 0.05);
 			if (Inputs::singleton->KeyPressed(GLFW_KEY_K))
 				transform->position -= glm::vec3(0.0, 0.0, 0.05);
-			if (Inputs::singleton->KeyPressed(GLFW_KEY_SPACE))
-				transform->position += glm::vec3(0.0, 0.05, 0.0);
-			if (Inputs::singleton->KeyPressed(GLFW_KEY_LEFT_CONTROL))
-				transform->position -= glm::vec3(0.0, 0.05, 0.0);
+
 		}
 
-		void			PopObj()
-		{
-			if (!obj && Inputs::singleton->KeyDown(GLFW_KEY_E))
-				obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("MonTriangle"), *transform);
-		}
 
-		void			RemoveObj()
-		{
-			if (obj && Inputs::singleton->KeyDown(GLFW_KEY_R))
-			{
-				Destroy(obj);
-				obj = nullptr;
-			}
-		}
-
-		void			OnStop()
-		{
-			std::cout << "script OnStop() " << std::endl;
-		}
 	private:
 
+		// void			PopObj()
+		// {
+		// 	if (!obj && Inputs::singleton->KeyDown(GLFW_KEY_E))
+		// 		obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("MonTriangle"), *transform);
+		// }
+
+		// void			RemoveObj()
+		// {
+		// 	if (obj && Inputs::singleton->KeyDown(GLFW_KEY_R))
+		// 	{
+		// 		Destroy(obj);
+		// 		obj = nullptr;
+		// 	}
+		// }
 };

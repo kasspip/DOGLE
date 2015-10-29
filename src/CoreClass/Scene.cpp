@@ -77,19 +77,19 @@ std::string				Scene::toString(void) const
 	return ss.str();
 }
 
-GameObject*				Scene::FindGameObject(std::string name)
+GameObject*				Scene::FindGameObject(std::string n)
 {
 	for (GameObject* go : _listGameObject)
 	{
-		if (go->name == name)
+		if (go->name == n)
 			return go;
 	}
 		for (GameObject* go : _listBindGameObject)
 	{
-		if (go->name == name)
+		if (go->name == n)
 			return go;
 	}
-	throw DError() << msg("FindGameObject(), resquested GameObject not found.");
+	throw DError() << msg("FindGameObject(): No GameObject " + n + " found in scene " + name);
 }
 
 // PRIVATE //

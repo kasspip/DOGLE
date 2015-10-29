@@ -41,7 +41,6 @@ Camera& 		Camera::operator=(Camera const &rhs)
 	return *this;
 }
 
-
 std::ostream	&operator<<(std::ostream & o, Camera const & rhs)
 {
 	o << rhs.toString();
@@ -52,12 +51,12 @@ std::ostream	&operator<<(std::ostream & o, Camera const & rhs)
 
 void			Camera::MoveZ(float speed)
 {
-    transform->position += cameraFront * (speed * Engine::singleton->deltaTime);
+	transform->position += cameraFront * (speed * Engine::singleton->deltaTime);
 }
 
 void			Camera::MoveX(float speed)
 {
-    transform->position += glm::normalize(glm::cross(cameraFront, cameraUp)) * (speed * Engine::singleton->deltaTime);
+	transform->position += glm::normalize(glm::cross(cameraFront, cameraUp)) * (speed * Engine::singleton->deltaTime);
 }
 
 glm::mat4		Camera::Projection(int winW, int winH)
@@ -67,16 +66,15 @@ glm::mat4		Camera::Projection(int winW, int winH)
 
 glm::mat4		Camera::View()
 {
-	// glm::vec3 front;
-    
-	// std::cout << transform->rotation << std::endl;
 
- //    front.x = cos(glm::radians(transform->rotation.y)) * cos(glm::radians(transform->rotation.x));
- //    front.y = sin(glm::radians(transform->rotation.x));
- //    front.z = sin(glm::radians(transform->rotation.y)) * cos(glm::radians(transform->rotation.x));
-    
-   // cameraFront = glm::normalize(front);
-	
+	glm::vec3 front;
+
+	front.x = cos(glm::radians(transform->rotation.x)) * sin(glm::radians(transform->rotation.y));
+	front.y = sin(glm::radians(transform->rotation.x));
+	front.z = (cos(glm::radians(transform->rotation.x)) * cos(glm::radians(transform->rotation.y))) * -1;
+
+	cameraFront = glm::normalize(front);
+
 	return glm::lookAt(	transform->position, 
 						transform->position + cameraFront,
 						cameraUp);

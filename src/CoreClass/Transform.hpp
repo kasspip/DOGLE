@@ -20,16 +20,14 @@
 			glm::vec3	position;
 			glm::vec3	rotation;
 			glm::vec3	scale;
-			Transform	*parent;
 
-			void		CalculateTransform();
+			glm::mat4	CalculateTransform();
 			std::string toString(void) const;
 			void		Save(std::ofstream &file);
 			glm::mat4	GetMatrice();
 
 		private:
 
-			glm::mat4	_transform;
 			glm::mat4	_local;
 			glm::mat4	_world;
 	};

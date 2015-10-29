@@ -20,9 +20,7 @@ Builder::Builder()
 		_token.push_back(std::make_pair("SKIN:", &Builder::_ParseSkin));
 	}
 
-	ScriptFactory::Register("ControlCamera", new ControlCamera);
-	ScriptFactory::Register("MyCube", new MyCube);
-	ScriptFactory::Register("ScriptTriangle", new ScriptTriangle);
+	#include "ScriptsRegister.cpp"
 }
 
 Builder::~Builder(void)
@@ -97,13 +95,15 @@ void			Builder::_ParsePrefab(std::string& line)
 void			Builder::_ParseGameObject(std::string& line)
 {
 	std::string	*attributs;
-	attributs = _GetAttributs(line, 1);
+	attributs = _GetAttributs(line, 2);
 	
 	if (_go != nullptr)
 		_scene->AddGameObject(_go);
 	_go = new GameObject(attributs[0]);
-	_go->SetIsPrefab(false);
 
+	_go->SetIsPrefab(false);
+	if (attributs[1].size() > 0)
+	_go->SetParent(_scene->FindGameObject(attributs[1]));
 	delete[] attributs;
 }
 

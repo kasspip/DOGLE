@@ -70,6 +70,11 @@ void			Inputs::RunState(Application & app, e_state & currentState)
 	KeyState(app.window, GLFW_KEY_SPACE);
 	KeyState(app.window, GLFW_KEY_LEFT_SHIFT);
 	KeyState(app.window, GLFW_KEY_LEFT_CONTROL);
+	KeyState(app.window, GLFW_KEY_UP);
+	KeyState(app.window, GLFW_KEY_DOWN);
+	KeyState(app.window, GLFW_KEY_LEFT);
+	KeyState(app.window, GLFW_KEY_RIGHT);
+
 	
 	if (Engine::singleton->pause == true && KeyPressed(GLFW_KEY_ENTER))
 		Engine::singleton->pause = false;
