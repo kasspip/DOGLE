@@ -50,6 +50,8 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-Linclude/soil2/lib/macosx/ -lsoil2-debug\
 			-framework OpenGL\
 			-framework Cocoa\
+			-framework IOKit\
+			-framework CoreVideo \
 			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib\
 			resources/Scripts/GameScripts.a \
 
@@ -72,6 +74,15 @@ $(GAMESCRIPTS):
 
 $(SOIL2):
 	make -C include/soil2/make/macosx soil2-static-lib
+
+editor:
+	make -C src/EditorClass/
+
+editor_re:
+	make -C src/EditorClass/ re
+
+editor_fclean:
+	make -C src/EditorClass/ fclean
 
 clean:
 	rm -f $(OBJ)
