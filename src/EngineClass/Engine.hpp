@@ -23,6 +23,9 @@
 			// time
 			float deltaTime;	// Time between current frame and last frame
 			float lastFrame;	// Time of last frame
+			
+			static double		_currTime;
+			static double		_lastTime;
 
 		private:
 			Engine(Engine const &src);
@@ -48,8 +51,6 @@
 			// shaders
 			GLuint			_CompileShader(std::string name);
 			const char 		*_GetShaderCode(std::string filePath);
-
-
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Engine const &rhs);

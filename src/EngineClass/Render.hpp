@@ -20,6 +20,8 @@
 			Render(Render const &src);
 
 			void			_renderSkin(Skin& skin);
+			void 			_UpdateFpsCounter(std::string & name, GLFWwindow* window);
+			
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Render const &rhs);

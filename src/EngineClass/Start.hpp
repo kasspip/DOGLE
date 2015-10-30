@@ -24,6 +24,7 @@
 			void			_SwapScene(Application & app);
 			void			_CleanOldScene(Scene* scene);
 			GameObject*		_FindFirstCamera(Scene* scene);
+
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Start const &rhs);

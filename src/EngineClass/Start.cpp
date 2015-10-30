@@ -24,12 +24,10 @@ std::ostream	&operator<<(std::ostream & o, Start const & rhs)
 void			Start::RunState(Application & app, e_state & currentState)
 {
 	PRINT_DEBUG("[MACHINE] <Start>");
-	
 	if (app.GetSceneToLoad() != nullptr)
 		_SwapScene(app);
 	if (app.GetCurrentScene()->GetBindGameObjectList().size() > 0)
 		_AwakeNewGameObects(app);
-
 	currentState = STATE_PHYSICS;
 }
 

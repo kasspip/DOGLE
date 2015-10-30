@@ -8,6 +8,7 @@ Application::Application(std::string name, int width, int height) : name(name), 
 	_currentScene = nullptr;
 	_sceneToLoad = nullptr;
 	_appShouldClose = false;
+	FPS = 60;
 	shaderProgram3D = 0;
 	shaderProgramDebug = 0;
 	std::cout << "construct " + name << std::endl;

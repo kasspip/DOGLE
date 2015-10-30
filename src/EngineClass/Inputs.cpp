@@ -76,10 +76,14 @@ void			Inputs::RunState(Application & app, e_state & currentState)
 	KeyState(app.window, GLFW_KEY_RIGHT);
 
 	
-	if (Engine::singleton->pause == true && KeyPressed(GLFW_KEY_ENTER))
-		Engine::singleton->pause = false;
+	if (Engine::singleton->pause == true)
+	{
+		if (KeyPressed(GLFW_KEY_ENTER))
+			Engine::singleton->pause = false;
+		currentState = STATE_PAUSE;
+	}
 	else
-		(Engine::singleton->pause == false) ? currentState = STATE_GAMELOGIC : currentState = STATE_PAUSE ;
+		currentState = STATE_GAMELOGIC;
 }
 
 bool			Inputs::KeyPressed(int key)

@@ -58,10 +58,8 @@ glm::mat4            Transform::CalculateTransform()
 		_local = glm::rotate(_local, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 		_local = glm::scale(_local, scale);
 
-		glm::vec3 pos = position;
-		pos.z *= -1;
 		_world = glm::mat4(1.0);
-		_world = glm::translate(_world, pos);
+		_world = glm::translate(_world, position);
 		return _world * _local;
 	}
 	else

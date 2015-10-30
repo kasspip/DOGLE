@@ -1,11 +1,10 @@
 #include "ScriptManager.hpp"
 
 std::string		ScriptManager::pathToRegister = "src/BuilderClass/";
-std::string		ScriptManager::registerFile = "ScriptsRegister.cpp";
 std::string		ScriptManager::pathToInclude = "resources/Scripts/";
+std::string		ScriptManager::registerFile = "ScriptsRegister.cpp";
 std::string		ScriptManager::includeFile = "SCRIPTS.hpp";
 std::string		ScriptManager::makefileSources = "makefile_sources";
-
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -87,6 +86,15 @@ void			ScriptManager::RemoveScript(std::string name)
 	_FileEraseLine(pathToRegister, registerFile, "ScriptFactory::Register(\"" + name + "\", new " + name + ");");
 }
 
+std::string		ScriptManager::ToString()
+{
+	std::stringstream ss;
+	ss << "Script's name list :" << std::endl;
+	for (std::string name : _scripts)
+		ss << name << std::endl;
+	return ss.str();
+}
+
 // PRIVATE //
 
 int				ScriptManager::_PrintError(std::string err)
@@ -135,3 +143,5 @@ void			ScriptManager::_SnippetScript(std::ofstream & file, std::string & name)
 }
 
 // GETTER SETTER //
+			
+std::list<std::string>	ScriptManager::GetScriptsNames() { return _scripts; }

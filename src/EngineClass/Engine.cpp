@@ -3,6 +3,8 @@
 // STATIC //
 
 Engine*		Engine::singleton = nullptr;
+double		Engine::_currTime = 0.0f;
+double		Engine::_lastTime = 0.0f;
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -15,14 +17,12 @@ Engine::Engine()
 	deltaTime = 0;
 	lastFrame = 0;
 	pause = false;
-
-	// TODO from config file ?
 	_winW = 0;
 	_winH = 0;
 	_versionMajor = 4;
 	_versionMinor = 1;
 	_aliasingSamples = 4;
-	// end TODO
+	_lastTime = glfwGetTime();
 }
 
 Engine::~Engine(void)
@@ -48,7 +48,6 @@ std::ostream	&operator<<(std::ostream & o, Engine const & rhs)
 void			Engine::RunApplication(Application* app)
 {
 	std::cout << "[ENGINE] <RunApplication> : " << app->name << std::endl;
-
 	if (_app != nullptr)
 	{
 		_StopOpenGL();
@@ -61,8 +60,8 @@ void			Engine::RunApplication(Application* app)
 		_winH = app->winH;
 		_StartOpenGL();
 	}
-	app->shaderProgram3D = _CompileShader("3D"); // shader par defaut ?
-	app->shaderProgramDebug = _CompileShader("Debug"); // shader par defaut ?
+	app->shaderProgram3D = _CompileShader("3D");
+	app->shaderProgramDebug = _CompileShader("Debug");
 	app->window = _window;
 	glfwSetKeyCallback(app->window, Inputs::KeyCallback);
 	_SM.RunApplication(*app);

@@ -45,6 +45,7 @@
 			std::string			name;
 			int					winW;
 			int					winH;
+			int					FPS;
 
 			static Application	*singleton;
 

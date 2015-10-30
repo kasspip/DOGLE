@@ -49,16 +49,6 @@ std::ostream	&operator<<(std::ostream & o, Camera const & rhs)
 
 // PUBLIC //
 
-void			Camera::MoveZ(float speed)
-{
-	transform->position += cameraFront * (speed * Engine::singleton->deltaTime);
-}
-
-void			Camera::MoveX(float speed)
-{
-	transform->position += glm::normalize(glm::cross(cameraFront, cameraUp)) * (speed * Engine::singleton->deltaTime);
-}
-
 glm::mat4		Camera::Projection(int winW, int winH)
 {
 	return glm::perspective(fov, (GLfloat)winW / (GLfloat)winH, clipNear, clipFar);

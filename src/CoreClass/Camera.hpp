@@ -17,9 +17,6 @@ class Transform;
 			static GameObject*	GetMainCamera();
 			static void			SetMainCamera(GameObject* go);
 
-			void				MoveX(float speed);
-			void				MoveZ(float speed);
-
 			glm::mat4			Projection(int winW, int winH);
 			glm::mat4			View();
 
