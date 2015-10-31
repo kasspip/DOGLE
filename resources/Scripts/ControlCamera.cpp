@@ -25,7 +25,6 @@
 				PopObj();
 				RemoveObj();
 
-
 				if (Inputs::singleton->KeyDown(GLFW_KEY_ESCAPE))
 				 	Application::singleton->Stop();
 				if (Inputs::singleton->KeyDown(GLFW_KEY_Q))
@@ -60,6 +59,12 @@
 					Camera::GetMainCamera()->GetComponent<Transform>()->rotation += glm::vec3(0,speed * 3,0);
 			}
 
+			void			OnCollisionEnter(int i)
+			{
+				std::cout << i << std::endl;
+			}	
+
+		private:
 			void			PopObj()
 			{
 				if (!obj && Inputs::singleton->KeyDown(GLFW_KEY_E))

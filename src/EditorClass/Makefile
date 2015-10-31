@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: brehaili <brehaili@student.42.fr>          +#+  +:+       +#+         #
+#    By: cobrecht <cobrecht@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/04/20 13:38:52 by brehaili          #+#    #+#              #
-#    Updated: 2015/04/20 13:38:55 by brehaili         ###   ########.fr        #
+#    Updated: 2015/10/31 11:43:10 by cobrecht         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,14 +55,14 @@ INCLUDE = 	-I$(HOME)/.brew/include\
 
 GAMESCRIPTS = ../../resources/Scripts/GameScripts.a
 
-LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
-			-L$(HOME)/.brew/lib/ -lGLEW\
-			-L../../include/soil2/lib/macosx/ -lsoil2-debug\
-			-framework OpenGL\
-			-framework Cocoa\
-			-framework IOKit\
+LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3 \
+			-L$(HOME)/.brew/lib/ -lGLEW \
+			-L../../include/soil2/lib/macosx/ -lsoil2-debug \
+			-framework OpenGL \
+			-framework Cocoa \
+			-framework IOKit \
 			-framework CoreVideo \
-			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib\
+			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib \
 			../../resources/Scripts/GameScripts.a \
 			`pkg-config --libs gtkmm-3.0` \
 

@@ -22,6 +22,7 @@
 			virtual void			OnPause();
 			virtual void			OnDestroy();
 			virtual void			OnStop();
+			virtual void			OnCollisionEnter(int i);
 			
 			virtual void			Save(std::ofstream &file);
 			virtual std::string 	toString(void) const;

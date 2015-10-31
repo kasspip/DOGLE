@@ -1,111 +1,91 @@
 #include "UI.hpp"
+#include <string>
 
-bool		UI::del(GdkEventKey *e)
-{
-	std::cout << e->keyval << std::endl;
-	return true;
-}
+// CONSTRUCTOR DESTRUCTOR //
+
 
 UI::UI(Application *app) : AppListStoreInspector(0),
 							AppListStoreGo(0),
 							app(app)
 {
+	gameObject = nullptr;
+
 	GtkApp = Gtk::Application::create("jean.michel");
 	builder = Gtk::Builder::create_from_file("src/EditorClass/unity_gtk.glade");
 	builder->get_widget("window1", window);
-	displayApp();
-	displayGo();
-	displayScene();
+	
+	AppInspectorDisplay();
+	AppPrefabDisplay();
+	AppSceneDisplay();
+  	GoInspectorDispay();
 
 
 	// AppListStoreInspectorview->add_events(Gdk::KEY_PRESS_MASK);
 	// AppListStoreInspectorview->signal_key_press_event().connect(sigc::mem_fun(*this, &UI::del));
 
-
-
 	/*APPLICATION NEW BUTTON*/
 	Gtk::Button	*new_button;
 	builder->get_widget("button1", new_button);
-	new_button->signal_clicked().connect(sigc::mem_fun(*this, &UI::button_new_func));
+	new_button->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonNewApp));
 
 	/*APPLICATION LOAD BUTTON*/
 	Gtk::Button	*loadButton;
 	builder->get_widget("button2", loadButton);
-	loadButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::button_load_func));
+	loadButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonLoadApp));
 
 	/*APPLICATION SAVE BUTTON*/
 	Gtk::Button	*saveButton;
 	builder->get_widget("button3", saveButton);
-	saveButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::button_save_func));
+	saveButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonSaveApp));
 
-	/*APPLICATION GO NEW BUTTON*/
-	Gtk::Button	*GoNewButton;
-	builder->get_widget("button4", GoNewButton);
-	GoNewButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::button_GoNew_func));
+	/*APPLICATION NEW PREFAB*/
+	Gtk::Button	*prefabNewButton;
+	builder->get_widget("button4", prefabNewButton);
+	prefabNewButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonNewPrefab));
+
+	/*APPLICATION DELETE PREFAB*/
+	Gtk::Button	*prefabDeleteButton;
+	builder->get_widget("button8", prefabDeleteButton);
+	prefabDeleteButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonDeletePrefab));
 
 	/*APPLICATION SCENE NEW BUTTON*/
 	Gtk::Button	*SceneNewButton;
 	builder->get_widget("button5", SceneNewButton);
-	SceneNewButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::button_SceneNew_func));
+	SceneNewButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonNewScene));
+
+	/*APPLICATION SCENE DELETE BUTTON*/
+	Gtk::Button	*SceneDeleteButton;
+	builder->get_widget("button11", SceneDeleteButton);
+	SceneDeleteButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonDeleteScene));
 
 	/*SCENE INSTANCIATE BUTTON*/
 	Gtk::Button	*SceneInstanciateButton;
 	builder->get_widget("button6", SceneInstanciateButton);
-	SceneInstanciateButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::button_SceneInstanciateButton_func));
+	SceneInstanciateButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonNewInstance));
 
-	/*GAME OBJECT NEW BUTTON*/
-	Gtk::Button	*GameObjectNewButton;
-	builder->get_widget("button7", GameObjectNewButton);
-	GameObjectNewButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::button_GameObjectNewButton_func));
+	/*SCENE REMOVE INSTANCE BUTTON*/
+	Gtk::Button	*SceneRemoveInstanceButton;
+	builder->get_widget("button9", SceneRemoveInstanceButton);
+	SceneRemoveInstanceButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonDeleteInstance));
+
+	/*GAME NEW COMPONENT*/
+	Gtk::Button	*componentNewButton;
+	builder->get_widget("button7", componentNewButton);
+	componentNewButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonNewComponent));
+
+	/*GAME REMOVE COMPONENT*/
+	Gtk::Button	*componentRemoveButton;
+	builder->get_widget("button10", componentRemoveButton);
+	componentRemoveButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonDeleteComponent));
 }
 
 UI::~UI(){}
 
- // void cellrenderer_validated_on_edited(const Glib::ustring& path_string, const Glib::ustring& new_text);
 
-void		UI::EditList(const Glib::ustring& path_string, const Glib::ustring& new_text)
-{
-	(void)path_string;
-	std::cout << new_text << std::endl;
-}
+// APPLICATION  PANEL //
 
-void		UI::displayApp()
-{
-	builder->get_widget("treeview1", AppListStoreInspectorview);
-	AppListStoreInspector = Gtk::ListStore::create(model);
-	AppListStoreInspectorview->set_model(AppListStoreInspector);
-	Gtk::TreeModel::iterator 		tmp;
-	tmp = AppListStoreInspector->append();
-	(*tmp)[model.m_col_name] = "NAME";
-	(*tmp)[model.m_col_value] = app->name;
-	AppListStoreInspectorview->append_column("______________ATTRIBUTS______________",model.m_col_name);
-	AppListStoreInspectorview->append_column_editable("_______________VALUES_______________",model.m_col_value);
 
-	tmp = AppListStoreInspector->append();
-	(*tmp)[model.m_col_name] = "WIN HEIGHT";
-	std::stringstream winHVal;
-	winHVal << app->winH;
-	(*tmp)[model.m_col_value] = winHVal.str();
-
-	tmp = AppListStoreInspector->append();
-	(*tmp)[model.m_col_name] = "WIN WIDTH";
-	std::stringstream winWVal;
-	winWVal << app->winW;
-	(*tmp)[model.m_col_value] = winWVal.str();
-
-	// Glib::RefPtr<Gtk::TreeSelection>		tmp2;
-	// Gtk::ListStore::iterator 				it;
-	// tmp2 = AppListStoreInspector->get_iter("0");
-	// tmp2 = AppListStoreInspectorview->get_selection();
-
-	// AppListStoreInspectorview->get_column_cell_renderer(0)->property_editable() = true;
-	Gtk::CellRendererText*  tmp2 = static_cast<Gtk::CellRendererText*>(AppListStoreInspectorview->get_column_cell_renderer(1));
-	tmp2->signal_edited().connect(sigc::mem_fun(*this, &UI::EditList));
-	// (*tmp)[model.m_col_value].signal_edited().connect( sigc::mem_fun(*this, &UI::EditList));
-
-}
-
-void		UI::button_new_func()
+void		UI::ButtonNewApp()
 {
 	int		ret;
 	Popup	pop = Popup("New app", this->window, "Choose an application name:");
@@ -114,8 +94,10 @@ void		UI::button_new_func()
 	{
 		if (ret == Gtk::RESPONSE_OK && pop.getText().length())
 		{
+			if (app)
+				delete app;
 			app = new Application(pop.getText());
-			displayApp();
+			AppInspectorDisplay();
 			break ;
 		}
 		else
@@ -126,7 +108,7 @@ void		UI::button_new_func()
 	}
 }
 
-void		UI::button_load_func()
+void		UI::ButtonLoadApp()
 {
 	std::cout << "APPLICATION LOAD BUTTON" << std::endl;
 	// Glib::RefPtr<Gtk::TreeSelection>		tmp;
@@ -149,27 +131,120 @@ void		UI::button_load_func()
 	// std::cout << (*it)[model.m_col_name] << std::endl;
 }
 
-void		UI::button_save_func()
+void		UI::ButtonSaveApp()
 {
-	std::cout << "APPLICATION SAVE BUTTON" << std::endl;
+	if (app)
+		app->Save();
 }
 
-void		UI::displayGo()
+void		UI::AppInspectorDisplay()
+{
+	builder->get_widget("treeview1", AppListStoreInspectorview);
+	AppListStoreInspector = Gtk::ListStore::create(model);
+	AppListStoreInspectorview->set_model(AppListStoreInspector);
+	
+	Gtk::TreeModel::iterator 		tmp;
+	tmp = AppListStoreInspector->append();
+	
+	(*tmp)[model.m_col_name] = "NAME";
+	(*tmp)[model.m_col_value] = app->name;
+	
+	AppListStoreInspectorview->append_column("______________ATTRIBUTS______________", model.m_col_name);
+	AppListStoreInspectorview->append_column_editable("_______________VALUES_______________", model.m_col_value);
+
+	tmp = AppListStoreInspector->append();
+	(*tmp)[model.m_col_name] = "WIN HEIGHT";
+	std::stringstream winHVal;
+	winHVal << app->winH;
+	(*tmp)[model.m_col_value] = winHVal.str();
+
+	tmp = AppListStoreInspector->append();
+	(*tmp)[model.m_col_name] = "WIN WIDTH";
+	std::stringstream winWVal;
+	winWVal << app->winW;
+	(*tmp)[model.m_col_value] = winWVal.str();
+
+	tmp = AppListStoreInspector->append();
+	(*tmp)[model.m_col_name] = "FPS";
+	std::stringstream FPSVal;
+	FPSVal << app->FPS;
+	(*tmp)[model.m_col_value] = FPSVal.str();
+
+	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(AppListStoreInspectorview->get_column_cell_renderer(1));
+	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::AppInspectorEdit));
+}
+
+void		UI::AppInspectorEdit(const Glib::ustring& index, const Glib::ustring& value)
+{
+	switch (std::stoi(index))
+	{
+		case 0:
+			app->name = value;		
+			break;
+		case 1:
+			app->winW = std::stoi(value);
+			break;
+		case 2:
+			app->winH = std::stoi(value);
+			break;
+		case 3:
+			app->FPS = std::stoi(value);
+			break;
+	}
+}
+
+void		UI::AppPrefabDisplay()
 {
 	builder->get_widget("treeview2", AppListStoreGoview);
 	AppListStoreGo = Gtk::ListStore::create(model2);
 	AppListStoreGoview->set_model(AppListStoreGo);
-	AppListStoreGoview->append_column_editable("______________ATTRIBUTS______________",model2.m_col_name);
-	AppListStoreGoview->append_column_editable("_______________SELECT_______________",model2.del);
+	AppListStoreGoview->append_column_editable("______________PREFABS______________", model2.m_col_name);
+	AppListStoreGoview->append_column_editable("_______________SELECT_______________", model2.del);
+	
 	for (GameObject* go : app->GetListPrefab())
 	{
 		AppListStoreGoIt = AppListStoreGo->append();
 		(*AppListStoreGoIt)[model2.m_col_name] = go->name;
 		(*AppListStoreGoIt)[model2.del] = false;
 	}
+
+	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(AppListStoreGoview->get_column_cell_renderer(0));
+	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::AppPrefabListEdit));
+
+	Glib::RefPtr<Gtk::TreeSelection> treeSelection = AppListStoreGoview->get_selection();
+	treeSelection->signal_changed().connect(sigc::mem_fun(*this, &UI::AppPrefabSelection));
 }
 
-void		UI::button_GoNew_func()
+void		UI::AppPrefabListEdit(const Glib::ustring& index, const Glib::ustring& value)
+{
+	int	target = std::stoi(index);
+	int	counter = 0;
+
+	for (GameObject* go : app->GetListPrefab())
+	{
+		if (counter == target)
+		{
+			go->name = value;
+			break ;
+		}
+		counter++;
+	}
+}
+
+void		UI::AppPrefabSelection()
+{
+	Glib::RefPtr<Gtk::TreeSelection> treeSelection = AppListStoreGoview->get_selection();
+	Gtk::TreeModel::iterator selection = treeSelection->get_selected();
+	if(selection)
+	{
+		std::stringstream ss;
+		ss << (*selection)[model2.m_col_name];
+  		gameObject = app->FindPrefab( ss.str() );
+  		GoInspectorRefresh();
+	}
+}
+
+void		UI::ButtonNewPrefab()
 {
 	if (!app)
 	{
@@ -177,6 +252,7 @@ void		UI::button_GoNew_func()
 		warning.run();
 		return ;
 	}
+	
 	int		ret;
 	Popup	pop = Popup("New game object", this->window, "Choose a prefab name:");
 
@@ -206,7 +282,12 @@ void		UI::button_GoNew_func()
 	}
 }
 
-void		UI::displayScene()
+void		UI::ButtonDeletePrefab()
+{
+	std::cout << "PREFAB NEW BUTTON" << std::endl;
+}
+
+void		UI::AppSceneDisplay()
 {
 	builder->get_widget("treeview3", AppListStoreSceneview);
 	AppListStoreScene = Gtk::ListStore::create(model2);
@@ -221,24 +302,100 @@ void		UI::displayScene()
 	}
 }
 
-void		UI::button_SceneNew_func()
+void		UI::AppSceneListEdit(const Glib::ustring& index, const Glib::ustring& value)
 {
-	std::cout << "APPLICATION SCENE NEW BUTTON" << std::endl;
+	int	target = std::stoi(index);
+	int	counter = 0;
+
+	for (Scene* scene : app->GetListScene())
+	{
+		if (counter == target)
+		{
+			scene->name = value;
+			break ;
+		}
+		counter++;
+	}
 }
 
-void		UI::button_SceneInstanciateButton_func()
+void		UI::ButtonNewScene()
+{
+	std::cout << "SCENE NEW BUTTON" << std::endl;
+}
+
+void		UI::ButtonDeleteScene()
+{
+	std::cout << "SCENE DELETE BUTTON" << std::endl;
+}
+
+
+// SCENE PANEL //
+
+
+void		UI::ButtonNewInstance()
 {
 	std::cout << "SCENE INSTANCIATE BUTTON" << std::endl;
 }
 
-void		UI::button_GameObjectNewButton_func()
+void		UI::ButtonDeleteInstance()
 {
-	std::cout << "GAME OBJECT NEW BUTTON" << std::endl;
+	std::cout << "SCENE DELETE BUTTON" << std::endl;
 }
+
+
+// GAMEOBJECT PANEL //
+
+void		UI::GoInspectorDispay()
+{
+	builder->get_widget("treeview6", treeViewGameObjectInspector);
+	treeGameObjectInspector = Gtk::ListStore::create(model);
+	
+	treeViewGameObjectInspector->set_model(treeGameObjectInspector);
+	treeViewGameObjectInspector->append_column("______________ATTRIBUTS______________", model.m_col_name);
+	treeViewGameObjectInspector->append_column_editable("_______________VALUES_______________", model.m_col_value);
+	
+	Gtk::TreeModel::iterator 		row;
+	
+	row = treeGameObjectInspector->append();
+	(*row)[model.m_col_name] = "NAME";
+	(*row)[model.m_col_value] = "";
+	//Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(AppListStoreInspectorview->get_column_cell_renderer(1));
+	//cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::AppInspectorEdit));
+}
+
+void		UI::GoInspectorRefresh()
+{
+	if (gameObject)
+	{	
+		//Gtk::TreeModel::iterator row = treeGameObjectInspector-> ;
+
+	}
+}
+
+
+void		UI::ButtonNewComponent()
+{
+	std::cout << "COMPONENT NEW BUTTON" << std::endl;
+}
+
+void		UI::ButtonDeleteComponent()
+{
+	std::cout << "COMPONENT NEW BUTTON" << std::endl;
+}
+
+
+// OTHER //
+
 
 void		UI::run()
 {
 	GtkApp->run(*window);
+}
+
+bool		UI::del(GdkEventKey *e)
+{
+	std::cout << e->keyval << std::endl;
+	return true;
 }
 
 int main(int ac, char **av)

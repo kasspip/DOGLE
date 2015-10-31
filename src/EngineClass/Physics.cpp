@@ -33,6 +33,19 @@ void			Physics::RunState(Application & app, e_state & currentState)
 	Engine::singleton->deltaTime = currentFrame - Engine::singleton->lastFrame;
 	Engine::singleton->lastFrame = currentFrame; 
 
+	Script* script = nullptr;
+	for (GameObject* go : app.GetCurrentScene()->GetGameObjectList())
+	{
+		for (IComponent* compo : go->GetListComponent())
+		{
+			if ((script = dynamic_cast<Script*>(compo)))
+			{
+				script->OnCollisionEnter(5);
+				script = nullptr;
+			}
+		}
+	}
+
 	currentState = STATE_INPUTS;
 }
 

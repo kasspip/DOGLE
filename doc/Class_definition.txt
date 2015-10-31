@@ -1,6 +1,6 @@
-TRANSFORM :	mat4 position
-			mat4 rotate
-			mat4 scale
+TRANSFORM :	vec3 position
+			vec3 rotate
+			vec3 scale
 
 SKIN :	path .dea
 		path .png

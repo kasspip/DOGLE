@@ -26,26 +26,28 @@ public:
 	Glib::RefPtr<Gtk::Builder>		builder;
 	Gtk::Window						*window;
 
-	void							EditList(const Glib::ustring& path_string, const Glib::ustring& new_text);
-
 	bool							del(GdkEventKey *e);
-
-	void							displayApp();
-	void							displayGo();
-	void							displayScene();
-
 	void							run();
 
-	/*BUTTONS_CALLBACK*/
-	void							button_new_func();
-	void							button_load_func();
-	void							button_save_func();
-	void							button_GoNew_func();
-	void							button_SceneNew_func();
-	void							button_SceneInstanciateButton_func();
-	void							button_GameObjectNewButton_func();
+	// Application panel //
+	void							AppInspectorDisplay();
+	void							AppInspectorEdit(const Glib::ustring& path_string, const Glib::ustring& new_text);
+	void							ButtonNewApp();
+	void							ButtonLoadApp();
+	void							ButtonSaveApp();
 
-	/*APPLICATION*/
+	void							AppPrefabDisplay();
+	void							AppPrefabListEdit(const Glib::ustring& path_string, const Glib::ustring& new_text);
+	void							AppPrefabSelection();
+	void							ButtonNewPrefab();
+	void							ButtonDeletePrefab();
+	
+	void							AppSceneDisplay();
+	void							AppSceneListEdit(const Glib::ustring& path_string, const Glib::ustring& new_text);
+	void							ButtonNewScene();
+	void							ButtonDeleteScene();
+
+
 	Glib::RefPtr<Gtk::ListStore>	AppListStoreInspector;
 	Gtk::TreeView					*AppListStoreInspectorview;
 
@@ -56,13 +58,29 @@ public:
 	Gtk::TreeModel::iterator 		AppListStoreSceneIt;
 	Glib::RefPtr<Gtk::ListStore>	AppListStoreScene;
 	Gtk::TreeView					*AppListStoreSceneview;
+	
+	Application						*app;
+
+	// Scene panel //
+	void							ButtonNewInstance();
+	void							ButtonDeleteInstance();
+
+
+
+	// GameObject panel //
+	void							GoInspectorDispay();
+	void							GoInspectorRefresh();
+	void							ButtonNewComponent();
+	void							ButtonDeleteComponent();
+	
+	Glib::RefPtr<Gtk::ListStore>	treeGameObjectInspector;
+	Gtk::TreeView					*treeViewGameObjectInspector;
+
+	GameObject*						gameObject;
 
 	/*MODELS*/
 	myColumn						model;
 	ToggleColumn					model2;
-
-	/* DATA */
-	Application						*app;
 };
 
 #endif
