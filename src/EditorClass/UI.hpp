@@ -22,28 +22,36 @@ public:
 	UI(Application *app);
 	~UI();
 
+
+
 	Glib::RefPtr<Gtk::Application>	GtkApp;
 	Glib::RefPtr<Gtk::Builder>		builder;
 	Gtk::Window						*window;
+	/*MODELS*/
+	myColumn						model;
+	ToggleColumn					model2;
 
 	bool							del(GdkEventKey *e);
 	void							run();
 
 	// Application panel //
 	void							AppInspectorDisplay();
-	void							AppInspectorEdit(const Glib::ustring& path_string, const Glib::ustring& new_text);
+	void							AppInspectorEdit(const Glib::ustring& index, const Glib::ustring& value);
 	void							ButtonNewApp();
 	void							ButtonLoadApp();
 	void							ButtonSaveApp();
 
 	void							AppPrefabDisplay();
-	void							AppPrefabListEdit(const Glib::ustring& path_string, const Glib::ustring& new_text);
+	void							AppPrefabRefresh();
+	void							AppPrefabListEdit(const Glib::ustring& index, const Glib::ustring& value);
 	void							AppPrefabSelection();
 	void							ButtonNewPrefab();
 	void							ButtonDeletePrefab();
 	
 	void							AppSceneDisplay();
-	void							AppSceneListEdit(const Glib::ustring& path_string, const Glib::ustring& new_text);
+	void							AppSceneRefresh();
+	void							AppSceneListEdit(const Glib::ustring& index, const Glib::ustring& value);
+	void							AppSceneSelection();
 	void							ButtonNewScene();
 	void							ButtonDeleteScene();
 
@@ -51,36 +59,50 @@ public:
 	Glib::RefPtr<Gtk::ListStore>	AppListStoreInspector;
 	Gtk::TreeView					*AppListStoreInspectorview;
 
-	Gtk::TreeModel::iterator 		AppListStoreGoIt;
 	Glib::RefPtr<Gtk::ListStore>	AppListStoreGo;
 	Gtk::TreeView					*AppListStoreGoview;
 
-	Gtk::TreeModel::iterator 		AppListStoreSceneIt;
 	Glib::RefPtr<Gtk::ListStore>	AppListStoreScene;
 	Gtk::TreeView					*AppListStoreSceneview;
 	
-	Application						*app;
+	Application*					app;
 
 	// Scene panel //
+	void							SceneInspectorDisplay();
+	void							SceneInspectorRefresh();
+	void							SceneInspectorEdit(const Glib::ustring& index, const Glib::ustring& value);
 	void							ButtonNewInstance();
 	void							ButtonDeleteInstance();
 
+	void							SceneListDisplay();
+	void							SceneListRefresh();
+	void							SceneListEdit(const Glib::ustring& index, const Glib::ustring& value);
+	void							SceneListSelection();
 
+	Glib::RefPtr<Gtk::ListStore>	treeSceneInspector;
+	Gtk::TreeView					*treeViewSceneInspector;
+
+	Glib::RefPtr<Gtk::ListStore>	treeSceneList;
+	Gtk::TreeView					*treeViewSceneList;
+	Gtk::TreeModel::iterator 		selectionGameObject;
+
+	static Scene*							scene;
 
 	// GameObject panel //
-	void							GoInspectorDispay();
+	void							GoInspectorDisplay();
 	void							GoInspectorRefresh();
+	void							GoInspectorClear();
+	void							GoInspectorEdit(const Glib::ustring& index, const Glib::ustring& value);
+
 	void							ButtonNewComponent();
 	void							ButtonDeleteComponent();
 	
 	Glib::RefPtr<Gtk::ListStore>	treeGameObjectInspector;
 	Gtk::TreeView					*treeViewGameObjectInspector;
 
-	GameObject*						gameObject;
+	static GameObject*						gameObject;
 
-	/*MODELS*/
-	myColumn						model;
-	ToggleColumn					model2;
+
 };
 
 #endif
