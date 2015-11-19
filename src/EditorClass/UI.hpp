@@ -27,12 +27,16 @@ public:
 	Glib::RefPtr<Gtk::Application>	GtkApp;
 	Glib::RefPtr<Gtk::Builder>		builder;
 	Gtk::Window						*window;
+	bool							update;
 	/*MODELS*/
 	myColumn						model;
 	ToggleColumn					model2;
 
 	bool							del(GdkEventKey *e);
 	void							run();
+	void 							UnselectTreeView( Gtk::TreeView *treeView );
+	void 							ClearListStore( Glib::RefPtr<Gtk::ListStore> list );
+
 
 	// Application panel //
 	void							AppInspectorDisplay();
@@ -84,16 +88,13 @@ public:
 
 	Glib::RefPtr<Gtk::ListStore>	treeSceneList;
 	Gtk::TreeView					*treeViewSceneList;
-	Gtk::TreeModel::iterator 		selectionGameObject;
 
 	static Scene*							scene;
 
 	// GameObject panel //
 	void							GoInspectorDisplay();
 	void							GoInspectorRefresh();
-	void							GoInspectorClear();
 	void							GoInspectorEdit(const Glib::ustring& index, const Glib::ustring& value);
-
 	void							ButtonNewComponent();
 	void							ButtonDeleteComponent();
 	

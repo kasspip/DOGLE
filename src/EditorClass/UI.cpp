@@ -24,9 +24,8 @@ UI::UI(Application *app) : AppListStoreInspector(0),
 	AppSceneDisplay();
 	SceneListDisplay();
 
+	update = true;
 
-	// AppListStoreInspectorview->add_events(Gdk::KEY_PRESS_MASK);
-	// AppListStoreInspectorview->signal_key_press_event().connect(sigc::mem_fun(*this, &UI::del));
 
 	/*APPLICATION NEW BUTTON*/
 	Gtk::Button	*new_button;
@@ -118,7 +117,7 @@ void		UI::ButtonNewApp()
 
 void		UI::ButtonLoadApp()
 {
-	std::cout << "APPLICATION LOAD BUTTON" << std::endl;
+	std::cout << "APPLICATION LOAD BUTTON NOT IMPLEMENTED" << std::endl;
 	// Glib::RefPtr<Gtk::TreeSelection>		tmp;
 	// Gtk::ListStore::iterator 				it;
 
@@ -201,6 +200,10 @@ void		UI::AppInspectorEdit(const Glib::ustring& index, const Glib::ustring& valu
 
 
 
+
+
+
+
 // APP PREFAB LIST //
 
 
@@ -225,6 +228,8 @@ void		UI::AppPrefabDisplay()
 
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = AppListStoreGoview->get_selection();
 	treeSelection->signal_changed().connect(sigc::mem_fun(*this, &UI::AppPrefabSelection));
+
+
 }
 
 void		UI::AppPrefabRefresh()
@@ -262,6 +267,12 @@ void		UI::AppPrefabListEdit(const Glib::ustring& index, const Glib::ustring& val
 
 void		UI::AppPrefabSelection()
 {
+	if (!update)
+		return ;
+	UnselectTreeView(AppListStoreSceneview);	
+	UnselectTreeView(treeViewSceneList);
+	ClearListStore(treeSceneList);
+
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = AppListStoreGoview->get_selection();
 	Gtk::TreeModel::iterator selection = treeSelection->get_selected();
 	if(selection)
@@ -271,6 +282,7 @@ void		UI::AppPrefabSelection()
   		gameObject = app->FindPrefab( ss.str() );
   		GoInspectorRefresh();
 	}
+
 }
 
 void		UI::ButtonNewPrefab()
@@ -313,8 +325,13 @@ void		UI::ButtonNewPrefab()
 
 void		UI::ButtonDeletePrefab()
 {
-	std::cout << "PREFAB NEW BUTTON" << std::endl;
+	std::cout << "PREFAB NEW BUTTON NOT IMPLEMENTED" << std::endl;
 }
+
+
+
+
+
 
 
 // APP SCENE LIST //
@@ -376,10 +393,17 @@ void		UI::AppSceneListEdit(const Glib::ustring& index, const Glib::ustring& valu
 
 void		UI::AppSceneSelection()
 {
+	if (!update)
+		return ;
+	UnselectTreeView(AppListStoreGoview);
+	ClearListStore(treeGameObjectInspector);
+
+
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = AppListStoreSceneview->get_selection();
 	Gtk::TreeModel::iterator selection = treeSelection->get_selected();
-	// if(selectionGameObject)
-	// 	treeViewSceneList->get_selection()->unselect(selectionGameObject);
+	
+
+	gameObject = nullptr;
 	if(selection)
 	{
 		std::stringstream ss;
@@ -390,6 +414,7 @@ void		UI::AppSceneSelection()
   		catch (DError & e ) {
   			std::cout << "app->FindScene() failed" << std::endl;
   		}
+  		GoInspectorRefresh();
   		SceneInspectorRefresh();
   		SceneListRefresh();
 	}
@@ -397,13 +422,18 @@ void		UI::AppSceneSelection()
 
 void		UI::ButtonNewScene()
 {
-	std::cout << "SCENE NEW BUTTON" << std::endl;
+	std::cout << "SCENE NEW BUTTON NOT IMPLEMENTED" << std::endl;
 }
 
 void		UI::ButtonDeleteScene()
 {
-	std::cout << "SCENE DELETE BUTTON" << std::endl;
+	std::cout << "SCENE DELETE BUTTON NOT IMPLEMENTED" << std::endl;
 }
+
+
+
+
+
 
 
 
@@ -454,13 +484,17 @@ void		UI::SceneInspectorEdit(const Glib::ustring& index, const Glib::ustring& va
 
 void		UI::ButtonNewInstance()
 {
-	std::cout << "SCENE INSTANCIATE BUTTON" << std::endl;
+	std::cout << "SCENE INSTANCIATE BUTTON NOT IMPLEMENTED" << std::endl;
 }
 
 void		UI::ButtonDeleteInstance()
 {
-	std::cout << "SCENE DELETE BUTTON" << std::endl;
+	std::cout << "SCENE DELETE BUTTON NOT IMPLEMENTED" << std::endl;
 }
+
+
+
+
 
 
 
@@ -486,9 +520,9 @@ void		UI::SceneListDisplay()
 
 void		UI::SceneListRefresh()
 {
-	//std::cout << "test-1 " << gameObject->name << std::endl;
-	treeSceneList->clear();
-	//std::cout << "test-2 " << gameObject->name << std::endl;
+	Gtk::TreeModel::iterator selection;
+
+	ClearListStore(treeSceneList);
 
 	for (GameObject* go : scene->GetBindGameObjectList())
 	{
@@ -518,12 +552,16 @@ void		UI::SceneListEdit(const Glib::ustring& index, const Glib::ustring& value)
 
 void		UI::SceneListSelection()
 {
-	selectionGameObject = treeViewSceneList->get_selection()->get_selected();
+	if (!update)
+		return ;
+	UnselectTreeView(AppListStoreGoview);
 	
-	if(selectionGameObject)
+	Gtk::TreeModel::iterator selection = treeViewSceneList->get_selection()->get_selected();
+
+	if(selection)
 	{
 	 	std::stringstream ss;
-	 	ss << (*selectionGameObject)[model2.m_col_name];
+	 	ss << (*selection)[model2.m_col_name];
 	 	try {
  	  		gameObject = scene->FindGameObject( ss.str() );
 	 	}
@@ -533,6 +571,11 @@ void		UI::SceneListSelection()
 	 	GoInspectorRefresh();
 	}
 }
+
+
+
+
+
 
 
 
@@ -568,13 +611,10 @@ void		UI::GoInspectorRefresh()
 		else
 			(*iter)[model.m_col_value] = gameObject->name;
 	}
-}
-
-void		UI::GoInspectorClear()
-{
-	treeGameObjectInspector->clear();
-
-
+	else
+	{
+		ClearListStore(treeGameObjectInspector);
+	}
 }
 
 void		UI::GoInspectorEdit(const Glib::ustring& index, const Glib::ustring& value)
@@ -593,17 +633,38 @@ void		UI::GoInspectorEdit(const Glib::ustring& index, const Glib::ustring& value
 
 void		UI::ButtonNewComponent()
 {
-	std::cout << "COMPONENT NEW BUTTON" << std::endl;
+	std::cout << "COMPONENT NEW BUTTON NOT IMPLEMENTED" << std::endl;
 }
 
 void		UI::ButtonDeleteComponent()
 {
-	std::cout << "COMPONENT NEW BUTTON" << std::endl;
+	std::cout << "COMPONENT NEW BUTTON NOT IMPLEMENTED" << std::endl;
 }
 
 
 
+
+
+
+
+
 // OTHER //
+
+void 		UI::UnselectTreeView( Gtk::TreeView *treeView )
+{
+	update = false;
+	Gtk::TreeModel::iterator selection = treeView->get_selection()->get_selected();
+	if (selection)
+		treeView->get_selection()->unselect(selection);
+	update = true;
+}
+
+void 		UI::ClearListStore( Glib::RefPtr<Gtk::ListStore> list )
+{
+	update = false;
+	list->clear();
+	update = true;
+}
 
 void		UI::run()
 {
@@ -615,6 +676,12 @@ bool		UI::del(GdkEventKey *e)
 	std::cout << e->keyval << std::endl;
 	return true;
 }
+
+
+
+
+
+
 
 int main(int ac, char **av)
 {
