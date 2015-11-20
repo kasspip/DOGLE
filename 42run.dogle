@@ -1,0 +1,46 @@
+# APPLICATION 			<name> <window W> <window H>
+# SCENE 				<name>
+# PREFAB | GAMEOBJECT 	<name> <parent>
+# TRANSFORM 			<vec3 position> <vec3 rotation> <vec3 scale>
+# SKIN 					<file name .dae>
+# SCRIPT 				<class name>
+# CAMERA 				<fov> <clip near> <clip far>
+
+APPLICATION:42run|1280|1280
+	PREFAB:Camera1|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		CAMERA:45|0.1|100
+		SCRIPT:ControlCamera
+	PREFAB:MonCube|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cube.dae
+		SCRIPT:MyCube
+	PREFAB:MonTriangle|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:triangle.dae
+		SCRIPT:ScriptTriangle
+	PREFAB:child|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cube.dae
+	SCENE:Level1
+		GAMEOBJECT:MonCube (3)|
+			TRANSFORM:0,0,0|0,0,0|1,1,1
+			SKIN:cube.dae
+			SCRIPT:MyCube
+		GAMEOBJECT:Camera1 (4)|
+			TRANSFORM:0,0,0|0,0,0|1,1,1
+			CAMERA:45|0.1|100
+			SCRIPT:ControlCamera
+	SCENE:Level2
+		GAMEOBJECT:MonCube (5)|
+			TRANSFORM:0.5,0,0|0,0,0|1,1,1
+			SKIN:cube.dae
+			SCRIPT:MyCube
+		GAMEOBJECT:MonCube (6)|
+			TRANSFORM:-0.5,0,0|0,0,0|1,1,1
+			SKIN:cube.dae
+			SCRIPT:MyCube
+		GAMEOBJECT:Camera1 (7)|
+			TRANSFORM:0,0,0|0,0,0|1,1,1
+			CAMERA:45|0.1|100
+			SCRIPT:ControlCamera

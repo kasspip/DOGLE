@@ -48,8 +48,8 @@
 			void			SkinVBO();
 			void			SkinVAO();
 			void			SkinTexture();
-
-
+			
+			std::string		dae_file;
 
 
 		private:
@@ -63,7 +63,6 @@
 			void			_flipYZAxis(GLfloat *data, unsigned int size);
 			static std::string	_3Dobjects_path;
 			static std::string	_images_path;
-			std::string			_dae_file;
 			bool				_isBind;
 	};
 

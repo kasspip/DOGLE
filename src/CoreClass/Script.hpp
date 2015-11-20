@@ -29,8 +29,6 @@
 
 			void					Destroy(GameObject *go);
 
-			std::string name;
-
 		private:
 	};
 

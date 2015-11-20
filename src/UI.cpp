@@ -152,32 +152,30 @@ void		UI::AppInspectorDisplay()
 	AppInspectorList = Gtk::ListStore::create(model);
 	AppInspectorTreeView->set_model(AppInspectorList);
 	
-	AppInspectorTreeView->append_column("Inspector", model.m_col_name);
-	AppInspectorTreeView->append_column_editable("", model.value_1);
-	AppInspectorTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
+	AppInspectorTreeView->append_column("Inspector               ", model.m_col_name);
+	AppInspectorTreeView->append_column_editable("               ", model.m_col_value);
 
 	Gtk::TreeModel::iterator newRow = AppInspectorList->append();
-	(*newRow)[model.m_col_name] = "Name";
-	(*newRow)[model.value_1] = app->name;
+	(*newRow)[model.m_col_name] = "NAME";
+	(*newRow)[model.m_col_value] = app->name;
 	
-
 	newRow = AppInspectorList->append();
-	(*newRow)[model.m_col_name] = "Win Width";
-	std::stringstream winWVal;
-	winWVal << app->winW;
-	(*newRow)[model.value_1] = winWVal.str();
-
-	newRow = AppInspectorList->append();
-	(*newRow)[model.m_col_name] = "Win Height";
+	(*newRow)[model.m_col_name] = "WIN HEIGHT";
 	std::stringstream winHVal;
 	winHVal << app->winH;
-	(*newRow)[model.value_1] = winHVal.str();
+	(*newRow)[model.m_col_value] = winHVal.str();
 
 	newRow = AppInspectorList->append();
-	(*newRow)[model.m_col_name] = "Fps";
+	(*newRow)[model.m_col_name] = "WIN WIDTH";
+	std::stringstream winWVal;
+	winWVal << app->winW;
+	(*newRow)[model.m_col_value] = winWVal.str();
+
+	newRow = AppInspectorList->append();
+	(*newRow)[model.m_col_name] = "FPS";
 	std::stringstream FPSVal;
 	FPSVal << app->FPS;
-	(*newRow)[model.value_1] = FPSVal.str();
+	(*newRow)[model.m_col_value] = FPSVal.str();
 
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(AppInspectorTreeView->get_column_cell_renderer(1));
 	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::AppInspectorEdit));
@@ -217,12 +215,9 @@ void		UI::AppPrefabDisplay()
 	builder->get_widget("treeview2", AppPrefabTreeView);
 	AppPrefabList = Gtk::ListStore::create(model2);
 	AppPrefabTreeView->set_model(AppPrefabList);
-	
 	AppPrefabTreeView->append_column_editable("Prefabs :", model2.m_col_name);
 	AppPrefabTreeView->append_column_editable("", model2.del);
-	AppPrefabTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
 	
-
 	for (GameObject* go : app->GetListPrefab())
 	{
 		Gtk::TreeModel::iterator iter = AppPrefabList->append();
@@ -315,10 +310,8 @@ void		UI::ButtonNewPrefab()
 				builder->get_widget("treeview2", AppPrefabTreeView);
 				AppPrefabList = Gtk::ListStore::create(model2);
 				AppPrefabTreeView->set_model(AppPrefabList);
-				
 				AppPrefabTreeView->append_column_editable("Prefabs :",model2.m_col_name);
 				AppPrefabTreeView->append_column_editable("",model2.del);
-				AppPrefabTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
 			}
 			Gtk::TreeModel::iterator newRow = AppPrefabList->append();
 			(*newRow)[model2.m_col_name] = pop.getText();
@@ -353,11 +346,8 @@ void		UI::AppSceneDisplay()
 	builder->get_widget("treeview3", AppScenesTreeView);
 	AppScenesList = Gtk::ListStore::create(model2);
 	AppScenesTreeView->set_model(AppScenesList);
-
 	AppScenesTreeView->append_column_editable("Scenes :",model2.m_col_name);
 	AppScenesTreeView->append_column_editable("",model2.del);
-	AppScenesTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
-
 	for (Scene* scene : app->GetListScene())
 	{
 		Gtk::TreeModel::iterator iter = AppScenesList->append();
@@ -459,12 +449,10 @@ void		UI::SceneInspectorDisplay()
 {
 	builder->get_widget("treeview4", SceneInspectorTreeView);
 	SceneInspectorList = Gtk::ListStore::create(model);
+	
 	SceneInspectorTreeView->set_model(SceneInspectorList);
-
 	SceneInspectorTreeView->append_column("Inspector", model.m_col_name);
-	SceneInspectorTreeView->append_column_editable("", model.value_1);
-	SceneInspectorTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
-
+	SceneInspectorTreeView->append_column_editable("", model.m_col_value);
 
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(SceneInspectorTreeView->get_column_cell_renderer(1));
 	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::SceneInspectorEdit));
@@ -479,11 +467,11 @@ void		UI::SceneInspectorRefresh()
 		if (children.size() == 0)
 		{
 			Gtk::TreeModel::iterator row = SceneInspectorList->append();
-			(*row)[model.m_col_name] = "Name";
-			(*row)[model.value_1] = scene->name;
+			(*row)[model.m_col_name] = "NAME";
+			(*row)[model.m_col_value] = scene->name;
 		}
 		else
-			(*iter)[model.value_1] = scene->name;
+			(*iter)[model.m_col_value] = scene->name;
 	}
 	else
 		ClearListStore(SceneInspectorList);
@@ -526,13 +514,11 @@ void		UI::SceneListDisplay()
 {
 	builder->get_widget("treeview5", SceneGameObjectsTreeView);
 	SceneGameObjectsList = Gtk::ListStore::create(model2);
-	SceneGameObjectsTreeView->set_model(SceneGameObjectsList);
-
-	SceneGameObjectsTreeView->append_column_editable("GameObjects",model2.m_col_name);
-	SceneGameObjectsTreeView->append_column_editable("",model2.del);
-	SceneGameObjectsTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
 	
-
+	SceneGameObjectsTreeView->set_model(SceneGameObjectsList);
+	SceneGameObjectsTreeView->append_column_editable("GameObjects :\t\t",model2.m_col_name);
+	SceneGameObjectsTreeView->append_column_editable("",model2.del);
+	
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = SceneGameObjectsTreeView->get_selection();
 	treeSelection->signal_changed().connect(sigc::mem_fun(*this, &UI::SceneListSelection));
 
@@ -607,94 +593,40 @@ void		UI::GoInspectorDisplay()
 {
 	builder->get_widget("treeview6", GameObjectInspectorTreeView);
 	GameObjectInspectorList = Gtk::ListStore::create(model);
+	
 	GameObjectInspectorTreeView->set_model(GameObjectInspectorList);
-
 	GameObjectInspectorTreeView->append_column("Inspector", model.m_col_name);
-	GameObjectInspectorTreeView->append_column_editable("", model.value_1);
-	GameObjectInspectorTreeView->append_column_editable("", model.value_2);
-	GameObjectInspectorTreeView->append_column_editable("", model.value_3);
-	GameObjectInspectorTreeView->append_column_editable("", model.value_4);
-
-	GameObjectInspectorTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
-	GameObjectInspectorTreeView->get_column_cell_renderer(2)->set_fixed_size(25,0);
-	GameObjectInspectorTreeView->get_column_cell_renderer(3)->set_fixed_size(25,0);
-	GameObjectInspectorTreeView->get_column_cell_renderer(4)->set_fixed_size(25,0);
+	GameObjectInspectorTreeView->append_column_editable("", model.m_col_value);
 
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(GameObjectInspectorTreeView->get_column_cell_renderer(1));
-	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::GoInspectorEditCol1));
-	cellText = static_cast<Gtk::CellRendererText*>(GameObjectInspectorTreeView->get_column_cell_renderer(2));
-	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::GoInspectorEditCol2));
-	cellText = static_cast<Gtk::CellRendererText*>(GameObjectInspectorTreeView->get_column_cell_renderer(3));
-	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::GoInspectorEditCol3));
-	cellText = static_cast<Gtk::CellRendererText*>(GameObjectInspectorTreeView->get_column_cell_renderer(4));
-	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::GoInspectorEditCol4));
+	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::GoInspectorEdit));
 }
 
 void		UI::GoInspectorRefresh()
 {
-	ClearListStore(GameObjectInspectorList);
-	
 	if (gameObject)
 	{	
-		Gtk::TreeModel::iterator row;
-		std::stringstream ss;
-		Transform* transform = gameObject->GetComponent<Transform>();
-
-		row = GameObjectInspectorList->append();
-		(*row)[model.m_col_name] = "Name";
-		(*row)[model.value_1] = gameObject->name;
-
-		row = GameObjectInspectorList->append();
-
-		row = GameObjectInspectorList->append();
-		(*row)[model.m_col_name] = "Position";
-		ss << transform->position.x;
-		(*row)[model.value_2] = ss.str();
-		ss.str(std::string());
-		
-		ss << transform->position.y;
-		(*row)[model.value_3] = ss.str();
-		ss.str(std::string());
-		
-		ss << transform->position.z;
-		(*row)[model.value_4] = ss.str();
-		ss.str(std::string());
-		
-		row = GameObjectInspectorList->append();
-		(*row)[model.m_col_name] = "Rotation";
-		ss << transform->rotation.x;
-		(*row)[model.value_2] = ss.str();
-		ss.str(std::string());
-		
-		ss << transform->rotation.y;
-		(*row)[model.value_3] = ss.str();
-		ss.str(std::string());
-		
-		ss << transform->rotation.z;
-		(*row)[model.value_4] = ss.str();
-		ss.str(std::string());
-		
-		row = GameObjectInspectorList->append();
-		(*row)[model.m_col_name] = "Scale";
-		ss << transform->scale.x;
-		(*row)[model.value_2] = ss.str();
-		ss.str(std::string());
-		
-		ss << transform->scale.y;
-		(*row)[model.value_3] = ss.str();
-		ss.str(std::string());
-
-		ss << transform->scale.z;
-		(*row)[model.value_4] = ss.str();
-
+		Gtk::TreeModel::Children children = GameObjectInspectorTreeView->get_model()->children();
+		Gtk::TreeModel::Children::iterator iter = children.begin();
+		if (children.empty())
+		{
+			Gtk::TreeModel::iterator row = GameObjectInspectorList->append();
+			(*row)[model.m_col_name] = "NAME";
+			(*row)[model.m_col_value] = gameObject->name;
+		}
+		else
+			(*iter)[model.m_col_value] = gameObject->name;
 		GoComponentsRefresh();
 	}
 	else
+	{
+		ClearListStore(GameObjectInspectorList);
 		ClearListStore(GameObjectComponentsList);
+	}
 	ClearListStore(ComponentPropertyList);
 }
 
-void		UI::GoInspectorEditCol1(const Glib::ustring& index, const Glib::ustring& value)
+void		UI::GoInspectorEdit(const Glib::ustring& index, const Glib::ustring& value)
 {
 	switch (std::stoi(index))
 	{
@@ -706,57 +638,6 @@ void		UI::GoInspectorEditCol1(const Glib::ustring& index, const Glib::ustring& v
 		AppPrefabRefresh();
 	else
 		SceneListRefresh();
-}
-
-void		UI::GoInspectorEditCol2(const Glib::ustring& index, const Glib::ustring& value)
-{
-	Transform* transform = gameObject->GetComponent<Transform>();
-	switch (std::stoi(index))
-	{
-		case 2:
-			transform->position.x = std::stof(value);		
-			break;
-		case 3:
-			transform->rotation.x = std::stof(value);		
-			break;
-		case 4:
-			transform->scale.x = std::stof(value);		
-			break;
-	}
-}
-
-void		UI::GoInspectorEditCol3(const Glib::ustring& index, const Glib::ustring& value)
-{
-	Transform* transform = gameObject->GetComponent<Transform>();
-	switch (std::stoi(index))
-	{
-		case 2:
-			transform->position.y = std::stof(value);		
-			break;
-		case 3:
-			transform->rotation.y = std::stof(value);		
-			break;
-		case 4:
-			transform->scale.y = std::stof(value);		
-			break;
-	}
-}
-
-void		UI::GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& value)
-{
-	Transform* transform = gameObject->GetComponent<Transform>();
-	switch (std::stoi(index))
-	{
-		case 2:
-			transform->position.z = std::stof(value);		
-			break;
-		case 3:
-			transform->rotation.z = std::stof(value);		
-			break;
-		case 4:
-			transform->scale.z = std::stof(value);		
-			break;
-	}
 }
 
 void		UI::ButtonNewComponent()
@@ -786,8 +667,6 @@ void		UI::GoComponentsDisplay()
 	GameObjectComponentsTreeView->set_model(GameObjectComponentsList);
 	GameObjectComponentsTreeView->append_column("Components:", model2.m_col_name);
 	GameObjectComponentsTreeView->append_column_editable("", model2.del);
-	GameObjectComponentsTreeView->get_column_cell_renderer(0)->set_fixed_size(500,0);
-
 
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = GameObjectComponentsTreeView->get_selection();
 	treeSelection->signal_changed().connect(sigc::mem_fun(*this, &UI::GoComponentsSelection));
@@ -801,8 +680,6 @@ void		UI::GoComponentsRefresh()
 
 	for (IComponent* compo : gameObject->GetListComponent())
 	{
-		if (compo->name == "Transform")
-			continue ;
 		Gtk::TreeModel::iterator newRow = GameObjectComponentsList->append();
 		(*newRow)[model2.m_col_name] = compo->name;
 		(*newRow)[model2.del] = false;
@@ -816,15 +693,12 @@ void		UI::GoComponentsSelection()
 	Gtk::TreeModel::iterator selection = GameObjectComponentsTreeView->get_selection()->get_selected();
 	if(selection)
 	{
-		std::stringstream ss;
-		ss << (*selection)[model2.m_col_name];
-	 	std::string name = ss.str();
-		
-	 	// 1 - add here and create <name>PropertyRefresh()
-		if (name == "Skin")
+
+	 	std::string name = (*selection)[model2.m_col_name];
+	 	if (name == "Transform")
+	 		TransformPropertyRefresh();
+	 	else if (name == "Skin")
 	 		SkinPropertyRefresh();
-	 	else if (name == "Camera")
-	 		CameraPropertyRefresh();
 	}
 }
 
@@ -843,11 +717,75 @@ void		UI::ComponentPropertyDisplay()
 	
 	ComponentPropertyTreeView->set_model(ComponentPropertyList);
 	ComponentPropertyTreeView->append_column("Properties:", model.m_col_name);
-	ComponentPropertyTreeView->append_column_editable("", model.value_1);
-	GameObjectComponentsTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
+	ComponentPropertyTreeView->append_column_editable("", model.m_col_value);
 
-	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(ComponentPropertyTreeView->get_column_cell_renderer(1));
-	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::ComponentPropertyEdit));
+}
+
+void 		UI::TransformPropertyRefresh()
+{
+	ClearListStore(ComponentPropertyList);
+	Transform* transform;
+	try {
+ 	  	transform = gameObject->GetComponent<Transform>();
+	}catch (DError & e) {
+	 	std::cout << "gameObject->GetComponent<Transform>() failed." << std::endl;
+	}
+	
+	Gtk::TreeModel::iterator row;
+	std::stringstream ss;
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Position x";
+	ss << transform->position.x;
+	(*row)[model.m_col_value] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Position y";
+	ss << transform->position.y;
+	(*row)[model.m_col_value] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Position z";
+	ss << transform->position.z;
+	(*row)[model.m_col_value] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Rotation x";
+	ss << transform->rotation.z;
+	(*row)[model.m_col_value] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Rotation y";
+	ss << transform->rotation.z;
+	(*row)[model.m_col_value] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Rotation z";
+	ss << transform->rotation.z;
+	(*row)[model.m_col_value] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Scale x";
+	ss << transform->scale.z;
+	(*row)[model.m_col_value] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Scale y";
+	ss << transform->scale.z;
+	(*row)[model.m_col_value] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Scale z";
+	ss << transform->scale.z;
+	(*row)[model.m_col_value] = ss.str();
 }
 
 void		UI::SkinPropertyRefresh()
@@ -856,7 +794,6 @@ void		UI::SkinPropertyRefresh()
 	Skin* skin;
 	try {
  	  	skin = gameObject->GetComponent<Skin>();
- 	  	component = skin;
 	}catch (DError & e) {
 	 	std::cout << "gameObject->GetComponent<Skin>() failed." << std::endl;
 	}
@@ -865,69 +802,11 @@ void		UI::SkinPropertyRefresh()
 	std::stringstream ss;
 
 	row = ComponentPropertyList->append();
-	(*row)[model.m_col_name] = "3DFile";
-	ss << skin->dae_file;
-	(*row)[model.value_1] = ss.str();
+	(*row)[model.m_col_name] = "File";
+	ss << skin->texture_file;
+	(*row)[model.m_col_value] = ss.str();
 	ss.str(std::string());
 
-}
-
-void		UI::CameraPropertyRefresh()
-{
-	ClearListStore(ComponentPropertyList);
-	Camera* camera;
-	try {
- 	  	camera = gameObject->GetComponent<Camera>();
- 	  	component = camera;
-	}catch (DError & e) {
-	 	std::cout << "gameObject->GetComponent<Camera>() failed." << std::endl;
-	}
-	
-	Gtk::TreeModel::iterator row;
-	std::stringstream ss;
-
-	row = ComponentPropertyList->append();
-	(*row)[model.m_col_name] = "Fov";
-	ss << camera->fov;
-	(*row)[model.value_1] = ss.str();
-	ss.str(std::string());
-
-	row = ComponentPropertyList->append();
-	(*row)[model.m_col_name] = "Clip near";
-	ss << camera->clipNear;
-	(*row)[model.value_1] = ss.str();
-	ss.str(std::string());
-
-	row = ComponentPropertyList->append();
-	(*row)[model.m_col_name] = "Clip far";
-	ss << camera->clipFar;
-	(*row)[model.value_1] = ss.str();
-	ss.str(std::string());
-
-}
-
-void		UI::ComponentPropertyEdit(const Glib::ustring& index, const Glib::ustring& value)
-{
-	switch (std::stoi(index))
-	{
-		case 0:
-			// add here on edit		
-			if (component->name == "Skin")
-				dynamic_cast<Skin*>(component)->dae_file = value;	
-			else if (component->name == "Camera")
-				dynamic_cast<Camera*>(component)->fov = std::stof(value);	
-			break;
-		
-		case 1:
-			if (component->name == "Camera")
-				dynamic_cast<Camera*>(component)->clipNear = std::stof(value);	
-			break;
-		
-		case 2:
-			if (component->name == "Camera")
-				dynamic_cast<Camera*>(component)->clipFar = std::stof(value);	
-			break;
-	}
 }
 
 

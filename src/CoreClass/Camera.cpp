@@ -10,6 +10,9 @@ Camera	*Camera::_main = nullptr;
 Camera::Camera(float FOV, float clipN, float clipF)
 {
 	std::cout << "Construct camera" << std::endl;
+	
+	name = "Camera";
+
 	fov = FOV;
 	clipNear = clipN;
 	clipFar = clipF;
@@ -21,6 +24,7 @@ Camera::Camera(float FOV, float clipN, float clipF)
 Camera::Camera(Camera const &src)
 {
 	std::cout << "Construct camera" << std::endl;
+	name = "Skin";
 	*this = src;
 }
 

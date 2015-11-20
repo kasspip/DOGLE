@@ -55,7 +55,7 @@
                         <property name="layout_style">center</property>
                         <child>
                           <object class="GtkButton" id="button1">
-                            <property name="label" translatable="yes">New 1</property>
+                            <property name="label" translatable="yes">New</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -68,7 +68,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="button2">
-                            <property name="label" translatable="yes">Load 2</property>
+                            <property name="label" translatable="yes">Load</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -81,7 +81,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="button3">
-                            <property name="label" translatable="yes">Save 3</property>
+                            <property name="label" translatable="yes">Save</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -102,7 +102,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="label1">
-                        <property name="width_request">100</property>
+                        <property name="width_request">125</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">center</property>
@@ -131,7 +131,7 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow1">
-                        <property name="height_request">100</property>
+                        <property name="height_request">125</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">never</property>
@@ -389,7 +389,7 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow4">
-                        <property name="height_request">100</property>
+                        <property name="height_request">125</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
@@ -545,7 +545,7 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow6">
-                        <property name="height_request">100</property>
+                        <property name="height_request">125</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>

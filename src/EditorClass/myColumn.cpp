@@ -2,6 +2,8 @@
 
 myColumn::myColumn() {
 	add(m_col_name);
-	add(m_col_value);
-	// add(del);
+	add(value_1);
+	add(value_2);
+	add(value_3);
+	add(value_4);
 }

@@ -45,6 +45,9 @@ public:
 	void							ButtonLoadApp();
 	void							ButtonSaveApp();
 
+	Glib::RefPtr<Gtk::ListStore>	AppInspectorList;
+	Gtk::TreeView					*AppInspectorTreeView;
+
 	void							AppPrefabDisplay();
 	void							AppPrefabRefresh();
 	void							AppPrefabListEdit(const Glib::ustring& index, const Glib::ustring& value);
@@ -52,6 +55,9 @@ public:
 	void							ButtonNewPrefab();
 	void							ButtonDeletePrefab();
 	
+	Glib::RefPtr<Gtk::ListStore>	AppPrefabList;
+	Gtk::TreeView					*AppPrefabTreeView;
+
 	void							AppSceneDisplay();
 	void							AppSceneRefresh();
 	void							AppSceneListEdit(const Glib::ustring& index, const Glib::ustring& value);
@@ -59,15 +65,8 @@ public:
 	void							ButtonNewScene();
 	void							ButtonDeleteScene();
 
-
-	Glib::RefPtr<Gtk::ListStore>	AppListStoreInspector;
-	Gtk::TreeView					*AppListStoreInspectorview;
-
-	Glib::RefPtr<Gtk::ListStore>	AppListStoreGo;
-	Gtk::TreeView					*AppListStoreGoview;
-
-	Glib::RefPtr<Gtk::ListStore>	AppListStoreScene;
-	Gtk::TreeView					*AppListStoreSceneview;
+	Glib::RefPtr<Gtk::ListStore>	AppScenesList;
+	Gtk::TreeView					*AppScenesTreeView;
 	
 	Application*					app;
 
@@ -78,30 +77,52 @@ public:
 	void							ButtonNewInstance();
 	void							ButtonDeleteInstance();
 
+	Glib::RefPtr<Gtk::ListStore>	SceneInspectorList;
+	Gtk::TreeView					*SceneInspectorTreeView;
+
 	void							SceneListDisplay();
 	void							SceneListRefresh();
 	void							SceneListEdit(const Glib::ustring& index, const Glib::ustring& value);
 	void							SceneListSelection();
 
-	Glib::RefPtr<Gtk::ListStore>	treeSceneInspector;
-	Gtk::TreeView					*treeViewSceneInspector;
-
-	Glib::RefPtr<Gtk::ListStore>	treeSceneList;
-	Gtk::TreeView					*treeViewSceneList;
+	Glib::RefPtr<Gtk::ListStore>	SceneGameObjectsList;
+	Gtk::TreeView					*SceneGameObjectsTreeView;
 
 	static Scene*							scene;
 
 	// GameObject panel //
 	void							GoInspectorDisplay();
 	void							GoInspectorRefresh();
-	void							GoInspectorEdit(const Glib::ustring& index, const Glib::ustring& value);
+	void							GoInspectorEditCol1(const Glib::ustring& index, const Glib::ustring& value);
+	void							GoInspectorEditCol2(const Glib::ustring& index, const Glib::ustring& value);
+	void							GoInspectorEditCol3(const Glib::ustring& index, const Glib::ustring& value);
+	void							GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& value);
 	void							ButtonNewComponent();
 	void							ButtonDeleteComponent();
 	
-	Glib::RefPtr<Gtk::ListStore>	treeGameObjectInspector;
-	Gtk::TreeView					*treeViewGameObjectInspector;
+	Glib::RefPtr<Gtk::ListStore>	GameObjectInspectorList;
+	Gtk::TreeView					*GameObjectInspectorTreeView;
+
+	void							GoComponentsDisplay();
+	void							GoComponentsRefresh();
+	void							GoComponentsSelection();
+
+
+	Glib::RefPtr<Gtk::ListStore>	GameObjectComponentsList;
+	Gtk::TreeView					*GameObjectComponentsTreeView;
 
 	static GameObject*						gameObject;
+
+	// Components //
+	void							ComponentPropertyDisplay();
+	void							SkinPropertyRefresh();
+	void							CameraPropertyRefresh();
+	void							ComponentPropertyEdit(const Glib::ustring& index, const Glib::ustring& value);
+
+	Glib::RefPtr<Gtk::ListStore>	ComponentPropertyList;
+	Gtk::TreeView					*ComponentPropertyTreeView;
+
+	static IComponent*						component;
 
 
 };

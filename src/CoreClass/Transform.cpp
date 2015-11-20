@@ -6,6 +6,8 @@
 Transform::Transform()
 {
 	std::cout << "construct Transform " << std::endl;
+	name = "Transform";
+	
 	position = glm::vec3(0.0, 0.0, 0.0);
 	rotation = glm::vec3(0.0f);
 	scale = glm::vec3(1.0f);
@@ -13,6 +15,7 @@ Transform::Transform()
 
 Transform::Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc)
 {
+	name = "Transform";
 	position = pos;
 	rotation = rot;
 	scale = sc;
@@ -21,6 +24,7 @@ Transform::Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc)
 
 Transform::Transform(Transform const & src)
 {
+	name = "Transform";
 	std::cout << "construct Transform " << std::endl;
 	*this = src;
 }

@@ -16,7 +16,7 @@
 
 			Transform			*transform;
 			GameObject			*gameObject;
-
+			std::string 		name;
 		private:
 
 	};
