@@ -1,6 +1,6 @@
 #include "GameLogic.hpp"
 #include "Script.hpp"
-
+#include "Physics.hpp"
 // CONSTRUCTOR DESTRUCTOR //
 
 GameLogic::GameLogic(void)
@@ -39,6 +39,7 @@ void			GameLogic::RunState(Application & app, e_state & currentState)
 			}
 		}
 	}
+	Physics::singleton->CallCollision();
 	currentState = STATE_RENDER;
 }
 

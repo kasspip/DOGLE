@@ -53,18 +53,16 @@ void			Script::Destroy(GameObject *go)
 	go->SetDestroy(true);
 }
 
-void			Script::OnCollisionEnter(int i)
-{
-	(void)i;
-}
-
-
 void			Script::Awake() 	{}
 void			Script::Update() 	{}
 void			Script::OnGUI()		{}
 void			Script::OnPause()	{}
 void			Script::OnDestroy() {}
 void			Script::OnStop() 	{}
+void			Script::OnCollisionEnter(GameObject *go)
+{
+	(void)go;
+}
 
 // PRIVATE //
 

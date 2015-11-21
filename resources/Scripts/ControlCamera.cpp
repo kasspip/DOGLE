@@ -14,7 +14,7 @@
 
 			void			Awake()
 			{
-				transform->position =  glm::vec3(0,0,3);
+				//transform->SetPosition(0,0,3);
 			}
 
 			void			Update()
@@ -25,6 +25,7 @@
 				PopObj();
 				RemoveObj();
 
+
 				if (Inputs::singleton->KeyDown(GLFW_KEY_ESCAPE))
 				 	Application::singleton->Stop();
 				if (Inputs::singleton->KeyDown(GLFW_KEY_Q))
@@ -33,9 +34,9 @@
 
 			void			Navigation()
 			{
-				float speed = (baseSpeed * Engine::singleton->deltaTime);
+				//float speed = (baseSpeed * Engine::singleton->deltaTime);
 
-				if(Inputs::singleton->KeyPressed(GLFW_KEY_W))
+				/*if(Inputs::singleton->KeyPressed(GLFW_KEY_W))
 					transform->position -= glm::vec3(0, 0, speed);
         		if(Inputs::singleton->KeyPressed(GLFW_KEY_S))
 					transform->position += glm::vec3(0, 0, speed);
@@ -47,24 +48,18 @@
 					transform->position += glm::vec3(0.0, speed, 0.0);
 				if (Inputs::singleton->KeyPressed(GLFW_KEY_LEFT_CONTROL))
 					transform->position -= glm::vec3(0.0, speed, 0.0);
-
+*/
 				
-				if(Inputs::singleton->KeyPressed(GLFW_KEY_UP))
+			/*	if(Inputs::singleton->KeyPressed(GLFW_KEY_UP))
 					Camera::GetMainCamera()->GetComponent<Transform>()->rotation += glm::vec3(speed * 3,0,0);
 				if(Inputs::singleton->KeyPressed(GLFW_KEY_DOWN))
 					Camera::GetMainCamera()->GetComponent<Transform>()->rotation -= glm::vec3(speed * 3,0,0);
 				if(Inputs::singleton->KeyPressed(GLFW_KEY_LEFT))
 					Camera::GetMainCamera()->GetComponent<Transform>()->rotation -= glm::vec3(0,speed * 3,0);
 				if(Inputs::singleton->KeyPressed(GLFW_KEY_RIGHT))
-					Camera::GetMainCamera()->GetComponent<Transform>()->rotation += glm::vec3(0,speed * 3,0);
+					Camera::GetMainCamera()->GetComponent<Transform>()->rotation += glm::vec3(0,speed * 3,0);*/
 			}
 
-			void			OnCollisionEnter(int i)
-			{
-				std::cout << i << std::endl;
-			}	
-
-		private:
 			void			PopObj()
 			{
 				if (!obj && Inputs::singleton->KeyDown(GLFW_KEY_E))

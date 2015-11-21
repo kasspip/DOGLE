@@ -24,24 +24,16 @@ APPLICATION:42run|1280|1280
 		SKIN:cube.dae
 
 	SCENE:Level1
-		GAMEOBJECT:MonCube (3)
-			TRANSFORM:0,0,0|0,0,0|1,1,1
+		GAMEOBJECT:MonCube (2)
+			TRANSFORM:0,0,-10|0,0,0|1,1,1
 			SKIN:cube.dae
 			SCRIPT:MyCube
+			COLLIDER:true|1
+		GAMEOBJECT:Floor
+			TRANSFORM:-0.7,-5,-10|0,0,0|1000,1,1000
+			SKIN:cube.dae
+			COLLIDER:true|0.0
 		GAMEOBJECT:Camera1 (4)
-			TRANSFORM:0,0,0|0,0,0|1,1,1
-			CAMERA:45|0.1|100
-			SCRIPT:ControlCamera
-	SCENE:Level2
-		GAMEOBJECT:MonCube (5)
-			TRANSFORM:0.5,0,0|0,0,0|1,1,1
-			SKIN:cube.dae
-			SCRIPT:MyCube
-		GAMEOBJECT:MonCube (6)
-			TRANSFORM:-0.5,0,0|0,0,0|1,1,1
-			SKIN:cube.dae
-			SCRIPT:MyCube
-		GAMEOBJECT:Camera1 (7)
 			TRANSFORM:0,0,0|0,0,0|1,1,1
 			CAMERA:45|0.1|100
 			SCRIPT:ControlCamera

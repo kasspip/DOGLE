@@ -5,12 +5,11 @@
 
 Light::Light(void)
 {
-	name = "Light";
+
 }
 
 Light::Light(Light const & src)
 {
-	name = "Light";
 	*this = src;
 }
 

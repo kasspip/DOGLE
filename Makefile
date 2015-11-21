@@ -11,6 +11,7 @@ SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Camera.cpp \
 		src/CoreClass/Light.cpp \
 		src/CoreClass/Script.cpp \
+		src/CoreClass/Collider.cpp \
 
 SRC +=	src/BuilderClass/ScriptFactory.cpp \
 		src/BuilderClass/Builder.cpp \
@@ -54,23 +55,38 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-framework CoreVideo \
 			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib\
 			resources/Scripts/GameScripts.a \
+			-L$(HOME)/.brew/lib -lBullet3Common -lBullet3Dynamics\
+			-lBullet3Dynamics\
+			-lBulletCollision\
+			-lBullet3Collision\
+			-lBullet3Geometry\
+			-lBulletDynamics\
+			-lBullet3Common\
+			-lBullet3OpenCL_clew\
+			-lBulletSoftBody\
+			-lLinearMath\
 
-FLAGS = -Wall -Wextra -Werror -std=c++14 -g
+FLAGS =  -std=c++14 -g
 
 CC = clang++ 
 
 SOIL2 = include/soil2/lib/macosx/libsoil2-debug.a
 
+BULLET_INC = -I$(HOME)/.brew/include/bullet
+
+
 all: $(NAME)
 
-$(NAME): $(SOIL2) $(GAMESCRIPTS) $(OBJ) 
+COMPGAMESCRIPTS:
+	make -C resources/Scripts/
+
+$(NAME): COMPGAMESCRIPTS $(SOIL2)  $(OBJ) 
 	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) -o $(NAME)
 
 %.o: %.cpp
-	$(CC) -c $(FLAGS) $(INCLUDES) $< -o $@
+	$(CC) -c $(FLAGS) $(INCLUDES) $(BULLET_INC) $< -o $@
 
-$(GAMESCRIPTS):
-	make -C resources/Scripts/
+
 
 $(SOIL2):
 	make -C include/soil2/make/macosx soil2-static-lib

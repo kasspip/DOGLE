@@ -7,13 +7,11 @@ std::string	Skin::_3Dobjects_path = std::string("resources/3D objects/");
 std::string	Skin::_images_path = std::string("resources/Images/");
 
 
-Skin::Skin(std::string obj) : dae_file(obj)
+Skin::Skin(std::string obj) : _dae_file(obj)
 {
 	std::cout << "construct Skin from " << obj << std::endl;
-	name = "Skin";
-
 	Assimp::Importer	importer;
-	const aiScene		*scene = importer.ReadFile((_3Dobjects_path + dae_file).c_str(), aiProcess_Triangulate);
+	const aiScene		*scene = importer.ReadFile((_3Dobjects_path + _dae_file).c_str(), aiProcess_Triangulate);
 
 	if (!scene)
 		throw DError() << msg("[Skin] " + _3Dobjects_path + obj + ": Invalid COLLADA file.");
@@ -56,7 +54,6 @@ Skin::Skin(std::string obj) : dae_file(obj)
 Skin::Skin(Skin const & src)
 {
 	std::cout << "construct copy Skin"  << std::endl;
-	name = "Skin";
 	*this = src;
 }
 
@@ -114,7 +111,7 @@ GLfloat		*Skin::_CopyArray(GLfloat *vec, unsigned int sz)
 
 Skin	&Skin::operator=(Skin const & rhs)
 {
-	dae_file = rhs.dae_file;
+	_dae_file = rhs._dae_file;
 	nb_vertices = rhs.nb_vertices;
 	positions = _CopyArray(rhs.positions, nb_vertices * 3);
 	normals = _CopyArray(rhs.normals, nb_vertices * 3);
@@ -145,7 +142,7 @@ std::string		Skin::toString(void) const
 {
 	std::stringstream ss;
 	ss << "# Component Skin #" << std::endl;
-	ss << "COLLADA file :" << dae_file << "\n";
+	ss << "COLLADA file :" << _dae_file << "\n";
 	ss << "Texture file :" << texture_file << "\n";
 	ss << "Vertex count : " << nb_vertices << std::endl;
 	ss << "Array positions =\n";
@@ -177,7 +174,7 @@ void			Skin::Save(std::ofstream &file)
 	else
 		TABS = "\t\t\t";
 	file << TABS << "SKIN:"
-	<< dae_file << std::endl;
+	<< _dae_file << std::endl;
 }
 
 void		Skin::_flipTextureData(unsigned char *data, int w, int h)

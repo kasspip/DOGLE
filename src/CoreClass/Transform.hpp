@@ -17,19 +17,40 @@
 		
 			Transform &operator=(Transform const &rhs);
 			
-			glm::vec3	position;
-			glm::vec3	rotation;
-			glm::vec3	scale;
+
 
 			glm::mat4	CalculateTransform();
 			std::string toString(void) const;
 			void		Save(std::ofstream &file);
 			glm::mat4	GetMatrice();
+			
+			glm::vec3	GetPosition() const;
+			glm::vec3	GetRotation() const;
+			glm::vec3	GetScale() const;
+			glm::vec3	Forward() const;
+			glm::vec3	Up() const;
+			glm::vec3	Left() const;
+
+			glm::vec3	_position;
+			glm::vec3	_rotation;
+			glm::vec3	_scale;
+
+			void		SetPosition(float x, float y, float z);
+			void		SetRotation(float x, float y, float z);
+			void		SetScale(float x, float y, float z);
+			void		SetPosition(glm::vec3 v);
+			void		SetRotation(glm::vec3 v);
+			void		SetScale(glm::vec3 v);
 
 		private:
 
 			glm::mat4	_local;
 			glm::mat4	_world;
+
+			void		_SetPhysicPosition();
+			void		_SetPhysicRotation();
+			void		_SetPhysicScale();
+			void		_SetModuloRotation();
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Transform const &rhs);

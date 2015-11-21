@@ -10,9 +10,6 @@ Camera	*Camera::_main = nullptr;
 Camera::Camera(float FOV, float clipN, float clipF)
 {
 	std::cout << "Construct camera" << std::endl;
-	
-	name = "Camera";
-
 	fov = FOV;
 	clipNear = clipN;
 	clipFar = clipF;
@@ -24,7 +21,6 @@ Camera::Camera(float FOV, float clipN, float clipF)
 Camera::Camera(Camera const &src)
 {
 	std::cout << "Construct camera" << std::endl;
-	name = "Skin";
 	*this = src;
 }
 
@@ -62,15 +58,17 @@ glm::mat4		Camera::View()
 {
 
 	glm::vec3 front;
+	glm::vec3 rot = transform->GetRotation();
+	glm::vec3 pos = transform->GetPosition();
 
-	front.x = cos(glm::radians(transform->rotation.x)) * sin(glm::radians(transform->rotation.y));
-	front.y = sin(glm::radians(transform->rotation.x));
-	front.z = (cos(glm::radians(transform->rotation.x)) * cos(glm::radians(transform->rotation.y))) * -1;
+	front.x = cos(rot.x) * sin(rot.y);
+	front.y = sin(rot.x);
+	front.z = (cos(rot.x) * cos(rot.y)) * -1;
 
 	cameraFront = glm::normalize(front);
 
-	return glm::lookAt(	transform->position, 
-						transform->position + cameraFront,
+	return glm::lookAt(	pos, 
+						pos + cameraFront,
 						cameraUp);
 }
 

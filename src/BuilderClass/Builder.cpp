@@ -18,8 +18,8 @@ Builder::Builder()
 		_token.push_back(std::make_pair("CAMERA:", &Builder::_ParseCamera));
 		_token.push_back(std::make_pair("SCRIPT:", &Builder::_ParseScript));
 		_token.push_back(std::make_pair("SKIN:", &Builder::_ParseSkin));
+		_token.push_back(std::make_pair("COLLIDER", &Builder::_ParseColliderGo));
 	}
-
 	#include "ScriptsRegister.cpp"
 }
 
@@ -43,7 +43,7 @@ Application*	Builder::Build(std::string file)
 		myfile.close();
 	}
 	else 
-		throw DError() << msg("Build() failed. " + file + " cannot be found."); 
+		throw DError() << msg("Build() failed. " + file + " cannot be found.");
 	if (_go && _scene)
 	{
 		_scene->AddGameObject(_go);
@@ -67,6 +67,14 @@ void			Builder::_ParseLine(std::string& line)
 			return ;
 		}
 	}
+	for (std::size_t i = 0; i < _tokenGo.size(); i++)
+	{
+		if ((line.find( _tokenGo[i].first )) != std::string::npos)
+		{
+			(this->*_tokenGo[i].second)();
+			return ;
+		}
+	}
 	throw DError() << msg("Parsing stop. No registered token found with line : \n" + line);
 }
 
@@ -77,6 +85,29 @@ void			Builder::_ParseApplication(std::string& line)
 	
 	_app = new Application(attributs[0], stoi(attributs[1]), stoi(attributs[2]));
 	
+	delete[] attributs;
+}
+
+void			Builder::_ParseColliderGo(std::string& line)
+{
+	std::string	*attributs;
+	attributs = _GetAttributs(line, 2);
+
+	if (!_go->GetComponent<Skin>())
+		throw DError() << msg("Build() failed. A collider need a skin to be build.");
+	std::cout << "LINE = " << line << std::endl;
+	_go->AddComponent(new Collider(_go, _AttributToBool(attributs[0]), stof(attributs[1])));
+	delete[] attributs;
+}
+
+void			Builder::_ParseCollider(std::string& line)
+{
+	std::string	*attributs;
+	attributs = _GetAttributs(line, 4);
+	
+	if (_go != nullptr)
+		_app->AddPrefab(_go);
+	_go->AddComponent(new Collider(_AttributToVec3(attributs[0]), _AttributToVec3(attributs[1]), _AttributToBool(attributs[2]), stof(attributs[3])));
 	delete[] attributs;
 }
 
@@ -200,6 +231,15 @@ glm::vec3		Builder::_AttributToVec3(std::string& attribut)
 	vector.y = stof(value[1]);
 	vector.z = stof(value[2]);
 	return vector;
+}
+
+bool			Builder::_AttributToBool(std::string& attribut)
+{
+	std::istringstream	ss(attribut);
+	bool				ret;
+
+	ss >> std::boolalpha >> ret;
+	return ret;
 }
 
 // GETTER SETTER //
