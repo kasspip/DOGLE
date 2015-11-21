@@ -16,17 +16,19 @@
 					
 			std::string 		toString(void) const;
 			void				Save(void);
+			void				Stop();
 
 			// Prefab
 			void				AddPrefab(GameObject* gameObject);
 			GameObject*			FindPrefab(std::string name);
+			void				DeletePrefab(std::string name);
 
 			//	Scene
 			void				AddScene(Scene* scene);
 			Scene*				FindScene(std::string name);
 			void				LoadScene(Scene* scene);
 			void				LoadScene(std::string name);
-			void				Stop();
+			void				DeleteScene(std::string name);
 
 			std::list<GameObject*>	GetListPrefab();
 			std::list<Scene*>	GetListScene();

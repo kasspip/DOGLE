@@ -6,14 +6,14 @@
 
 // CONSTRUCTOR DESTRUCTOR //
 
-Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf) : center(pos), size(sz), enable(b), mass(massf), _skinned(false), impulse(glm::vec3()), force(glm::vec3())
+Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf) : center(pos), size(sz), enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(false)
 {
 	std::cout << "construct Collider withoud skin" << std::endl;
 	type = "Collider";
 
 }
 
-Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf), _skinned(true), impulse(glm::vec3()), force(glm::vec3())
+Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(true)
 {
 	Skin			*skin = go->GetComponent<Skin>();
 	const GLfloat	min_f = std::numeric_limits<float>::min();

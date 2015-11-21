@@ -18,6 +18,7 @@ class PopupInstancePrefab :  public Gtk::Dialog
 public:
 	PopupInstancePrefab(Gtk::Window* parent, Application *app);
 	GameObject*		GetSelection();
+	void 			CloseWindow();
 
 private:
 

@@ -66,7 +66,9 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-lBulletSoftBody\
 			-lLinearMath\
 
-FLAGS =  -std=c++14 -g
+DEPRECATED = -Wno-ignored-qualifiers -Wno-deprecated-register
+
+FLAGS =  -Wall -Wextra -Werror -std=c++14 -g $(DEPRECATED)
 
 CC = clang++ 
 

@@ -34,6 +34,23 @@ std::ostream	&operator<<(std::ostream & o, Application const & rhs)
 
 // PUBLIC //
 
+void			Application::AddScene(Scene* scene)
+{ 
+	_listScene.push_back(scene);
+	if (_sceneToLoad == nullptr)
+		_sceneToLoad = scene;
+}
+
+Scene*			Application::FindScene(std::string name)
+{
+	for (Scene* scene : _listScene)
+	{
+		if (scene->name == name)
+			return scene;
+	}
+	throw DError() << msg("FindScene(), resquested scene not found.");
+}
+
 void			Application::LoadScene(Scene* scene)
 {
 	_sceneToLoad = scene;
@@ -44,15 +61,23 @@ void			Application::LoadScene(std::string name)
 	_sceneToLoad = FindScene(name);
 }
 
+void			Application::DeleteScene(std::string n) 
+{ 
+	std::list<Scene*>::iterator it = _listScene.begin();
+	for (; it != _listScene.end(); it++)
+	{
+		if ((*it)->name == n)
+		{
+			delete *it;
+			_listScene.erase(it);
+			break ;
+		}
+	}
+}
+
 void			Application::AddPrefab(GameObject* gameObject) 
 { 
 	_listPrefab.push_back(gameObject);
-}
-
-void			Application::Stop()
-{
-	_appShouldClose = true;
-	glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 GameObject*		Application::FindPrefab(std::string n)
@@ -63,6 +88,25 @@ GameObject*		Application::FindPrefab(std::string n)
 			return go;
 	}
 	throw DError() << msg("FindPrefab(): no Prefab " + n + " in application " + name);
+}
+
+void			Application::DeletePrefab(std::string n) 
+{ 
+	std::list<GameObject*>::iterator it = _listPrefab.begin();
+	for (; it != _listPrefab.end(); it++)
+	{
+		if ((*it)->name == n)
+		{
+			_listPrefab.erase(it);
+			break ;
+		}
+	}
+}
+
+void			Application::Stop()
+{
+	_appShouldClose = true;
+	glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 void			Application::Save(void)
@@ -90,23 +134,6 @@ void			Application::Save(void)
 	for (Scene* scene : _listScene)
 		scene->Save(file);
 	file.close();
-}
-
-void			Application::AddScene(Scene* scene)
-{ 
-	_listScene.push_back(scene);
-	if (_sceneToLoad == nullptr)
-		_sceneToLoad = scene;
-}
-
-Scene*			Application::FindScene(std::string name)
-{
-	for (Scene* scene : _listScene)
-	{
-		if (scene->name == name)
-			return scene;
-	}
-	throw DError() << msg("FindScene(), resquested scene not found.");
 }
 
 std::string		Application::toString(void) const

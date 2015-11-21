@@ -173,18 +173,10 @@ void		UI::AppInspectorEdit(const Glib::ustring& index, const Glib::ustring& valu
 {
 	switch (std::stoi(index))
 	{
-		case 0:
-			app->name = value;		
-			break;
-		case 1:
-			app->winW = std::stoi(value);
-			break;
-		case 2:
-			app->winH = std::stoi(value);
-			break;
-		case 3:
-			app->FPS = std::stoi(value);
-			break;
+		case 0:		app->name = value; 				break;
+		case 1:		app->winW = std::stoi(value); 	break;
+		case 2:		app->winH = std::stoi(value); 	break;
+		case 3:		app->FPS = std::stoi(value); 	break;
 	}
 }
 
@@ -206,36 +198,25 @@ void		UI::AppPrefabDisplay()
 	AppPrefabTreeView->append_column_editable("Prefabs :", model2.m_col_name);
 	AppPrefabTreeView->append_column_editable("", model2.del);
 	AppPrefabTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
-	
-
-	for (GameObject* go : app->GetListPrefab())
-	{
-		Gtk::TreeModel::iterator iter = AppPrefabList->append();
-		(*iter)[model2.m_col_name] = go->name;
-		(*iter)[model2.del] = false;
-	}
 
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(AppPrefabTreeView->get_column_cell_renderer(0));
 	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::AppPrefabListEdit));
 
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = AppPrefabTreeView->get_selection();
 	treeSelection->signal_changed().connect(sigc::mem_fun(*this, &UI::AppPrefabSelection));
-
+	
+	AppPrefabRefresh();
 }
 
 void		UI::AppPrefabRefresh()
 {
-	Gtk::TreeModel::Children children = AppPrefabTreeView->get_model()->children();
-	Gtk::TreeModel::Children::iterator iter = children.begin();
-	if (children.size() > 0)
+	ClearListStore(AppPrefabList);
+	
+	for (GameObject* go : app->GetListPrefab())
 	{
-		for (GameObject* go : app->GetListPrefab())
-		{
-			(*iter)[model2.m_col_name] = go->name;
-			if (iter == children.end())
-				break;
-			iter++;
-		}
+		Gtk::TreeModel::iterator iter = AppPrefabList->append();
+		(*iter)[model2.m_col_name] = go->name;
+		(*iter)[model2.del] = false;
 	}
 }
 
@@ -320,7 +301,24 @@ void		UI::ButtonNewPrefab()
 
 void		UI::ButtonDeletePrefab()
 {
-	std::cout << "PREFAB NEW BUTTON NOT IMPLEMENTED" << std::endl;
+	if (!gameObject || !gameObject->IsPrefab())
+		return;
+
+	Gtk::TreeModel::Children children = AppPrefabList->children();
+	Gtk::TreeModel::Children::iterator row = children.begin();
+
+	for (; row != children.end(); row++)
+	{
+		if ((*row)[model2.del] == true)
+		{
+			std::stringstream ss;
+			ss << (*row)[model2.m_col_name];
+			app->DeletePrefab( ss.str() );
+		}
+	}
+	gameObject = nullptr;
+	AppPrefabRefresh();
+	GoInspectorRefresh();
 }
 
 
@@ -342,33 +340,23 @@ void		UI::AppSceneDisplay()
 	AppScenesTreeView->append_column_editable("",model2.del);
 	AppScenesTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
 
-	for (Scene* scene : app->GetListScene())
-	{
-		Gtk::TreeModel::iterator iter = AppScenesList->append();
-		(*iter)[model2.m_col_name] = scene->name;
-		(*iter)[model2.del] = false;
-	}
-
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(AppScenesTreeView->get_column_cell_renderer(0));
 	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::AppSceneListEdit));
 
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = AppScenesTreeView->get_selection();
 	treeSelection->signal_changed().connect(sigc::mem_fun(*this, &UI::AppSceneSelection));
+	AppSceneRefresh();
 }
 
 void		UI::AppSceneRefresh()
 {
-	Gtk::TreeModel::Children children = AppScenesTreeView->get_model()->children();
-	Gtk::TreeModel::Children::iterator iter = children.begin();
-	if (children.size() > 0)
+	ClearListStore(AppScenesList);
+
+	for (Scene* scene : app->GetListScene())
 	{
-		for (Scene* scene : app->GetListScene())
-		{
-			(*iter)[model2.m_col_name] = scene->name;
-			if (iter == children.end())
-				break;
-			iter++;
-		}
+		Gtk::TreeModel::iterator iter = AppScenesList->append();
+		(*iter)[model2.m_col_name] = scene->name;
+		(*iter)[model2.del] = false;
 	}
 }
 
@@ -453,7 +441,29 @@ void		UI::ButtonNewScene()
 
 void		UI::ButtonDeleteScene()
 {
-	std::cout << "SCENE DELETE BUTTON NOT IMPLEMENTED" << std::endl;
+	if (!scene)
+		return;
+
+	Gtk::TreeModel::Children children = AppScenesList->children();
+	Gtk::TreeModel::Children::iterator row = children.begin();
+
+	for (; row != children.end(); row++)
+	{
+		if ((*row)[model2.del] == true)
+		{
+			std::stringstream ss;
+			ss << (*row)[model2.m_col_name];
+			app->DeleteScene( ss.str() );
+		}
+	}
+	if (gameObject && !gameObject->IsPrefab())
+	{
+		gameObject = nullptr;
+		GoInspectorRefresh();
+	}
+	scene = nullptr;
+	AppSceneRefresh();
+	SceneInspectorRefresh();
 }
 
 
@@ -484,32 +494,22 @@ void		UI::SceneInspectorDisplay()
 
 void		UI::SceneInspectorRefresh()
 {
+	ClearListStore(SceneInspectorList);
+
 	if (scene)
 	{	
-		Gtk::TreeModel::Children children = SceneInspectorTreeView->get_model()->children();
-		Gtk::TreeModel::Children::iterator iter = children.begin();
-		if (children.size() == 0)
-		{
-			Gtk::TreeModel::iterator row = SceneInspectorList->append();
-			(*row)[model.m_col_name] = "Name";
-			(*row)[model.value_1] = scene->name;
-		}
-		else
-			(*iter)[model.value_1] = scene->name;
+		Gtk::TreeModel::iterator row = SceneInspectorList->append();
+		(*row)[model.m_col_name] = "Name";
+		(*row)[model.value_1] = scene->name;
 	}
-	else
-		ClearListStore(SceneInspectorList);
-
-
+	SceneListRefresh();
 }
 
 void		UI::SceneInspectorEdit(const Glib::ustring& index, const Glib::ustring& value)
 {
 	switch (std::stoi(index))
 	{
-		case 0:
-			scene->name = value;		
-			break;
+		case 0:		scene->name = value;	break;
 	}
 	AppSceneRefresh();
 }
@@ -545,12 +545,15 @@ void		UI::SceneListDisplay()
 void		UI::SceneListRefresh()
 {
 	ClearListStore(SceneGameObjectsList);
-	Gtk::TreeModel::iterator selection;
-	for (GameObject* go : scene->GetBindGameObjectList())
+
+	if (scene)
 	{
-		Gtk::TreeModel::iterator newRow = SceneGameObjectsList->append();
-		(*newRow)[model2.m_col_name] = go->name;
-		(*newRow)[model2.del] = false;
+		for (GameObject* go : scene->GetBindGameObjectList())
+		{
+			Gtk::TreeModel::iterator newRow = SceneGameObjectsList->append();
+			(*newRow)[model2.m_col_name] = go->name;
+			(*newRow)[model2.del] = false;
+		}
 	}
 }
 
@@ -600,18 +603,26 @@ void		UI::ButtonNewInstance()
 	GameObject 	*prefab;
 
 	if (!scene)
+	{
+		std::cout << "No Scene Selected." << std::endl;
 		return;
+	}
 	PopupInstancePrefab	popup = PopupInstancePrefab(this->window, app);
+	int i = 0;
 	while ((ret = popup.run()) != Gtk::RESPONSE_CANCEL)
 	{
-		if (ret == Gtk::RESPONSE_OK && (prefab = popup.GetSelection()))
+		if ((prefab = popup.GetSelection()) != nullptr)
 		{
 			scene->InstanciatePrefab(prefab);
 			SceneListRefresh();
 			break ;
 		}
-		else
-			std::cout << "failed to instantiate prefab." << std::endl;
+		else 
+		{
+			if (i > 0)
+				break;
+			i++;
+		}
 	}
 }
 
@@ -724,9 +735,7 @@ void		UI::GoInspectorEditCol1(const Glib::ustring& index, const Glib::ustring& v
 {
 	switch (std::stoi(index))
 	{
-		case 0:
-			gameObject->name = value;		
-			break;
+		case 0:		gameObject->name = value; 	break;
 	}
 	if (gameObject->IsPrefab())
 		AppPrefabRefresh();
@@ -739,15 +748,9 @@ void		UI::GoInspectorEditCol2(const Glib::ustring& index, const Glib::ustring& v
 	Transform* transform = gameObject->GetComponent<Transform>();
 	switch (std::stoi(index))
 	{
-		case 2:
-			transform->_position.x = std::stof(value);		
-			break;
-		case 3:
-			transform->_rotation.x = std::stof(value);		
-			break;
-		case 4:
-			transform->_scale.x = std::stof(value);		
-			break;
+		case 2: 	transform->_position.x = std::stof(value); 	break;
+		case 3: 	transform->_rotation.x = std::stof(value); 	break;
+		case 4: 	transform->_scale.x = std::stof(value); 	break;
 	}
 }
 
@@ -756,15 +759,9 @@ void		UI::GoInspectorEditCol3(const Glib::ustring& index, const Glib::ustring& v
 	Transform* transform = gameObject->GetComponent<Transform>();
 	switch (std::stoi(index))
 	{
-		case 2:
-			transform->_position.y = std::stof(value);		
-			break;
-		case 3:
-			transform->_rotation.y = std::stof(value);		
-			break;
-		case 4:
-			transform->_scale.y = std::stof(value);		
-			break;
+		case 2: 	transform->_position.y = std::stof(value); 	break;
+		case 3: 	transform->_rotation.y = std::stof(value); 	break;
+		case 4: 	transform->_scale.y = std::stof(value);		break;
 	}
 }
 
@@ -773,15 +770,9 @@ void		UI::GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& v
 	Transform* transform = gameObject->GetComponent<Transform>();
 	switch (std::stoi(index))
 	{
-		case 2:
-			transform->_position.z = std::stof(value);		
-			break;
-		case 3:
-			transform->_rotation.z = std::stof(value);		
-			break;
-		case 4:
-			transform->_scale.z = std::stof(value);		
-			break;
+		case 2:		transform->_position.z = std::stof(value); 	break;
+		case 3:		transform->_rotation.z = std::stof(value); 	break;
+		case 4:		transform->_scale.z = std::stof(value);		break;
 	}
 }
 
@@ -958,23 +949,19 @@ void		UI::ComponentPropertyEdit(const Glib::ustring& index, const Glib::ustring&
 {
 	switch (std::stoi(index))
 	{
+		// add here on edit	
 		case 0:
-			// add here on edit		
 			if (component->type == "Skin")
 				dynamic_cast<Skin*>(component)->dae_file = value;	
 			else if (component->type == "Camera")
-				dynamic_cast<Camera*>(component)->fov = std::stof(value);	
-			break;
-		
+				dynamic_cast<Camera*>(component)->fov = std::stof(value); 		break;
 		case 1:
 			if (component->type == "Camera")
-				dynamic_cast<Camera*>(component)->clipNear = std::stof(value);	
-			break;
+				dynamic_cast<Camera*>(component)->clipNear = std::stof(value); 	break;
 		
 		case 2:
 			if (component->type == "Camera")
-				dynamic_cast<Camera*>(component)->clipFar = std::stof(value);	
-			break;
+				dynamic_cast<Camera*>(component)->clipFar = std::stof(value); 	break;
 	}
 }
 

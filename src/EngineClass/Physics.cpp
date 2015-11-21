@@ -186,7 +186,7 @@ void			Physics::RunState(Application & app, e_state & currentState)
 	{
 		btCollisionObject	*colObj = _dynamicsWorld->getCollisionObjectArray()[i];
 		btVector3			pos = colObj->getWorldTransform().getOrigin();
-		btQuaternion		orn = colObj->getWorldTransform().getRotation();
+		//btQuaternion		orn = colObj->getWorldTransform().getRotation();  //unused ?
 		GameObject			*go = static_cast<GameObject *>(colObj->getUserPointer());
 		Collider			*collider = go->GetComponent<Collider>();
 		btRigidBody			*rigid = btRigidBody::upcast(colObj);

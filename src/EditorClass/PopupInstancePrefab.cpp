@@ -24,19 +24,24 @@ boiteV(get_vbox())
 		(*iter)[model2.del] = false;
 	}
 
-	add_button(Gtk::Stock::OK, Gtk::RESPONSE_OK);
-	add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	Glib::RefPtr<Gtk::TreeSelection> treeSelection = treeView.get_selection();
+	treeSelection->signal_changed().connect(sigc::mem_fun(*this, &PopupInstancePrefab::CloseWindow));
+	
 	show_all();
+
+	Gtk::TreeModel::iterator selection = treeView.get_selection()->get_selected();
+	if (selection)
+		treeView.get_selection()->unselect(selection);
 }
 
 GameObject*		PopupInstancePrefab::GetSelection()
 {
 	ToggleColumn					model2;
 	Gtk::TreeModel::iterator selection = treeView.get_selection()->get_selected();
-
+	
+	GameObject *prefab = nullptr;
 	if(selection)
 	{
-		GameObject *prefab;
 		std::stringstream ss;
 	 	ss << (*selection)[model2.m_col_name];
 	 	try {
@@ -45,7 +50,11 @@ GameObject*		PopupInstancePrefab::GetSelection()
 	 	catch (DError & e) {
 	 		std::cout << "application->FindPrefab() failed." << std::endl;
 	 	}
-	 	return prefab;
 	}
-	return nullptr;
+	return prefab;
+}
+
+void 			PopupInstancePrefab::CloseWindow()
+{
+	close ();
 }
