@@ -10,7 +10,7 @@ Light::Light(void)
 
 Light::Light(Light const & src)
 {
-	name = "Skin";
+	name = "Light";
 	*this = src;
 }
 

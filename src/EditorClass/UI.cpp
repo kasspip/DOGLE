@@ -13,7 +13,7 @@ UI::UI(Application *app) : AppInspectorList(0),
 							app(app)
 {
 
-	GtkApp = Gtk::Application::create("jean.michel");
+	GtkApp = Gtk::Application::create("GTK");
 	builder = Gtk::Builder::create_from_file("src/EditorClass/unity_gtk.glade");
 	builder->get_widget("window1", window);
 	
@@ -27,7 +27,6 @@ UI::UI(Application *app) : AppInspectorList(0),
 	ComponentPropertyDisplay();
 
 	update = true;
-
 
 	/*APPLICATION NEW BUTTON*/
 	Gtk::Button	*new_button;
@@ -120,24 +119,11 @@ void		UI::ButtonNewApp()
 void		UI::ButtonLoadApp()
 {
 	std::cout << "APPLICATION LOAD BUTTON NOT IMPLEMENTED" << std::endl;
-	// Glib::RefPtr<Gtk::TreeSelection>		tmp;
-	// Gtk::ListStore::iterator 				it;
+	// // Glib::RefPtr<Gtk::Application> finder = Gtk::Application::create("org.gtkmm.example");
+	// FileFinder						fileFinder;
 
-	// Gtk::ListStore::iterator 		tmp;
-	// tmp = AppInspectorList->get_iter("0");
-
-	// while (tmp)
-	// {
-	// 	if ((*tmp)[model.del])
-	// 		tmp = AppInspectorList->erase(tmp);
-	// 	else
-	// 		tmp++;
-	// }
-
-	// tmp = AppInspectorTreeView->get_selection();
-	// tmp->signal_changed().connect(sigc::mem_fun(*this, &UI::button_new_func));
-	// it = tmp->get_selected();
-	// std::cout << (*it)[model.m_col_name] << std::endl;
+	// GtkApp->add_window(fileFinder);
+	// GtkApp->run(fileFinder);
 }
 
 void		UI::ButtonSaveApp()
@@ -207,7 +193,6 @@ void		UI::AppInspectorEdit(const Glib::ustring& index, const Glib::ustring& valu
 
 
 
-
 // APP PREFAB LIST //
 
 
@@ -235,7 +220,6 @@ void		UI::AppPrefabDisplay()
 
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = AppPrefabTreeView->get_selection();
 	treeSelection->signal_changed().connect(sigc::mem_fun(*this, &UI::AppPrefabSelection));
-
 
 }
 
@@ -304,7 +288,7 @@ void		UI::ButtonNewPrefab()
 	}
 	
 	int		ret;
-	Popup	pop = Popup("New game object", this->window, "Choose a prefab name:");
+	Popup	pop = Popup("New GameObject", this->window, "Name:");
 
 	while ((ret = pop.run()) != Gtk::RESPONSE_CANCEL)
 	{
@@ -436,7 +420,35 @@ void		UI::AppSceneSelection()
 
 void		UI::ButtonNewScene()
 {
-	std::cout << "SCENE NEW BUTTON NOT IMPLEMENTED" << std::endl;
+	int		ret;
+	Popup	pop = Popup("New Scene", this->window, "Name:");
+
+	while ((ret = pop.run()) != Gtk::RESPONSE_CANCEL)
+	{
+		if (ret == Gtk::RESPONSE_OK && pop.getText().length())
+		{
+			if (!AppScenesList)
+			{
+				builder->get_widget("treeview3", AppScenesTreeView);
+				AppScenesList = Gtk::ListStore::create(model2);
+				AppScenesTreeView->set_model(AppScenesList);
+				
+				AppScenesTreeView->append_column_editable("Prefabs :",model2.m_col_name);
+				AppScenesTreeView->append_column_editable("",model2.del);
+				AppScenesTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
+			}
+			Gtk::TreeModel::iterator newRow = AppScenesList->append();
+			(*newRow)[model2.m_col_name] = pop.getText();
+			(*newRow)[model2.del] = false;
+			app->AddScene(new Scene(pop.getText()));
+			break ;
+		}
+		else
+		{
+			Gtk::MessageDialog warning(*this->window, "<b>You must specify a Scene name !</b>", true, Gtk::MESSAGE_WARNING);
+			warning.run();
+		}
+	}
 }
 
 void		UI::ButtonDeleteScene()
@@ -502,17 +514,6 @@ void		UI::SceneInspectorEdit(const Glib::ustring& index, const Glib::ustring& va
 	AppSceneRefresh();
 }
 
-void		UI::ButtonNewInstance()
-{
-	std::cout << "SCENE INSTANCIATE BUTTON NOT IMPLEMENTED" << std::endl;
-}
-
-void		UI::ButtonDeleteInstance()
-{
-	std::cout << "SCENE DELETE BUTTON NOT IMPLEMENTED" << std::endl;
-}
-
-
 
 
 
@@ -538,6 +539,7 @@ void		UI::SceneListDisplay()
 
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(SceneGameObjectsTreeView->get_column_cell_renderer(0));
 	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::SceneListEdit));
+
 }
 
 void		UI::SceneListRefresh()
@@ -592,7 +594,31 @@ void		UI::SceneListSelection()
 	}
 }
 
+void		UI::ButtonNewInstance()
+{
+	int			ret;
+	GameObject 	*prefab;
 
+	if (!scene)
+		return;
+	PopupInstancePrefab	popup = PopupInstancePrefab(this->window, app);
+	while ((ret = popup.run()) != Gtk::RESPONSE_CANCEL)
+	{
+		if (ret == Gtk::RESPONSE_OK && (prefab = popup.GetSelection()))
+		{
+			scene->InstanciatePrefab(prefab);
+			SceneListRefresh();
+			break ;
+		}
+		else
+			std::cout << "failed to instantiate prefab." << std::endl;
+	}
+}
+
+void		UI::ButtonDeleteInstance()
+{
+	std::cout << "SCENE DELETE BUTTON NOT IMPLEMENTED" << std::endl;
+}
 
 
 
@@ -816,6 +842,7 @@ void		UI::GoComponentsSelection()
 	Gtk::TreeModel::iterator selection = GameObjectComponentsTreeView->get_selection()->get_selected();
 	if(selection)
 	{
+		ClearListStore(ComponentPropertyList);
 		std::stringstream ss;
 		ss << (*selection)[model2.m_col_name];
 	 	std::string name = ss.str();
@@ -825,6 +852,8 @@ void		UI::GoComponentsSelection()
 	 		SkinPropertyRefresh();
 	 	else if (name == "Camera")
 	 		CameraPropertyRefresh();
+	 	else if (name == "Light")
+	 		LightPropertyRefresh();
 	}
 }
 
@@ -844,7 +873,7 @@ void		UI::ComponentPropertyDisplay()
 	ComponentPropertyTreeView->set_model(ComponentPropertyList);
 	ComponentPropertyTreeView->append_column("Properties:", model.m_col_name);
 	ComponentPropertyTreeView->append_column_editable("", model.value_1);
-	GameObjectComponentsTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
+	ComponentPropertyTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
 
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(ComponentPropertyTreeView->get_column_cell_renderer(1));
 	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::ComponentPropertyEdit));
@@ -852,7 +881,6 @@ void		UI::ComponentPropertyDisplay()
 
 void		UI::SkinPropertyRefresh()
 {
-	ClearListStore(ComponentPropertyList);
 	Skin* skin;
 	try {
  	  	skin = gameObject->GetComponent<Skin>();
@@ -874,7 +902,6 @@ void		UI::SkinPropertyRefresh()
 
 void		UI::CameraPropertyRefresh()
 {
-	ClearListStore(ComponentPropertyList);
 	Camera* camera;
 	try {
  	  	camera = gameObject->GetComponent<Camera>();
@@ -903,6 +930,27 @@ void		UI::CameraPropertyRefresh()
 	ss << camera->clipFar;
 	(*row)[model.value_1] = ss.str();
 	ss.str(std::string());
+
+}
+
+void		UI::LightPropertyRefresh()
+{
+	Light* light;
+	try {
+ 	  	light = gameObject->GetComponent<Light>();
+ 	  	component = light;
+	}catch (DError & e) {
+	 	std::cout << "gameObject->GetComponent<Light>() failed." << std::endl;
+	}
+	
+	Gtk::TreeModel::iterator row;
+	std::stringstream ss;
+
+	// row = ComponentPropertyList->append();
+	// (*row)[model.m_col_name] = "3DFile";
+	// ss << skin->dae_file;
+	// (*row)[model.value_1] = ss.str();
+	// ss.str(std::string());
 
 }
 

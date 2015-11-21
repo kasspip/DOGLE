@@ -15,7 +15,9 @@ NAME = editor
 SRC = 	UI.cpp \
 		Popup.cpp \
 		myColumn.cpp \
-		ToggleColumn.cpp
+		ToggleColumn.cpp \
+		PopupInstancePrefab.cpp \
+		FileFinder.cpp \
 
 SRC +=	../CoreClass/Application.cpp \
 		../CoreClass/Scene.cpp \

@@ -10,6 +10,7 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/window.h>
 
+
 class Popup :  public Gtk::Dialog
 {
 public:

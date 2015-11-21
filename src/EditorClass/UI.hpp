@@ -10,25 +10,28 @@
 #include "ToggleColumn.hpp"
 #include <gtkmm/messagedialog.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtkmm/application.h>
 
 #include "Builder.hpp"
 #include "Engine.hpp"
 #include "DOGLE.hpp"
+#include "FileFinder.hpp"
+#include "PopupInstancePrefab.hpp"
 
 class UI
 {
 public:
+
 	UI();
 	UI(Application *app);
 	~UI();
 
-
-
 	Glib::RefPtr<Gtk::Application>	GtkApp;
 	Glib::RefPtr<Gtk::Builder>		builder;
 	Gtk::Window						*window;
+
 	bool							update;
-	/*MODELS*/
+
 	myColumn						model;
 	ToggleColumn					model2;
 
@@ -117,6 +120,7 @@ public:
 	void							ComponentPropertyDisplay();
 	void							SkinPropertyRefresh();
 	void							CameraPropertyRefresh();
+	void							LightPropertyRefresh();
 	void							ComponentPropertyEdit(const Glib::ustring& index, const Glib::ustring& value);
 
 	Glib::RefPtr<Gtk::ListStore>	ComponentPropertyList;
