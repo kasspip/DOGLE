@@ -674,43 +674,43 @@ void		UI::GoInspectorRefresh()
 
 		row = GameObjectInspectorList->append();
 		(*row)[model.m_col_name] = "Position";
-		ss << transform->position.x;
+		ss << transform->_position.x;
 		(*row)[model.value_2] = ss.str();
 		ss.str(std::string());
 		
-		ss << transform->position.y;
+		ss << transform->_position.y;
 		(*row)[model.value_3] = ss.str();
 		ss.str(std::string());
 		
-		ss << transform->position.z;
+		ss << transform->_position.z;
 		(*row)[model.value_4] = ss.str();
 		ss.str(std::string());
 		
 		row = GameObjectInspectorList->append();
 		(*row)[model.m_col_name] = "Rotation";
-		ss << transform->rotation.x;
+		ss << transform->_rotation.x;
 		(*row)[model.value_2] = ss.str();
 		ss.str(std::string());
 		
-		ss << transform->rotation.y;
+		ss << transform->_rotation.y;
 		(*row)[model.value_3] = ss.str();
 		ss.str(std::string());
 		
-		ss << transform->rotation.z;
+		ss << transform->_rotation.z;
 		(*row)[model.value_4] = ss.str();
 		ss.str(std::string());
 		
 		row = GameObjectInspectorList->append();
 		(*row)[model.m_col_name] = "Scale";
-		ss << transform->scale.x;
+		ss << transform->_scale.x;
 		(*row)[model.value_2] = ss.str();
 		ss.str(std::string());
 		
-		ss << transform->scale.y;
+		ss << transform->_scale.y;
 		(*row)[model.value_3] = ss.str();
 		ss.str(std::string());
 
-		ss << transform->scale.z;
+		ss << transform->_scale.z;
 		(*row)[model.value_4] = ss.str();
 
 		GoComponentsRefresh();
@@ -740,13 +740,13 @@ void		UI::GoInspectorEditCol2(const Glib::ustring& index, const Glib::ustring& v
 	switch (std::stoi(index))
 	{
 		case 2:
-			transform->position.x = std::stof(value);		
+			transform->_position.x = std::stof(value);		
 			break;
 		case 3:
-			transform->rotation.x = std::stof(value);		
+			transform->_rotation.x = std::stof(value);		
 			break;
 		case 4:
-			transform->scale.x = std::stof(value);		
+			transform->_scale.x = std::stof(value);		
 			break;
 	}
 }
@@ -757,13 +757,13 @@ void		UI::GoInspectorEditCol3(const Glib::ustring& index, const Glib::ustring& v
 	switch (std::stoi(index))
 	{
 		case 2:
-			transform->position.y = std::stof(value);		
+			transform->_position.y = std::stof(value);		
 			break;
 		case 3:
-			transform->rotation.y = std::stof(value);		
+			transform->_rotation.y = std::stof(value);		
 			break;
 		case 4:
-			transform->scale.y = std::stof(value);		
+			transform->_scale.y = std::stof(value);		
 			break;
 	}
 }
@@ -774,13 +774,13 @@ void		UI::GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& v
 	switch (std::stoi(index))
 	{
 		case 2:
-			transform->position.z = std::stof(value);		
+			transform->_position.z = std::stof(value);		
 			break;
 		case 3:
-			transform->rotation.z = std::stof(value);		
+			transform->_rotation.z = std::stof(value);		
 			break;
 		case 4:
-			transform->scale.z = std::stof(value);		
+			transform->_scale.z = std::stof(value);		
 			break;
 	}
 }
@@ -827,10 +827,10 @@ void		UI::GoComponentsRefresh()
 
 	for (IComponent* compo : gameObject->GetListComponent())
 	{
-		if (compo->name == "Transform")
+		if (compo->type == "Transform")
 			continue ;
 		Gtk::TreeModel::iterator newRow = GameObjectComponentsList->append();
-		(*newRow)[model2.m_col_name] = compo->name;
+		(*newRow)[model2.m_col_name] = compo->type;
 		(*newRow)[model2.del] = false;
 	}
 }
@@ -845,14 +845,14 @@ void		UI::GoComponentsSelection()
 		ClearListStore(ComponentPropertyList);
 		std::stringstream ss;
 		ss << (*selection)[model2.m_col_name];
-	 	std::string name = ss.str();
+	 	std::string type = ss.str();
 		
 	 	// 1 - add here and create <name>PropertyRefresh()
-		if (name == "Skin")
+		if (type == "Skin")
 	 		SkinPropertyRefresh();
-	 	else if (name == "Camera")
+	 	else if (type == "Camera")
 	 		CameraPropertyRefresh();
-	 	else if (name == "Light")
+	 	else if (type == "Light")
 	 		LightPropertyRefresh();
 	}
 }
@@ -960,19 +960,19 @@ void		UI::ComponentPropertyEdit(const Glib::ustring& index, const Glib::ustring&
 	{
 		case 0:
 			// add here on edit		
-			if (component->name == "Skin")
+			if (component->type == "Skin")
 				dynamic_cast<Skin*>(component)->dae_file = value;	
-			else if (component->name == "Camera")
+			else if (component->type == "Camera")
 				dynamic_cast<Camera*>(component)->fov = std::stof(value);	
 			break;
 		
 		case 1:
-			if (component->name == "Camera")
+			if (component->type == "Camera")
 				dynamic_cast<Camera*>(component)->clipNear = std::stof(value);	
 			break;
 		
 		case 2:
-			if (component->name == "Camera")
+			if (component->type == "Camera")
 				dynamic_cast<Camera*>(component)->clipFar = std::stof(value);	
 			break;
 	}

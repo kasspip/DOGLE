@@ -6,6 +6,13 @@
 Script::Script(std::string n)
 {
 	name = n;
+	type = "Script";
+}
+
+Script::Script(Script const &src)
+{
+	type = "Script";
+	*this = src;
 }
 
 Script::~Script(void)
@@ -13,10 +20,7 @@ Script::~Script(void)
 
 }
 
-Script::Script(Script const &src)
-{
-	*this = src;
-}
+
 
 // OVERLOADS //
 

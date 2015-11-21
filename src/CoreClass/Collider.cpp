@@ -9,6 +9,8 @@
 Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf) : center(pos), size(sz), enable(b), mass(massf), _skinned(false), impulse(glm::vec3()), force(glm::vec3())
 {
 	std::cout << "construct Collider withoud skin" << std::endl;
+	type = "Collider";
+
 }
 
 Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf), _skinned(true), impulse(glm::vec3()), force(glm::vec3())
@@ -18,6 +20,8 @@ Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf)
 	const GLfloat	max_f = std::numeric_limits<float>::max();
 	glm::vec3		min_vec(max_f, max_f, max_f);
 	glm::vec3		max_vec(min_f, min_f, min_f);
+
+	type = "Collider";
 
 	for (unsigned int i = 0; i < skin->nb_vertices; i = ++i)
 	{
@@ -36,6 +40,7 @@ Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf)
 
 Collider::Collider(Collider const & src) : _skinned(src._skinned)//instable
 {
+	type = "Collider";
 	*this = src;
 	std::cout << "construct Collider " << std::endl;
 }

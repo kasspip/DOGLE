@@ -27,6 +27,8 @@ SRC +=	../CoreClass/Application.cpp \
 		../CoreClass/Camera.cpp \
 		../CoreClass/Light.cpp \
 		../CoreClass/Script.cpp \
+		../CoreClass/Collider.cpp \
+
 
 SRC +=	../EngineClass/Engine.cpp \
 		../EngineClass/StateMachine.cpp \
@@ -54,6 +56,7 @@ INCLUDE = 	-I$(HOME)/.brew/include\
 			-I ../../$(HOME)/.brew/include \
 			-I ../../include/soil2/src/SOIL2 \
 			`pkg-config --cflags gtkmm-3.0` \
+			-I$(HOME)/.brew/include/bullet \
 
 GAMESCRIPTS = ../../resources/Scripts/GameScripts.a
 
@@ -67,6 +70,17 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3 \
 			$(HOME)/.brew/Cellar/assimp/3.1.1/lib/libassimp.dylib \
 			../../resources/Scripts/GameScripts.a \
 			`pkg-config --libs gtkmm-3.0` \
+			-L$(HOME)/.brew/lib -lBullet3Common -lBullet3Dynamics\
+			-lBullet3Dynamics\
+			-lBulletCollision\
+			-lBullet3Collision\
+			-lBullet3Geometry\
+			-lBulletDynamics\
+			-lBullet3Common\
+			-lBullet3OpenCL_clew\
+			-lBulletSoftBody\
+			-lLinearMath\
+
 
 SOIL2 = ../../include/soil2/lib/macosx/libsoil2-debug.a
 
@@ -75,7 +89,7 @@ FRAMEWORKS = -framework Cocoa -framework OpenGL -framework IOKit -lGlew
 all: $(NAME)
 
 $(NAME): $(SOIL2) $(GAMESCRIPTS) $(SRC:.c=.o)
-	g++ -std=c++14 -o $@ $^ -Wall -Wextra -Werror ${INCLUDE} ${LIBRARIES}
+	g++ -std=c++14 -o $@ $^ -Wall -Wextra -Wignored-qualifiers -Wdeprecated-register ${INCLUDE} ${LIBRARIES}
 	mv $(NAME) ../../
 
 $(GAMESCRIPTS):
@@ -85,7 +99,7 @@ $(SOIL2):
 	make -C ../../include/soil2/make/macosx soil2-static-lib
 
 %.o: %.cpp
-	g++ -c $^ -o $@ -Wall -Wextra -Werror -g ${INCLUDE}
+	g++ -c $^ -o $@ -Wall -Wextra -Wignored-qualifiers -Wdeprecated-register ${INCLUDE}
 
 clean:
 	rm -rf *.o
