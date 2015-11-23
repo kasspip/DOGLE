@@ -5,6 +5,8 @@
 
 Script::Script(std::string n)
 {
+	std::cout << "Construct " << name << std::endl;
+
 	name = n;
 	type = "Script";
 }
@@ -13,11 +15,13 @@ Script::Script(Script const &src)
 {
 	type = "Script";
 	*this = src;
+	std::cout << "Construct " << name << std::endl;
+
 }
 
 Script::~Script(void)
 {
-
+	std::cout << "Destruct " << name << std::endl;
 }
 
 

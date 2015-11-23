@@ -123,6 +123,7 @@ void			Application::Save(void)
 			<< "# SKIN 					<file name .dae>" << std::endl
 			<< "# SCRIPT 				<class name>" << std::endl
 			<< "# CAMERA 				<fov> <clip near> <clip far>" << std::endl
+			<< "# COLLIDER 				<center> <size> <enable> <mass>" << std::endl
 			<< std::endl;
 
 	file << "APPLICATION:"

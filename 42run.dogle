@@ -5,20 +5,35 @@
 # SKIN 					<file name .dae>
 # SCRIPT 				<class name>
 # CAMERA 				<fov> <clip near> <clip far>
+# COLLIDER 				<center> <size> <enable> <mass>
 
 APPLICATION:42run|1280|1280
-	PREFAB:monPrefab|
+	PREFAB:Camera1|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
-	SCENE:Level2
-		GAMEOBJECT:MonCube (5)|
-			TRANSFORM:0.5,0,0|0,0,0|1,1,1
+		CAMERA:45|0.1|100
+		SCRIPT:ControlCamera
+	PREFAB:MonCube|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cube.dae
+		SCRIPT:MyCube
+	PREFAB:MonTriangle|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:triangle.dae
+		SCRIPT:ScriptTriangle
+	PREFAB:child|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cube.dae
+	SCENE:Level1
+		GAMEOBJECT:MonCube (2)|
+			TRANSFORM:0,0,-10|0,0,0|1,1,1
 			SKIN:cube.dae
 			SCRIPT:MyCube
-		GAMEOBJECT:MonCube (6)|
-			TRANSFORM:-0.5,0,0|0,0,0|1,1,1
+			COLLIDER:4,5,6|0.5,0.5,0.5|true|7
+		GAMEOBJECT:Floor|
+			TRANSFORM:-0.7,-5,-10|0,0,0|1000,1,1000
 			SKIN:cube.dae
-			SCRIPT:MyCube
-		GAMEOBJECT:Camera1 (7)|
+			COLLIDER:0,0,1.49012e-07|0.5,0.5,0.5|true|7
+		GAMEOBJECT:Camera1 (4)|
 			TRANSFORM:0,0,0|0,0,0|1,1,1
 			CAMERA:45|0.1|100
 			SCRIPT:ControlCamera

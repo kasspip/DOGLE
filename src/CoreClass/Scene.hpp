@@ -18,6 +18,7 @@
 			void					Save(std::ofstream &file);
 			GameObject*				InstanciatePrefab(GameObject *prefab);
 			GameObject*				InstanciatePrefab(GameObject *prefab, Transform tr);
+			void					DeleteInstance(std::string name);
 			GameObject*				AddGameObject(GameObject* go);
 
 			GameObject*				FindGameObject(std::string name);

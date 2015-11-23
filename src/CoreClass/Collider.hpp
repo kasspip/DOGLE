@@ -10,8 +10,9 @@
 	{
 		public:
 
-			Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf);
-			Collider(GameObject *go, bool b, float massf);
+			Collider(glm::vec3 pos, glm::vec3 sz, bool b = true, float massf = 1);
+			Collider(GameObject *go, bool b = true, float massf = 1);
+			Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf, int editor);
 			Collider(Collider const &src);
 			~Collider(void);
 		
@@ -22,8 +23,8 @@
 
 			glm::vec3	center;
 			glm::vec3	size;
-			bool			enable;
-			float			mass;
+			bool		enable;
+			float		mass;
 
 			glm::vec3 	impulse;
 			glm::vec3 	force;

@@ -599,7 +599,6 @@ void		UI::SceneListSelection()
 
 void		UI::ButtonNewInstance()
 {
-	int			ret;
 	GameObject 	*prefab;
 
 	if (!scene)
@@ -609,7 +608,7 @@ void		UI::ButtonNewInstance()
 	}
 	PopupInstancePrefab	popup = PopupInstancePrefab(this->window, app);
 	int i = 0;
-	while ((ret = popup.run()) != Gtk::RESPONSE_CANCEL)
+	while (popup.run() != Gtk::RESPONSE_CANCEL)
 	{
 		if ((prefab = popup.GetSelection()) != nullptr)
 		{
@@ -628,7 +627,28 @@ void		UI::ButtonNewInstance()
 
 void		UI::ButtonDeleteInstance()
 {
-	std::cout << "SCENE DELETE BUTTON NOT IMPLEMENTED" << std::endl;
+	if (!scene)
+	{
+		std::cout << "No Scene Selected." << std::endl;
+		return;
+	}
+
+	Gtk::TreeModel::Children children = SceneGameObjectsList->children();
+	Gtk::TreeModel::Children::iterator row = children.begin();
+
+	for (; row != children.end(); row++)
+	{
+		if ((*row)[model2.del] == true)
+		{
+			std::stringstream ss;
+			ss << (*row)[model2.m_col_name];
+			scene->DeleteInstance( ss.str() );
+		}
+	}
+
+	gameObject = nullptr;
+	SceneListRefresh();
+	GoInspectorRefresh();
 }
 
 
@@ -653,9 +673,9 @@ void		UI::GoInspectorDisplay()
 	GameObjectInspectorTreeView->append_column_editable("", model.value_4);
 
 	GameObjectInspectorTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
-	GameObjectInspectorTreeView->get_column_cell_renderer(2)->set_fixed_size(25,0);
-	GameObjectInspectorTreeView->get_column_cell_renderer(3)->set_fixed_size(25,0);
-	GameObjectInspectorTreeView->get_column_cell_renderer(4)->set_fixed_size(25,0);
+	GameObjectInspectorTreeView->get_column_cell_renderer(2)->set_fixed_size(40,0);
+	GameObjectInspectorTreeView->get_column_cell_renderer(3)->set_fixed_size(40,0);
+	GameObjectInspectorTreeView->get_column_cell_renderer(4)->set_fixed_size(40,0);
 
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(GameObjectInspectorTreeView->get_column_cell_renderer(1));
 	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::GoInspectorEditCol1));
@@ -776,17 +796,6 @@ void		UI::GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& v
 	}
 }
 
-void		UI::ButtonNewComponent()
-{
-	std::cout << "COMPONENT NEW BUTTON NOT IMPLEMENTED" << std::endl;
-}
-
-void		UI::ButtonDeleteComponent()
-{
-	std::cout << "COMPONENT NEW BUTTON NOT IMPLEMENTED" << std::endl;
-}
-
-
 
 
 
@@ -821,7 +830,10 @@ void		UI::GoComponentsRefresh()
 		if (compo->type == "Transform")
 			continue ;
 		Gtk::TreeModel::iterator newRow = GameObjectComponentsList->append();
-		(*newRow)[model2.m_col_name] = compo->type;
+		if (compo->type == "Script")
+			(*newRow)[model2.m_col_name] = dynamic_cast<Script*>(compo)->name;
+		else
+			(*newRow)[model2.m_col_name] = compo->type;
 		(*newRow)[model2.del] = false;
 	}
 }
@@ -837,7 +849,7 @@ void		UI::GoComponentsSelection()
 		std::stringstream ss;
 		ss << (*selection)[model2.m_col_name];
 	 	std::string type = ss.str();
-		
+
 	 	// 1 - add here and create <name>PropertyRefresh()
 		if (type == "Skin")
 	 		SkinPropertyRefresh();
@@ -845,10 +857,66 @@ void		UI::GoComponentsSelection()
 	 		CameraPropertyRefresh();
 	 	else if (type == "Light")
 	 		LightPropertyRefresh();
+	 	else if (type == "Collider")
+	 		ColliderPropertyRefresh();
+	 	else if (gameObject->GetScript(type))
+	 		component = gameObject->GetScript(type);
+	}
+	else
+		component = nullptr;
+}
+
+void		UI::ButtonNewComponent()
+{
+	if (!gameObject)
+	{
+		std::cout << "No GameObject Selected." << std::endl;
+		return;
+	}
+	
+	PopupNewComponent	popup = PopupNewComponent(this->window);
+	int i = 0;
+	std::string compoType;
+	while (popup.run() != Gtk::RESPONSE_CANCEL)
+	{
+		if ((compoType = popup.GetSelection()).length() > 0)
+		{
+			std::cout << compoType << std::endl; 
+			SceneListRefresh();
+			break ;
+		}
+		else 
+		{
+			if (i > 0)
+				break;
+			i++;
+		}
 	}
 }
 
+void		UI::ButtonDeleteComponent()
+{
+	if (!component)
+	{
+		std::cout << "No Component Selected." << std::endl;
+		return;
+	}
 
+	Gtk::TreeModel::Children children = GameObjectComponentsList->children();
+	Gtk::TreeModel::Children::iterator row = children.begin();
+
+	for (; row != children.end(); row++)
+	{
+		if ((*row)[model2.del] == true)
+		{
+			std::stringstream ss;
+			ss << (*row)[model2.m_col_name];
+			gameObject->DeleteComponent( ss.str() );
+		}
+	}
+	GoInspectorRefresh();
+	component = nullptr;
+}
 
 
 
@@ -864,10 +932,16 @@ void		UI::ComponentPropertyDisplay()
 	ComponentPropertyTreeView->set_model(ComponentPropertyList);
 	ComponentPropertyTreeView->append_column("Properties:", model.m_col_name);
 	ComponentPropertyTreeView->append_column_editable("", model.value_1);
-	ComponentPropertyTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
+	ComponentPropertyTreeView->append_column_editable("", model.value_2);
+	ComponentPropertyTreeView->append_column_editable("", model.value_3);
+	ComponentPropertyTreeView->append_column_editable("", model.value_4);
 
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(ComponentPropertyTreeView->get_column_cell_renderer(1));
-	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::ComponentPropertyEdit));
+	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::ComponentPropertyEditCol1));
+	cellText = static_cast<Gtk::CellRendererText*>(ComponentPropertyTreeView->get_column_cell_renderer(2));
+	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::ComponentPropertyEditCol2));
+	cellText = static_cast<Gtk::CellRendererText*>(ComponentPropertyTreeView->get_column_cell_renderer(3));
+	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::ComponentPropertyEditCol3));
 }
 
 void		UI::SkinPropertyRefresh()
@@ -945,25 +1019,111 @@ void		UI::LightPropertyRefresh()
 
 }
 
-void		UI::ComponentPropertyEdit(const Glib::ustring& index, const Glib::ustring& value)
+void		UI::ColliderPropertyRefresh()
+{
+	Collider* collider;
+	try {
+ 	  	collider = gameObject->GetComponent<Collider>();
+ 	  	component = collider;
+	}catch (DError & e) {
+	 	std::cout << "gameObject->GetComponent<Collider>() failed." << std::endl;
+	}
+	
+	Gtk::TreeModel::iterator row;
+	std::stringstream ss;
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Mass";
+	ss << collider->mass;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Center";
+	ss << collider->center.x;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+	
+	ss << collider->center.y;
+	(*row)[model.value_2] = ss.str();
+	ss.str(std::string());
+	
+	ss << collider->center.z;
+	(*row)[model.value_3] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Size";
+	ss << collider->size.x;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+	
+	ss << collider->size.y;
+	(*row)[model.value_2] = ss.str();
+	ss.str(std::string());
+	
+	ss << collider->size.z;
+	(*row)[model.value_3] = ss.str();
+	ss.str(std::string());
+}
+
+
+void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustring& value)
 {
 	switch (std::stoi(index))
 	{
-		// add here on edit	
+		// 2 - add here on edit
+		// 3 - add in PopupNewComponent
 		case 0:
 			if (component->type == "Skin")
 				dynamic_cast<Skin*>(component)->dae_file = value;	
 			else if (component->type == "Camera")
-				dynamic_cast<Camera*>(component)->fov = std::stof(value); 		break;
+				dynamic_cast<Camera*>(component)->fov = std::stof(value);
+			else if (component->type == "Collider")
+				dynamic_cast<Collider*>(component)->mass = std::stof(value); 		break;
 		case 1:
 			if (component->type == "Camera")
-				dynamic_cast<Camera*>(component)->clipNear = std::stof(value); 	break;
+				dynamic_cast<Camera*>(component)->clipNear = std::stof(value);
+			else if (component->type == "Collider")
+				dynamic_cast<Collider*>(component)->center.x = std::stof(value); 	break;
 		
 		case 2:
 			if (component->type == "Camera")
-				dynamic_cast<Camera*>(component)->clipFar = std::stof(value); 	break;
+				dynamic_cast<Camera*>(component)->clipFar = std::stof(value);
+			else if (component->type == "Collider")
+				dynamic_cast<Collider*>(component)->size.x = std::stof(value); 		break;
 	}
 }
+
+void		UI::ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustring& value)
+{
+	switch (std::stoi(index))
+	{
+		case 1:
+			if (component->type == "Collider")
+				dynamic_cast<Collider*>(component)->center.y = std::stof(value); 	break;
+		
+		case 2:
+			if (component->type == "Collider")
+				dynamic_cast<Collider*>(component)->size.y = std::stof(value); 		break;
+	}
+}
+
+void		UI::ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustring& value)
+{
+	switch (std::stoi(index))
+	{
+		case 1:
+			if (component->type == "Collider")
+				dynamic_cast<Collider*>(component)->center.z = std::stof(value); 	break;
+		
+		case 2:
+			if (component->type == "Collider")
+				dynamic_cast<Collider*>(component)->size.z = std::stof(value); 		break;
+	}
+}
+
+
 
 
 

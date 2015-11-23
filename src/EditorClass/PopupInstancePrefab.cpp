@@ -1,8 +1,6 @@
 #include "PopupInstancePrefab.hpp"
 
-PopupInstancePrefab::PopupInstancePrefab(Gtk::Window* parent, Application *app) : 
-Gtk::Dialog("Instantiate", *parent), 
-boiteV(get_vbox())
+PopupInstancePrefab::PopupInstancePrefab(Gtk::Window* parent, Application *app) : Gtk::Dialog("Instantiate", *parent), boiteV(get_vbox())
 {
 	application = app;
 	ToggleColumn					model2;

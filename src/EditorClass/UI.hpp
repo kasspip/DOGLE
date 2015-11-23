@@ -3,11 +3,6 @@
 
 #include <iostream>
 #include <gtkmm.h>
-#include "../CoreClass/Application.hpp"
-# include "../CoreClass/GameObject.hpp"
-#include "Popup.hpp"
-#include "myColumn.hpp"
-#include "ToggleColumn.hpp"
 #include <gtkmm/messagedialog.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtkmm/application.h>
@@ -15,8 +10,15 @@
 #include "Builder.hpp"
 #include "Engine.hpp"
 #include "DOGLE.hpp"
+#include "../CoreClass/Application.hpp"
+#include "../CoreClass/GameObject.hpp"
+
+#include "Popup.hpp"
+#include "myColumn.hpp"
+#include "ToggleColumn.hpp"
 #include "FileFinder.hpp"
 #include "PopupInstancePrefab.hpp"
+#include "PopupNewComponent.hpp"
 
 class UI
 {
@@ -121,7 +123,10 @@ public:
 	void							SkinPropertyRefresh();
 	void							CameraPropertyRefresh();
 	void							LightPropertyRefresh();
-	void							ComponentPropertyEdit(const Glib::ustring& index, const Glib::ustring& value);
+	void							ColliderPropertyRefresh();
+	void							ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustring& value);
+	void							ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustring& value);
+	void							ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustring& value);
 
 	Glib::RefPtr<Gtk::ListStore>	ComponentPropertyList;
 	Gtk::TreeView					*ComponentPropertyTreeView;

@@ -91,12 +91,12 @@ void			Builder::_ParseApplication(std::string& line)
 void			Builder::_ParseColliderGo(std::string& line)
 {
 	std::string	*attributs;
-	attributs = _GetAttributs(line, 2);
+	attributs = _GetAttributs(line, 4);
 
 	if (!_go->GetComponent<Skin>())
 		throw DError() << msg("Build() failed. A collider need a skin to be build.");
 	std::cout << "LINE = " << line << std::endl;
-	_go->AddComponent(new Collider(_go, _AttributToBool(attributs[0]), stof(attributs[1])));
+	_go->AddComponent(new Collider(_AttributToVec3(attributs[0]), _AttributToVec3(attributs[1]), _AttributToBool(attributs[2]), stof(attributs[3])));
 	delete[] attributs;
 }
 

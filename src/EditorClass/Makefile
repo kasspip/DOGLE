@@ -17,6 +17,7 @@ SRC = 	UI.cpp \
 		myColumn.cpp \
 		ToggleColumn.cpp \
 		PopupInstancePrefab.cpp \
+		PopupNewComponent.cpp \
 		FileFinder.cpp \
 
 SRC +=	../CoreClass/Application.cpp \

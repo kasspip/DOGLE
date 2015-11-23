@@ -2,6 +2,7 @@
 #include "Transform.hpp"
 #include "SCRIPTS.hpp"
 #include "IComponent.hpp"
+#include "Script.hpp"
 
 #define FUNC(class)   
 
@@ -116,6 +117,31 @@ void					GameObject::AddComponent(IComponent *compo)
 			i->transform = dynamic_cast<Transform*>(compo);
 	}
 	_listComponent.push_back(compo);
+}
+
+void					GameObject::DeleteComponent(std::string type)
+{
+	std::list<IComponent*>::iterator it = _listComponent.begin();
+	for (; it != _listComponent.end(); it++)
+	{
+		if ((*it)->type == type || ((*it)->type == "Script" && (dynamic_cast<Script*>(*it))->name == type))
+		{
+			delete *it;
+			_listComponent.erase(it);
+			break ;
+		}
+	}
+}
+
+Script*					GameObject::GetScript(std::string name)
+{
+	for (IComponent* compo : _listComponent)
+	{
+		Script* script = nullptr;
+		if ((script = dynamic_cast<Script*>(compo)) && script->name == name)
+			return script;
+	}
+	return nullptr;
 }
 
 // PRIVATE //

@@ -8,6 +8,7 @@
 # include "Light.hpp"
 
 class IComponent;
+class Script;
 
 	class GameObject
 	{
@@ -21,6 +22,7 @@ class IComponent;
 
 			void						Save(std::ofstream &file);
 			void						AddComponent(IComponent *cmp);
+			void						DeleteComponent(std::string name);
 			std::string 				toString(void);
 			std::list<IComponent*>		GetListComponent() const;
 			void						SetParent(GameObject* go);
@@ -29,16 +31,29 @@ class IComponent;
 			void						SetDestroy(bool val);
 			bool						IsPrefab();
 			void						SetIsPrefab(bool val);
+			Script*					GetScript(std::string name);
+
 			template < typename T > T*	GetComponent(void)
 			{
-				std::list<IComponent*>::iterator it = _listComponent.begin();
-				for (; it != _listComponent.end(); it++)
+				for (IComponent* compo : _listComponent)
 				{
-					if (dynamic_cast<T*>(*it))
-						return dynamic_cast<T*>(*it);
+					if (dynamic_cast<T*>(compo))
+						return dynamic_cast<T*>(compo);
 				}
 				return nullptr;
 			}
+
+			template < typename T > std::list<T*>	GetComponents(void)
+			{
+				std::list<T*> ret;
+				for (IComponent* compo : _listComponent)
+				{
+					if (dynamic_cast<T*>(compo))
+						ret.push_back( dynamic_cast<T*>(compo) );
+				}
+				return ret;
+			}
+
 			std::string					name;
 
 		private:

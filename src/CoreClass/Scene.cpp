@@ -28,6 +28,8 @@ Scene::~Scene(void)
 	std::cout << "destruct " << name << std::endl; 
 	for (GameObject* go : _listGameObject)
 		delete go;
+	for (GameObject* go : _listBindGameObject)
+		delete go;
 }
 
 // OVERLOADS //
@@ -69,6 +71,31 @@ GameObject				*Scene::InstanciatePrefab(GameObject *prefab, Transform tr)
 	*(instance->GetComponent<Transform>()) = tr;
 	_listBindGameObject.push_back(instance);
 	return (instance);
+}
+
+void					Scene::DeleteInstance(std::string n) 
+{ 
+	std::list<GameObject*>::iterator it = _listBindGameObject.begin();
+	for (; it != _listBindGameObject.end(); it++)
+	{
+		if ((*it)->name == n)
+		{
+			delete *it;
+			_listBindGameObject.erase(it);
+			break ;
+		}
+	}
+
+	it = _listGameObject.begin();
+	for (; it != _listGameObject.end(); it++)
+	{
+		if ((*it)->name == n)
+		{
+			delete *it;
+			_listBindGameObject.erase(it);
+			break ;
+		}
+	}
 }
 
 std::string				Scene::toString(void) const
