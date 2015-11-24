@@ -16,14 +16,13 @@ Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf) : center(po
 Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(true)
 {
 	std::cout << "construct Collider with skin" << std::endl;
+	type = "Collider";
 
 	Skin			*skin = go->GetComponent<Skin>();
 	const GLfloat	min_f = std::numeric_limits<float>::min();
 	const GLfloat	max_f = std::numeric_limits<float>::max();
 	glm::vec3		min_vec(max_f, max_f, max_f);
 	glm::vec3		max_vec(min_f, min_f, min_f);
-
-	type = "Collider";
 
 	for (unsigned int i = 0; i < skin->nb_vertices; i = ++i)
 	{
@@ -40,18 +39,19 @@ Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf)
 	physic_ptr = Physics::singleton->CreatePhysic(go, this);
 }
 
-Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf, int editor) : center(pos), size(sz), enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(true)
-{
-	(void)editor;
-	std::cout << "construct Collider with builder" << std::endl;
-	type = "Collider";
-}
-
 Collider::Collider(Collider const & src) : _skinned(src._skinned)//instable
 {
 	type = "Collider";
 	*this = src;
 	std::cout << "construct Collider " << std::endl;
+}
+
+Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf, GameObject *go) : center(pos), size(sz), enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(true)
+{
+	std::cout << "construct Collider with builder" << std::endl;
+	type = "Collider";
+	physic_ptr = Physics::singleton->CreatePhysic(go, this);
+
 }
 
 Collider::~Collider(void)

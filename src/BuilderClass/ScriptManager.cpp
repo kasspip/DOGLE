@@ -71,6 +71,17 @@ int				ScriptManager::NewScript(std::string name)
 	return (1);
 }
 
+bool			ScriptManager::ScriptExists(std::string name)
+{
+	for (std::string scriptName : _scripts)
+	{
+		if (scriptName == name)
+			return true;
+	}
+	return false;
+}
+
+
 void			ScriptManager::RemoveScript(std::string name)
 {
 	if (std::find(_scripts.begin(), _scripts.end(), name) == _scripts.end())

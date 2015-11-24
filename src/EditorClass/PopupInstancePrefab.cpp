@@ -19,7 +19,6 @@ PopupInstancePrefab::PopupInstancePrefab(Gtk::Window* parent, Application *app) 
 	{
 		Gtk::TreeModel::iterator iter = list->append();
 		(*iter)[model2.m_col_name] = go->name;
-		(*iter)[model2.del] = false;
 	}
 
 	Glib::RefPtr<Gtk::TreeSelection> treeSelection = treeView.get_selection();

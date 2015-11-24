@@ -292,10 +292,7 @@ void		UI::ButtonNewPrefab()
 			break ;
 		}
 		else
-		{
-			Gtk::MessageDialog warning(*this->window, "<b>You must specify a GameObject name !</b>", true, Gtk::MESSAGE_WARNING);
-			warning.run();
-		}
+			PopWarning("<b>You must specify a GameObject name !</b>");
 	}
 }
 
@@ -394,11 +391,12 @@ void		UI::AppSceneSelection()
 	{
 		std::stringstream ss;
 		ss << (*selection)[model2.m_col_name];
-  		try {
+  		try 
+  		{
   			scene = app->FindScene( ss.str() );
   		}
   		catch (DError & e ) {
-  			std::cout << "app->FindScene() failed" << std::endl;
+  			std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
   		}
   		GoInspectorRefresh();
   		SceneInspectorRefresh();
@@ -408,35 +406,32 @@ void		UI::AppSceneSelection()
 
 void		UI::ButtonNewScene()
 {
-	int		ret;
-	Popup	pop = Popup("New Scene", this->window, "Name:");
-
-	while ((ret = pop.run()) != Gtk::RESPONSE_CANCEL)
+	std::string sceneName = PopupGetText("New Scene","Name:","<b>You must specify a Scene name</b>");
+	 
+	if (sceneName.length() == 0)
+		return;
+	if (!AppScenesList)
 	{
-		if (ret == Gtk::RESPONSE_OK && pop.getText().length())
-		{
-			if (!AppScenesList)
-			{
-				builder->get_widget("treeview3", AppScenesTreeView);
-				AppScenesList = Gtk::ListStore::create(model2);
-				AppScenesTreeView->set_model(AppScenesList);
-				
-				AppScenesTreeView->append_column_editable("Prefabs :",model2.m_col_name);
-				AppScenesTreeView->append_column_editable("",model2.del);
-				AppScenesTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
-			}
-			Gtk::TreeModel::iterator newRow = AppScenesList->append();
-			(*newRow)[model2.m_col_name] = pop.getText();
-			(*newRow)[model2.del] = false;
-			app->AddScene(new Scene(pop.getText()));
-			break ;
-		}
-		else
-		{
-			Gtk::MessageDialog warning(*this->window, "<b>You must specify a Scene name !</b>", true, Gtk::MESSAGE_WARNING);
-			warning.run();
-		}
+		builder->get_widget("treeview3", AppScenesTreeView);
+		AppScenesList = Gtk::ListStore::create(model2);
+		AppScenesTreeView->set_model(AppScenesList);
+		
+		AppScenesTreeView->append_column_editable("Prefabs :",model2.m_col_name);
+		AppScenesTreeView->append_column_editable("",model2.del);
+		AppScenesTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
 	}
+		
+	Gtk::TreeModel::iterator newRow = AppScenesList->append();
+	(*newRow)[model2.m_col_name] = sceneName;
+	(*newRow)[model2.del] = false;
+	try 
+	{
+		app->AddScene(new Scene(sceneName));
+	}
+	catch (DError & e) {
+	 	std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+	 }
+
 }
 
 void		UI::ButtonDeleteScene()
@@ -587,11 +582,12 @@ void		UI::SceneListSelection()
 	{
 	 	std::stringstream ss;
 	 	ss << (*selection)[model2.m_col_name];
-	 	try {
+	 	try 
+	 	{
  	  		gameObject = scene->FindGameObject( ss.str() );
 	 	}
 	 	catch (DError & e) {
-	 		std::cout << "scene->FindGameObject() failed." << std::endl;
+	 		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
 	 	}
 	 	GoInspectorRefresh();
 	}
@@ -603,7 +599,7 @@ void		UI::ButtonNewInstance()
 
 	if (!scene)
 	{
-		std::cout << "No Scene Selected." << std::endl;
+		PopWarning("No Scene Selected.");
 		return;
 	}
 	PopupInstancePrefab	popup = PopupInstancePrefab(this->window, app);
@@ -629,7 +625,7 @@ void		UI::ButtonDeleteInstance()
 {
 	if (!scene)
 	{
-		std::cout << "No Scene Selected." << std::endl;
+		PopWarning("No Scene Selected.");
 		return;
 	}
 
@@ -850,7 +846,7 @@ void		UI::GoComponentsSelection()
 		ss << (*selection)[model2.m_col_name];
 	 	std::string type = ss.str();
 
-	 	// 1 - add here and create <name>PropertyRefresh()
+	 	// 1 - add type here and create <name>PropertyRefresh() function
 		if (type == "Skin")
 	 		SkinPropertyRefresh();
 	 	else if (type == "Camera")
@@ -870,7 +866,7 @@ void		UI::ButtonNewComponent()
 {
 	if (!gameObject)
 	{
-		std::cout << "No GameObject Selected." << std::endl;
+		PopWarning("No GameObject Selected.");
 		return;
 	}
 	
@@ -881,8 +877,8 @@ void		UI::ButtonNewComponent()
 	{
 		if ((compoType = popup.GetSelection()).length() > 0)
 		{
-			std::cout << compoType << std::endl; 
-			SceneListRefresh();
+			CreateComponent(compoType);
+			GoComponentsRefresh();
 			break ;
 		}
 		else 
@@ -898,7 +894,7 @@ void		UI::ButtonDeleteComponent()
 {
 	if (!component)
 	{
-		std::cout << "No Component Selected." << std::endl;
+		PopWarning("No Component Selected.");
 		return;
 	}
 
@@ -917,6 +913,63 @@ void		UI::ButtonDeleteComponent()
 	GoInspectorRefresh();
 	component = nullptr;
 }
+
+void		UI::CreateComponent(std::string type)
+{
+	// 2 - add component creation here
+	if (type == "Camera")
+		gameObject->AddComponent(new Camera);
+	else if (type == "Light")
+		gameObject->AddComponent(new Light);
+	else if (type == "Skin")
+	{
+		if (gameObject->GetComponent<Skin>())
+		{
+			PopWarning("Your GameObject has already a Skin Component");
+			return ;
+		}
+		std::string fileName = PopupGetText("New Skin","Dae file:","You must specify a dae file in resources/3DObject");
+		if (fileName.length() == 0 )
+			return;
+		if (fileName.find(".dae") == std::string::npos)
+			fileName += ".dae";
+		try {
+			gameObject->AddComponent(new Skin( fileName ));
+		}
+		catch (DError & e ) {
+			std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+		}
+	}
+	else if (type == "Script")
+	{
+		PopupNewScript popup(window);
+		Script* script;
+		int		ret;
+		
+		while ((ret = popup.run()) != Gtk::RESPONSE_CANCEL)
+		{
+			if (ret == Gtk::RESPONSE_OK && (script = popup.GetSelection()) != nullptr)
+			{		
+				try 
+				{
+					gameObject->AddComponent( script );
+				}
+				catch (DError & e ) {
+					std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+				}
+				break ;
+			}
+			else 
+				PopWarning("You must choose a script");
+		}	
+	}
+
+	// else if (type == "Collider")
+
+
+}
+
+
 
 
 
@@ -947,11 +1000,12 @@ void		UI::ComponentPropertyDisplay()
 void		UI::SkinPropertyRefresh()
 {
 	Skin* skin;
-	try {
+	try 
+	{
  	  	skin = gameObject->GetComponent<Skin>();
  	  	component = skin;
 	}catch (DError & e) {
-	 	std::cout << "gameObject->GetComponent<Skin>() failed." << std::endl;
+	 	std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
 	}
 	
 	Gtk::TreeModel::iterator row;
@@ -968,11 +1022,12 @@ void		UI::SkinPropertyRefresh()
 void		UI::CameraPropertyRefresh()
 {
 	Camera* camera;
-	try {
+	try 
+	{
  	  	camera = gameObject->GetComponent<Camera>();
  	  	component = camera;
 	}catch (DError & e) {
-	 	std::cout << "gameObject->GetComponent<Camera>() failed." << std::endl;
+	 	std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
 	}
 	
 	Gtk::TreeModel::iterator row;
@@ -1001,11 +1056,12 @@ void		UI::CameraPropertyRefresh()
 void		UI::LightPropertyRefresh()
 {
 	Light* light;
-	try {
+	try 
+	{
  	  	light = gameObject->GetComponent<Light>();
  	  	component = light;
 	}catch (DError & e) {
-	 	std::cout << "gameObject->GetComponent<Light>() failed." << std::endl;
+	 	std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
 	}
 	
 	Gtk::TreeModel::iterator row;
@@ -1022,11 +1078,12 @@ void		UI::LightPropertyRefresh()
 void		UI::ColliderPropertyRefresh()
 {
 	Collider* collider;
-	try {
+	try 
+	{
  	  	collider = gameObject->GetComponent<Collider>();
  	  	component = collider;
 	}catch (DError & e) {
-	 	std::cout << "gameObject->GetComponent<Collider>() failed." << std::endl;
+	 	std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
 	}
 	
 	Gtk::TreeModel::iterator row;
@@ -1072,8 +1129,8 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 {
 	switch (std::stoi(index))
 	{
-		// 2 - add here on edit
-		// 3 - add in PopupNewComponent
+		// 3 - add edition here
+		// 4 - add choice selection in PopupNewComponent.cpp
 		case 0:
 			if (component->type == "Skin")
 				dynamic_cast<Skin*>(component)->dae_file = value;	
@@ -1157,8 +1214,28 @@ bool		UI::del(GdkEventKey *e)
 	return true;
 }
 
+std::string		UI::PopupGetText(std::string win_name, std::string label, const Glib::ustring warn)
+{
+	int		ret;
+	Popup	pop = Popup(win_name, window, label);
+	while ((ret = pop.run()) != Gtk::RESPONSE_CANCEL)
+	{
+		if (ret == Gtk::RESPONSE_OK && pop.getText().length())
+			return pop.getText();
+		else
+		{
+			Gtk::MessageDialog warning(*window, warn, true, Gtk::MESSAGE_WARNING);
+			warning.run();
+		}
+	}
+	return std::string("");
+}
 
-
+void		UI::PopWarning(const Glib::ustring warn)
+{
+	Gtk::MessageDialog warning(*window, warn, true, Gtk::MESSAGE_WARNING);
+	warning.run();
+}
 
 
 
@@ -1177,10 +1254,8 @@ int main(int ac, char **av)
 		else
 			std::cout << "Usage: " << av[0] << " <.dogle file>";
 	}
-	catch (DError & e )
-	{
-		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) 
-					<< C_DEFAULT << std::endl;
+	catch (DError & e ) {
+		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
 	}
 	return 0;
 }

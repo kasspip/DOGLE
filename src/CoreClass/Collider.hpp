@@ -12,7 +12,7 @@
 
 			Collider(glm::vec3 pos, glm::vec3 sz, bool b = true, float massf = 1);
 			Collider(GameObject *go, bool b = true, float massf = 1);
-			Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf, int editor);
+			Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf, GameObject *go);
 			Collider(Collider const &src);
 			~Collider(void);
 		

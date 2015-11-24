@@ -5,18 +5,20 @@
 
 Light::Light(void)
 {
+	std::cout << "Construct Light" << std::endl;
 	type = "Light";
 }
 
 Light::Light(Light const & src)
 {
+	std::cout << "Construct Light" << std::endl;
 	type = "Light";
 	*this = src;
 }
 
 Light::~Light(void)
 {
-
+	std::cout << "Destruct Light" << std::endl;
 }
 
 // OVERLOADS //

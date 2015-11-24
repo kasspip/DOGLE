@@ -96,7 +96,7 @@ void			Builder::_ParseColliderGo(std::string& line)
 	if (!_go->GetComponent<Skin>())
 		throw DError() << msg("Build() failed. A collider need a skin to be build.");
 	std::cout << "LINE = " << line << std::endl;
-	_go->AddComponent(new Collider(_AttributToVec3(attributs[0]), _AttributToVec3(attributs[1]), _AttributToBool(attributs[2]), stof(attributs[3])));
+	_go->AddComponent(new Collider(_AttributToVec3(attributs[0]), _AttributToVec3(attributs[1]), _AttributToBool(attributs[2]), stof(attributs[3]), _go));
 	delete[] attributs;
 }
 

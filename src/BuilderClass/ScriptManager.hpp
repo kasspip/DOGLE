@@ -17,6 +17,7 @@
 			~ScriptManager(void);
 
 			int						NewScript(std::string name);
+			bool					ScriptExists(std::string name);
 			void					RemoveScript(std::string name);
 			std::list<std::string>	GetScriptsNames();
 			std::string				ToString();

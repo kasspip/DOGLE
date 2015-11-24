@@ -18,6 +18,7 @@ SRC = 	UI.cpp \
 		ToggleColumn.cpp \
 		PopupInstancePrefab.cpp \
 		PopupNewComponent.cpp \
+		PopupNewScript.cpp \
 		FileFinder.cpp \
 
 SRC +=	../CoreClass/Application.cpp \
@@ -45,6 +46,7 @@ SRC +=	../EngineClass/Engine.cpp \
 
 SRC +=	../BuilderClass/Builder.cpp \
 		../BuilderClass/ScriptFactory.cpp \
+		../BuilderClass/ScriptManager.cpp \
 
 INCLUDE = 	-I$(HOME)/.brew/include\
 			-I ../../include \

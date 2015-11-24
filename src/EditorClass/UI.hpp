@@ -19,6 +19,7 @@
 #include "FileFinder.hpp"
 #include "PopupInstancePrefab.hpp"
 #include "PopupNewComponent.hpp"
+#include "PopupNewScript.hpp"
 
 class UI
 {
@@ -41,7 +42,8 @@ public:
 	void							run();
 	void 							UnselectTreeView( Gtk::TreeView *treeView );
 	void 							ClearListStore( Glib::RefPtr<Gtk::ListStore> list );
-
+	std::string						PopupGetText(std::string win_name, std::string label, const Glib::ustring warning);
+	void							PopWarning(const Glib::ustring warn);
 
 	// Application panel //
 	void							AppInspectorDisplay();
@@ -104,6 +106,8 @@ public:
 	void							GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& value);
 	void							ButtonNewComponent();
 	void							ButtonDeleteComponent();
+	void							CreateComponent(std::string type);
+
 	
 	Glib::RefPtr<Gtk::ListStore>	GameObjectInspectorList;
 	Gtk::TreeView					*GameObjectInspectorTreeView;
@@ -111,7 +115,6 @@ public:
 	void							GoComponentsDisplay();
 	void							GoComponentsRefresh();
 	void							GoComponentsSelection();
-
 
 	Glib::RefPtr<Gtk::ListStore>	GameObjectComponentsList;
 	Gtk::TreeView					*GameObjectComponentsTreeView;
@@ -132,8 +135,6 @@ public:
 	Gtk::TreeView					*ComponentPropertyTreeView;
 
 	static IComponent*						component;
-
-
 };
 
 #endif
