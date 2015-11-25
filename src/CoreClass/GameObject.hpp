@@ -31,7 +31,7 @@ class Script;
 			void						SetDestroy(bool val);
 			bool						IsPrefab();
 			void						SetIsPrefab(bool val);
-			Script*					GetScript(std::string name);
+			Script*						GetScript(std::string name);
 
 			template < typename T > T*	GetComponent(void)
 			{

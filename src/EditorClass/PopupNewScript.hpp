@@ -15,20 +15,23 @@
 #include "ScriptFactory.hpp"
 #include "ScriptManager.hpp"
 #include "Popup.hpp"
-
+#include "PopupConfirmation.hpp"
 
 class PopupNewScript :  public Gtk::Dialog
 {
 public:
-	PopupNewScript(Gtk::Window* parent);
+	PopupNewScript(Gtk::Window* parent, Application* app);
 	
 	void			RefreshComponents();
 	Script*			GetSelection();
 	void			OnSelection();
 	void			ButtonNewScript();
 	void			ButtonDeleteScript();
+	void 			ApplicationRemoveScripts(std::string name);
 
 	std::string		PopupGetText(std::string win_name, std::string label);
+	bool			PopupGetConfirm(std::string win_name, std::string question);
+
 
 	ScriptFactory	scriptFactory;
 
@@ -41,8 +44,10 @@ public:
 
 	Gtk::TreeModel::iterator 		selection;
 	ToggleColumn					model2;
-private:
+	std::list<std::string>			compiledScripts;
 
+private:
+	Application*					_app;
 
 };
 

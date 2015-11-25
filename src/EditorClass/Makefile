@@ -19,6 +19,7 @@ SRC = 	UI.cpp \
 		PopupInstancePrefab.cpp \
 		PopupNewComponent.cpp \
 		PopupNewScript.cpp \
+		PopupConfirmation.cpp \
 		FileFinder.cpp \
 
 SRC +=	../CoreClass/Application.cpp \

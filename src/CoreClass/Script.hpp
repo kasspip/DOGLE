@@ -14,7 +14,7 @@
 			virtual ~Script(void);
 			Script &operator=(Script const &rhs);
 
-			virtual Script* 		Clone() = 0; 
+			virtual Script* 		Clone(); 
 
 			virtual void			Update();
 			virtual void			Awake();
@@ -29,7 +29,7 @@
 
 			void					Destroy(GameObject *go);
 
-			std::string name;
+			std::string 			name;
 
 		private:
 	};

@@ -127,8 +127,7 @@ void					GameObject::DeleteComponent(std::string type)
 		if ((*it)->type == type || ((*it)->type == "Script" && (dynamic_cast<Script*>(*it))->name == type))
 		{
 			delete *it;
-			_listComponent.erase(it);
-			break ;
+			it = _listComponent.erase(it);
 		}
 	}
 }

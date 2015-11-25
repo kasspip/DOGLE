@@ -32,7 +32,7 @@ Script*		ScriptFactory::Create(const std::string& key) const
 	if(it!=m_map.end())
 		tmp=((*it).second)->Clone();
 	else
-		throw DError() << msg("ScriptFactory failed : requested class is not registered.");
+		throw DError() << msg("ScriptFactory failed : requested class " + key + " is not registered or compiled.");
 	return tmp;
 }
 // PRIVATE //

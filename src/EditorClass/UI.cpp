@@ -8,14 +8,17 @@ IComponent*		UI::component = nullptr;
 // CONSTRUCTOR DESTRUCTOR //
 
 
-UI::UI(Application *app) : AppInspectorList(0),
-							AppPrefabList(0),
-							app(app)
+UI::UI(Application *app, std::string Dfile) : 
+											dogleFile(Dfile),
+											AppInspectorList(0),
+											AppPrefabList(0),
+											app(app)
 {
 
 	GtkApp = Gtk::Application::create("GTK");
 	builder = Gtk::Builder::create_from_file("src/EditorClass/unity_gtk.glade");
 	builder->get_widget("window1", window);
+	GtkApp->signal_shutdown ().connect(sigc::mem_fun(*this, &UI::OnQuitEditor));
 	
 	AppInspectorDisplay();
 	SceneInspectorDisplay();
@@ -27,6 +30,7 @@ UI::UI(Application *app) : AppInspectorList(0),
 	ComponentPropertyDisplay();
 
 	update = true;
+	isSaved = true;
 
 	/*APPLICATION NEW BUTTON*/
 	Gtk::Button	*new_button;
@@ -129,7 +133,10 @@ void		UI::ButtonLoadApp()
 void		UI::ButtonSaveApp()
 {
 	if (app)
+	{
+		isSaved = true;
 		app->Save();
+	}
 }
 
 void		UI::AppInspectorDisplay()
@@ -178,6 +185,7 @@ void		UI::AppInspectorEdit(const Glib::ustring& index, const Glib::ustring& valu
 		case 2:		app->winH = std::stoi(value); 	break;
 		case 3:		app->FPS = std::stoi(value); 	break;
 	}
+	isSaved = false;
 }
 
 
@@ -235,6 +243,7 @@ void		UI::AppPrefabListEdit(const Glib::ustring& index, const Glib::ustring& val
 		counter++;
 	}
 	GoInspectorRefresh();
+	isSaved = false;
 }
 
 void		UI::AppPrefabSelection()
@@ -289,6 +298,8 @@ void		UI::ButtonNewPrefab()
 			(*newRow)[model2.m_col_name] = pop.getText();
 			(*newRow)[model2.del] = false;
 			app->AddPrefab(new GameObject(pop.getText()));
+			
+			isSaved = false;
 			break ;
 		}
 		else
@@ -316,6 +327,8 @@ void		UI::ButtonDeletePrefab()
 	gameObject = nullptr;
 	AppPrefabRefresh();
 	GoInspectorRefresh();
+
+	isSaved = false;
 }
 
 
@@ -361,7 +374,7 @@ void		UI::AppSceneListEdit(const Glib::ustring& index, const Glib::ustring& valu
 {
 	int	target = std::stoi(index);
 	int	counter = 0;
-
+	
 	for (Scene* scene : app->GetListScene())
 	{
 		if (counter == target)
@@ -372,6 +385,7 @@ void		UI::AppSceneListEdit(const Glib::ustring& index, const Glib::ustring& valu
 		counter++;
 	}
   	SceneInspectorRefresh();
+	isSaved = false;
 }
 
 void		UI::AppSceneSelection()
@@ -431,7 +445,8 @@ void		UI::ButtonNewScene()
 	catch (DError & e) {
 	 	std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
 	 }
-
+	
+	isSaved = false;
 }
 
 void		UI::ButtonDeleteScene()
@@ -459,6 +474,8 @@ void		UI::ButtonDeleteScene()
 	scene = nullptr;
 	AppSceneRefresh();
 	SceneInspectorRefresh();
+	
+	isSaved = false;
 }
 
 
@@ -507,6 +524,7 @@ void		UI::SceneInspectorEdit(const Glib::ustring& index, const Glib::ustring& va
 		case 0:		scene->name = value;	break;
 	}
 	AppSceneRefresh();
+	isSaved = false;
 }
 
 
@@ -568,6 +586,7 @@ void		UI::SceneListEdit(const Glib::ustring& index, const Glib::ustring& value)
 		counter++;
 	}
 	GoInspectorRefresh();
+	isSaved = false;
 }
 
 void		UI::SceneListSelection()
@@ -610,6 +629,7 @@ void		UI::ButtonNewInstance()
 		{
 			scene->InstanciatePrefab(prefab);
 			SceneListRefresh();
+			isSaved = false;
 			break ;
 		}
 		else 
@@ -645,6 +665,8 @@ void		UI::ButtonDeleteInstance()
 	gameObject = nullptr;
 	SceneListRefresh();
 	GoInspectorRefresh();
+
+	isSaved = false;
 }
 
 
@@ -757,6 +779,7 @@ void		UI::GoInspectorEditCol1(const Glib::ustring& index, const Glib::ustring& v
 		AppPrefabRefresh();
 	else
 		SceneListRefresh();
+	isSaved = false;
 }
 
 void		UI::GoInspectorEditCol2(const Glib::ustring& index, const Glib::ustring& value)
@@ -768,6 +791,7 @@ void		UI::GoInspectorEditCol2(const Glib::ustring& index, const Glib::ustring& v
 		case 3: 	transform->_rotation.x = std::stof(value); 	break;
 		case 4: 	transform->_scale.x = std::stof(value); 	break;
 	}
+	isSaved = false;
 }
 
 void		UI::GoInspectorEditCol3(const Glib::ustring& index, const Glib::ustring& value)
@@ -779,6 +803,7 @@ void		UI::GoInspectorEditCol3(const Glib::ustring& index, const Glib::ustring& v
 		case 3: 	transform->_rotation.y = std::stof(value); 	break;
 		case 4: 	transform->_scale.y = std::stof(value);		break;
 	}
+	isSaved = false;
 }
 
 void		UI::GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& value)
@@ -790,6 +815,7 @@ void		UI::GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& v
 		case 3:		transform->_rotation.z = std::stof(value); 	break;
 		case 4:		transform->_scale.z = std::stof(value);		break;
 	}
+	isSaved = false;
 }
 
 
@@ -856,7 +882,7 @@ void		UI::GoComponentsSelection()
 	 	else if (type == "Collider")
 	 		ColliderPropertyRefresh();
 	 	else if (gameObject->GetScript(type))
-	 		component = gameObject->GetScript(type);
+	 		ScriptPropertyRefresh(gameObject->GetScript(type));
 	}
 	else
 		component = nullptr;
@@ -879,6 +905,7 @@ void		UI::ButtonNewComponent()
 		{
 			CreateComponent(compoType);
 			GoComponentsRefresh();
+			isSaved = false;
 			break ;
 		}
 		else 
@@ -912,6 +939,7 @@ void		UI::ButtonDeleteComponent()
 	}
 	GoInspectorRefresh();
 	component = nullptr;
+	isSaved = false;
 }
 
 void		UI::CreateComponent(std::string type)
@@ -942,7 +970,7 @@ void		UI::CreateComponent(std::string type)
 	}
 	else if (type == "Script")
 	{
-		PopupNewScript popup(window);
+		PopupNewScript popup(window, app);
 		Script* script;
 		int		ret;
 		
@@ -1014,6 +1042,21 @@ void		UI::SkinPropertyRefresh()
 	row = ComponentPropertyList->append();
 	(*row)[model.m_col_name] = "3DFile";
 	ss << skin->dae_file;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+
+}
+
+void		UI::ScriptPropertyRefresh(Script * script)
+{
+  	component = script;
+		
+	Gtk::TreeModel::iterator row;
+	std::stringstream ss;
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Name";
+	ss << script->name;
 	(*row)[model.value_1] = ss.str();
 	ss.str(std::string());
 
@@ -1137,7 +1180,14 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 			else if (component->type == "Camera")
 				dynamic_cast<Camera*>(component)->fov = std::stof(value);
 			else if (component->type == "Collider")
-				dynamic_cast<Collider*>(component)->mass = std::stof(value); 		break;
+				dynamic_cast<Collider*>(component)->mass = std::stof(value);
+			else if (component->type == "Script")
+				{
+					ScriptManager sm;
+					std::string oldName = dynamic_cast<Script*>(component)->name;
+					sm.EditScriptName(oldName, value, dogleFile);
+					ReplaceScriptName(oldName, value);
+				} 																	break;
 		case 1:
 			if (component->type == "Camera")
 				dynamic_cast<Camera*>(component)->clipNear = std::stof(value);
@@ -1150,6 +1200,7 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 			else if (component->type == "Collider")
 				dynamic_cast<Collider*>(component)->size.x = std::stof(value); 		break;
 	}
+	isSaved = false;
 }
 
 void		UI::ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustring& value)
@@ -1164,6 +1215,7 @@ void		UI::ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustr
 			if (component->type == "Collider")
 				dynamic_cast<Collider*>(component)->size.y = std::stof(value); 		break;
 	}
+	isSaved = false;
 }
 
 void		UI::ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustring& value)
@@ -1178,6 +1230,7 @@ void		UI::ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustr
 			if (component->type == "Collider")
 				dynamic_cast<Collider*>(component)->size.z = std::stof(value); 		break;
 	}
+	isSaved = false;
 }
 
 
@@ -1231,28 +1284,84 @@ std::string		UI::PopupGetText(std::string win_name, std::string label, const Gli
 	return std::string("");
 }
 
-void		UI::PopWarning(const Glib::ustring warn)
+bool			UI::PopupGetConfirm(std::string win_name, std::string question)
+{
+	int		ret;
+	
+	PopupConfirmation confim(win_name, window, question);
+	while ((ret = confim.run()) != Gtk::RESPONSE_CANCEL)
+	{
+		if (ret == Gtk::RESPONSE_OK)
+			return true;
+	}
+	return false;
+}
+
+void			UI::PopWarning(const Glib::ustring warn)
 {
 	Gtk::MessageDialog warning(*window, warn, true, Gtk::MESSAGE_WARNING);
 	warning.run();
 }
 
 
+void			UI::OnQuitEditor()
+{
+	if (isSaved == false && PopupGetConfirm("Quit Editor", 
+		"\tSome change has not been saved.\n\n\tWould you like to save it ?") == true)
+		app->Save();
+}
 
+void			UI::ReplaceScriptName(std::string oldName, std::string newName)
+{
+	Script *script;
+
+	for(GameObject* prefab : app->GetListPrefab())
+	{
+		for (IComponent* compo : prefab->GetListComponent())
+		{
+			if ((script = dynamic_cast<Script*>(compo)) && script->name == oldName)
+				script->name = newName;
+		}
+	}
+
+	for (Scene* scene : app->GetListScene())
+	{
+		for(GameObject* go : scene->GetBindGameObjectList())
+		{
+			for (IComponent* compo : go->GetListComponent())
+			{
+				if ((script = dynamic_cast<Script*>(compo)) && script->name == oldName)
+					script->name = newName;
+			}
+		}
+		for(GameObject* go : scene->GetGameObjectList())
+		{
+			for (IComponent* compo : go->GetListComponent())
+			{
+				if ((script = dynamic_cast<Script*>(compo)) && script->name == oldName)
+					script->name = newName;
+			}
+		}
+	}
+}
 
 int main(int ac, char **av)
 {
-	Builder 	builder;
-
 	try 
 	{
+		Builder 	builder;
+
 		if (ac == 2)
 		{
-			UI			ui(builder.Build(av[1]));
+			UI			ui(builder.Build(av[1]), std::string(av[1]));
 			ui.run();
 		}
 		else
-			std::cout << "Usage: " << av[0] << " <.dogle file>";
+		{
+			UI			ui(new Application("<AppName>"));
+			ui.run();
+		}
+
 	}
 	catch (DError & e ) {
 		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;

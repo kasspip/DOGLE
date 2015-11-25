@@ -51,9 +51,7 @@ int				ScriptManager::NewScript(std::string name)
 		throw DError() << msg("Script manager: NewScript : could not open " + pathToRegister + registerFile);
  	if (!OincludeFile.is_open())
 		throw DError() << msg("Script manager: NewScript : could not open " + pathToInclude + includeFile);
-	
 	std::ofstream Ocppfile(pathToInclude + name + ".cpp");
-	
 	if (!Ocppfile.is_open())
 		throw DError() << msg("Script manager: NewScript : could not open " + pathToInclude + name + ".cpp");	
 
@@ -71,6 +69,34 @@ int				ScriptManager::NewScript(std::string name)
 	return (1);
 }
 
+int				ScriptManager::EditScriptName(std::string name, std::string newName, std::string dogleFile)
+{
+	try {
+		_FileFindAndReplace(pathToInclude, 	includeFile, name, newName);
+		_FileFindAndReplace(pathToInclude, 	makefileSources, name, newName);
+		_FileFindAndReplace(pathToInclude, 	name + ".cpp", name,	newName);
+		_FileFindAndReplace(pathToRegister, registerFile, name, newName);
+		if (dogleFile.length() > 0)
+		{
+			size_t lastSeparator;
+ 			lastSeparator = dogleFile.find_last_of("/");
+  			if (lastSeparator == std::string::npos)
+				_FileFindAndReplace("./", dogleFile, name, newName);
+			else
+			{
+				std::string path = dogleFile.substr(0, lastSeparator);
+				std::string file = dogleFile.substr(lastSeparator + 1);
+				_FileFindAndReplace(path, file, name, newName);
+			}
+		}
+	}
+	catch( DError & e ) {
+		std::cerr << C_YELLOW << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+	}
+
+	return (1);
+}
+
 bool			ScriptManager::ScriptExists(std::string name)
 {
 	for (std::string scriptName : _scripts)
@@ -80,7 +106,6 @@ bool			ScriptManager::ScriptExists(std::string name)
 	}
 	return false;
 }
-
 
 void			ScriptManager::RemoveScript(std::string name)
 {
@@ -92,9 +117,14 @@ void			ScriptManager::RemoveScript(std::string name)
 		Ocppfile.close();
 		std::remove((pathToInclude + name + ".cpp").c_str());
 	}
-	_FileEraseLine(pathToInclude, includeFile, "#include \"" + name + ".cpp\"");
-	_FileEraseLine(pathToInclude, makefileSources, "\t\t" + name + ".cpp\\");
-	_FileEraseLine(pathToRegister, registerFile, "ScriptFactory::Register(\"" + name + "\", new " + name + ");");
+	try {
+		_FileEraseLine(pathToInclude, includeFile, "#include \"" + name + ".cpp\"");
+		_FileEraseLine(pathToInclude, makefileSources, "\t\t" + name + ".cpp\\");
+		_FileEraseLine(pathToRegister, registerFile, "ScriptFactory::Register(\"" + name + "\", new " + name + ");");
+	}
+	catch( DError & e ) {
+		std::cerr << C_YELLOW << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+	}
 }
 
 std::string		ScriptManager::ToString()
@@ -107,6 +137,37 @@ std::string		ScriptManager::ToString()
 }
 
 // PRIVATE //
+
+void			ScriptManager::_FileFindAndReplace(std::string path, std::string fileName , std::string oldName , std::string newName)
+{
+	std::ifstream file(path + fileName);
+	std::ofstream newFile(path + "RewriteTmpFile.txt");
+
+	if (!file.is_open())
+		throw DError() << msg("Script manager: _FileFindAndReplace : could not open " + path + fileName);
+	if (!newFile.is_open())
+		throw DError() << msg("Script manager: _FileFindAndReplace : could not open " + path + "RewriteTmpFile.txt");
+	
+	std::string line;
+	size_t len = oldName.length();
+	while ( std::getline(file, line) )
+	{
+		size_t pos = line.find(oldName);
+		while ( pos != std::string::npos)
+		{
+			line.replace(pos, len, newName);
+			pos = line.find(oldName);
+		}
+		newFile << line << std::endl;
+	}
+	file.close();
+	std::remove((path + fileName).c_str());
+	if (fileName.find(oldName + ".cpp") == std::string::npos)
+		std::rename((path + "RewriteTmpFile.txt").c_str(), (path + fileName).c_str());
+	else
+		std::rename((path + "RewriteTmpFile.txt").c_str(), (path + newName + ".cpp").c_str());
+    newFile.close();
+}
 
 int				ScriptManager::_PrintError(std::string err)
 {
@@ -125,7 +186,7 @@ void			ScriptManager::_FileEraseLine(std::string path, std::string fileName, std
 		throw DError() << msg("Script manager: _FileEraseLine : could not open " + path + "RewriteTmpFile.txt");
 	
 	std::string line;
-	while ( getline(file, line) )
+	while ( std::getline(file, line) )
 	{
 		if (line != target)
 			newFile << line << std::endl;

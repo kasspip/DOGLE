@@ -5,10 +5,9 @@
 
 Script::Script(std::string n)
 {
-	std::cout << "Construct " << name << std::endl;
-
 	name = n;
 	type = "Script";
+	std::cout << "Construct Script: " << name << std::endl;
 }
 
 Script::Script(Script const &src)
@@ -52,7 +51,7 @@ void			Script::Save(std::ofstream &file)
 	else
 	 	TABS = "\t\t\t";
 	file << TABS <<"SCRIPT:" 
-	<< name << std::endl;
+		<< name << std::endl;
 
 }
 
@@ -60,6 +59,12 @@ void			Script::Destroy(GameObject *go)
 {
 	go->SetDestroy(true);
 }
+
+Script*			Script::Clone()		
+{
+	return (this);
+}
+
 
 void			Script::Awake() 	{}
 void			Script::Update() 	{}

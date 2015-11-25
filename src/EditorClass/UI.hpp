@@ -20,30 +20,37 @@
 #include "PopupInstancePrefab.hpp"
 #include "PopupNewComponent.hpp"
 #include "PopupNewScript.hpp"
+#include "PopupConfirmation.hpp"
+#include "ScriptManager.hpp"
+
 
 class UI
 {
+	
 public:
 
 	UI();
-	UI(Application *app);
+	UI(Application *app, std::string Dfile = "");
 	~UI();
 
 	Glib::RefPtr<Gtk::Application>	GtkApp;
 	Glib::RefPtr<Gtk::Builder>		builder;
 	Gtk::Window						*window;
-
 	bool							update;
-
+	bool							isSaved;
 	myColumn						model;
 	ToggleColumn					model2;
+	std::string						dogleFile;
 
-	bool							del(GdkEventKey *e);
 	void							run();
+	bool							del(GdkEventKey *e);
+	void							OnQuitEditor();
 	void 							UnselectTreeView( Gtk::TreeView *treeView );
 	void 							ClearListStore( Glib::RefPtr<Gtk::ListStore> list );
 	std::string						PopupGetText(std::string win_name, std::string label, const Glib::ustring warning);
+	bool							PopupGetConfirm(std::string win_name, std::string question);
 	void							PopWarning(const Glib::ustring warn);
+	void							ReplaceScriptName(std::string oldName, std::string newName);
 
 	// Application panel //
 	void							AppInspectorDisplay();
@@ -95,7 +102,7 @@ public:
 	Glib::RefPtr<Gtk::ListStore>	SceneGameObjectsList;
 	Gtk::TreeView					*SceneGameObjectsTreeView;
 
-	static Scene*							scene;
+	static Scene*					scene;
 
 	// GameObject panel //
 	void							GoInspectorDisplay();
@@ -119,7 +126,7 @@ public:
 	Glib::RefPtr<Gtk::ListStore>	GameObjectComponentsList;
 	Gtk::TreeView					*GameObjectComponentsTreeView;
 
-	static GameObject*						gameObject;
+	static GameObject*				gameObject;
 
 	// Components //
 	void							ComponentPropertyDisplay();
@@ -127,6 +134,7 @@ public:
 	void							CameraPropertyRefresh();
 	void							LightPropertyRefresh();
 	void							ColliderPropertyRefresh();
+	void							ScriptPropertyRefresh(Script* script);
 	void							ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustring& value);
 	void							ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustring& value);
 	void							ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustring& value);
@@ -134,7 +142,9 @@ public:
 	Glib::RefPtr<Gtk::ListStore>	ComponentPropertyList;
 	Gtk::TreeView					*ComponentPropertyTreeView;
 
-	static IComponent*						component;
+	static IComponent*				component;
+
+
 };
 
 #endif

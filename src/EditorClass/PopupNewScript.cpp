@@ -1,11 +1,12 @@
 #include "PopupNewScript.hpp"
 
-PopupNewScript::PopupNewScript(Gtk::Window* parent) 
+PopupNewScript::PopupNewScript(Gtk::Window* parent, Application* app) 
 : Gtk::Dialog("Scripts", *parent),
 boiteV(get_content_area()),
 btnNew ("New"),
 btnDelete ("Remove"),
-selection (nullptr)
+selection (nullptr),
+_app(app)
 {
 	btnNew.signal_clicked().connect(sigc::mem_fun(*this, &PopupNewScript::ButtonNewScript));
 	btnDelete.signal_clicked().connect(sigc::mem_fun(*this, &PopupNewScript::ButtonDeleteScript));
@@ -37,7 +38,7 @@ Script*			PopupNewScript::GetSelection()
 	{
 		std::stringstream ss;
 	 	ss << (*selection)[model2.m_col_name];
-		return scriptFactory.Create(ss.str());
+		return new Script(ss.str());
 	}
 	return nullptr;
 }
@@ -68,10 +69,14 @@ void			PopupNewScript::ButtonDeleteScript()
 	std::stringstream ss;
 	ss << (*selection)[model2.m_col_name];
 
-	ScriptManager			scriptManager;
-	scriptManager.RemoveScript( ss.str() );
+	if (PopupGetConfirm("Delete Script", "Warning:\n\n\tScript \"" + ss.str() + "\" will be fully deleled and removed from all GameObjects\n\n\tContinue ?") == true)
+	{
+		ApplicationRemoveScripts(ss.str());
+		ScriptManager			scriptManager;
+		scriptManager.RemoveScript( ss.str() );
 	
-	RefreshComponents();
+		RefreshComponents();
+	}
 }
 
 void			PopupNewScript::RefreshComponents()
@@ -90,15 +95,52 @@ void			PopupNewScript::RefreshComponents()
 	}
 }
 
+bool			PopupNewScript::PopupGetConfirm(std::string win_name, std::string question)
+{
+	int		ret;
+	
+	PopupConfirmation confim(win_name, this, question);
+	while ((ret = confim.run()) != Gtk::RESPONSE_CANCEL)
+	{
+		if (ret == Gtk::RESPONSE_OK)
+			return true;
+	}
+	return false;
+}
+
 std::string		PopupNewScript::PopupGetText(std::string win_name, std::string label)
 {
 	int		ret;
 
-	Popup	pop = Popup(win_name, this, label);
+	Popup	pop(win_name, this, label);
 	while ((ret = pop.run()) != Gtk::RESPONSE_CANCEL)
 	{
 		if (ret == Gtk::RESPONSE_OK && pop.getText().length())
 			return pop.getText();
 	}
 	return std::string("");
+}
+
+void 			PopupNewScript::ApplicationRemoveScripts(std::string name)
+{
+	std::list<GameObject*>	gameObjects = _app->GetListPrefab();
+	std::list<GameObject*>::iterator it = gameObjects.begin();
+	for(; it != gameObjects.end() ; it++)
+		(*it)->DeleteComponent(name);
+
+	std::list<Scene*> scenes = _app->GetListScene();
+	std::list<Scene*>::iterator it_scene = scenes.begin();
+
+	for (; it_scene != scenes.end(); it_scene++)
+	{
+		gameObjects = (*it_scene)->GetBindGameObjectList();
+		it = gameObjects.begin();
+		for(; it != gameObjects.end() ; it++)
+			(*it)->DeleteComponent(name);
+		
+		gameObjects = (*it_scene)->GetGameObjectList();
+		it = gameObjects.begin();
+		for(; it != gameObjects.end() ; it++)
+			(*it)->DeleteComponent(name);
+	}
 }

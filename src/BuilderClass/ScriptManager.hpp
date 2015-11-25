@@ -17,6 +17,7 @@
 			~ScriptManager(void);
 
 			int						NewScript(std::string name);
+			int						EditScriptName(std::string name, std::string newName, std::string dogleFile = "");
 			bool					ScriptExists(std::string name);
 			void					RemoveScript(std::string name);
 			std::list<std::string>	GetScriptsNames();
@@ -29,6 +30,7 @@
 			int						_PrintError(std::string err);
 			void					_FileEraseLine(std::string path, std::string fileName, std::string target);
 			void					_SnippetScript(std::ofstream & file, std::string & name);
+			void					_FileFindAndReplace(std::string path, std::string fileName, std::string oldName, std::string newName);
 
 			std::list<std::string>	_scripts;
 	};
