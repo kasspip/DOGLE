@@ -18,7 +18,7 @@ Builder::Builder()
 		_token.push_back(std::make_pair("CAMERA:", &Builder::_ParseCamera));
 		_token.push_back(std::make_pair("SCRIPT:", &Builder::_ParseScript));
 		_token.push_back(std::make_pair("SKIN:", &Builder::_ParseSkin));
-		_token.push_back(std::make_pair("COLLIDER", &Builder::_ParseColliderGo));
+		_token.push_back(std::make_pair("COLLIDER:", &Builder::_ParseColliderGo));
 	}
 	#include "ScriptsRegister.cpp"
 }
@@ -91,12 +91,12 @@ void			Builder::_ParseApplication(std::string& line)
 void			Builder::_ParseColliderGo(std::string& line)
 {
 	std::string	*attributs;
-	attributs = _GetAttributs(line, 4);
+	attributs = _GetAttributs(line, 2);
 
 	if (!_go->GetComponent<Skin>())
 		throw DError() << msg("Build() failed. A collider need a skin to be build.");
 	std::cout << "LINE = " << line << std::endl;
-	_go->AddComponent(new Collider(_AttributToVec3(attributs[0]), _AttributToVec3(attributs[1]), _AttributToBool(attributs[2]), stof(attributs[3]), _go));
+	_go->AddComponent(new Collider(_go, _AttributToBool(attributs[0]), stof(attributs[1])));
 	delete[] attributs;
 }
 

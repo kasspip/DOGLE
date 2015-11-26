@@ -34,7 +34,7 @@
 
 			void		ForgivePhysicRotation();
 
-
+			bool		IsSkinned();
 		private:
 			Collider(void);
 			const bool	_skinned;

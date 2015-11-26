@@ -113,7 +113,14 @@ public:
 	void							GoInspectorEditCol4(const Glib::ustring& index, const Glib::ustring& value);
 	void							ButtonNewComponent();
 	void							ButtonDeleteComponent();
+
 	void							CreateComponent(std::string type);
+	void							CreateCamera();
+	void							CreateLight();
+	void							CreateSkin();
+	void							CreateScript();
+	void							CreateCollider();
+
 
 	
 	Glib::RefPtr<Gtk::ListStore>	GameObjectInspectorList;

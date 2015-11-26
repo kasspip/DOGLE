@@ -21,7 +21,7 @@
 
 		private:
 			std::vector< std::pair<std::string, funcPtr> >		_token;
-			std::vector< std::pair<std::string, funcPtrGo> >		_tokenGo;
+			std::vector< std::pair<std::string, funcPtrGo> >	_tokenGo;
 
 			Builder &operator=(Builder const &rhs);
 			Builder(Builder const &src);

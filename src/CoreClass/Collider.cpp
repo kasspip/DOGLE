@@ -101,19 +101,26 @@ void		Collider::Save(std::ofstream &file)
 	else
 	 	TABS = "\t\t\t";
 	file << TABS << "COLLIDER:";
-	file << center.x << SEPARATOR_F << center.y << SEPARATOR_F << center.z << SEPARATOR
+	if (_skinned == false)
+	{ 
+		file << center.x << SEPARATOR_F << center.y << SEPARATOR_F << center.z << SEPARATOR
 			 << size.x << SEPARATOR_F << size.y << SEPARATOR_F << size.z << SEPARATOR;
+	}
 	if (enable)
 		file << "true" << SEPARATOR;
 	else
 		file << "false" << SEPARATOR;
 	file << mass << std::endl;
+
 }
 
 void		Collider::ForgivePhysicRotation()
 {
 	static_cast<btRigidBody *>(physic_ptr)->setAngularFactor(btVector3(0,0,0));
 }
+
+bool		Collider::IsSkinned() { return _skinned; }
+
 
 // PRIVATE //
 

@@ -881,7 +881,7 @@ void		UI::GoComponentsSelection()
 	 		LightPropertyRefresh();
 	 	else if (type == "Collider")
 	 		ColliderPropertyRefresh();
-	 	else if (gameObject->GetScript(type))
+	 	else if (type == "Script")
 	 		ScriptPropertyRefresh(gameObject->GetScript(type));
 	}
 	else
@@ -944,59 +944,93 @@ void		UI::ButtonDeleteComponent()
 
 void		UI::CreateComponent(std::string type)
 {
-	// 2 - add component creation here
+	// 2 - Create and Link function creation
+
 	if (type == "Camera")
-		gameObject->AddComponent(new Camera);
+		CreateCamera();
 	else if (type == "Light")
-		gameObject->AddComponent(new Light);
+		CreateLight();
 	else if (type == "Skin")
-	{
-		if (gameObject->GetComponent<Skin>())
-		{
-			PopWarning("Your GameObject has already a Skin Component");
-			return ;
-		}
-		std::string fileName = PopupGetText("New Skin","Dae file:","You must specify a dae file in resources/3DObject");
-		if (fileName.length() == 0 )
-			return;
-		if (fileName.find(".dae") == std::string::npos)
-			fileName += ".dae";
-		try {
-			gameObject->AddComponent(new Skin( fileName ));
-		}
-		catch (DError & e ) {
-			std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
-		}
-	}
+		CreateSkin();
 	else if (type == "Script")
-	{
-		PopupNewScript popup(window, app);
-		Script* script;
-		int		ret;
-		
-		while ((ret = popup.run()) != Gtk::RESPONSE_CANCEL)
-		{
-			if (ret == Gtk::RESPONSE_OK && (script = popup.GetSelection()) != nullptr)
-			{		
-				try 
-				{
-					gameObject->AddComponent( script );
-				}
-				catch (DError & e ) {
-					std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
-				}
-				break ;
-			}
-			else 
-				PopWarning("You must choose a script");
-		}	
-	}
-
-	// else if (type == "Collider")
-
-
+		CreateScript();
+	else if (type == "Collider")
+		CreateCollider();
 }
 
+void		UI::CreateCamera()
+{
+	if (gameObject->GetComponent<Camera>())
+	{
+		PopWarning("Your GameObject has already a Camera Component");
+		return ;
+	}
+	gameObject->AddComponent(new Camera);
+}
+
+void		UI::CreateLight()
+{
+	if (gameObject->GetComponent<Light>())
+	{
+		PopWarning("Your GameObject has already a Light Component");
+		return ;
+	}
+	gameObject->AddComponent(new Light);
+}
+
+void		UI::CreateSkin()
+{
+	if (gameObject->GetComponent<Skin>())
+	{
+		PopWarning("Your GameObject has already a Skin Component");
+		return ;
+	}
+	std::string fileName = PopupGetText("New Skin","Dae file:","You must specify a dae file in resources/3DObject");
+	if (fileName.length() == 0 )
+		return;
+	if (fileName.find(".dae") == std::string::npos)
+		fileName += ".dae";
+	try {
+		gameObject->AddComponent(new Skin( fileName ));
+	}
+	catch (DError & e ) {
+		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+	}
+}
+
+void		UI::CreateScript()
+{
+	PopupNewScript popup(window, app);
+	Script* script;
+	int		ret;
+	
+	while ((ret = popup.run()) != Gtk::RESPONSE_CANCEL)
+	{
+		if (ret == Gtk::RESPONSE_OK && (script = popup.GetSelection()) != nullptr)
+		{		
+			try 
+			{
+				gameObject->AddComponent( script );
+			}
+			catch (DError & e ) {
+				std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+			}
+			break ;
+		}
+		else 
+			PopWarning("You must choose a script");
+	}	
+}
+
+void		UI::CreateCollider()
+{
+	if (gameObject->GetComponent<Collider>())
+	{
+		PopWarning("Your GameObject has already a Collider Component");
+		return ;
+	}
+	// todo
+}
 
 
 
@@ -1049,6 +1083,9 @@ void		UI::SkinPropertyRefresh()
 
 void		UI::ScriptPropertyRefresh(Script * script)
 {
+  	if (script == nullptr)
+  		return;
+  	
   	component = script;
 		
 	Gtk::TreeModel::iterator row;
@@ -1138,33 +1175,36 @@ void		UI::ColliderPropertyRefresh()
 	(*row)[model.value_1] = ss.str();
 	ss.str(std::string());
 
-	row = ComponentPropertyList->append();
-	(*row)[model.m_col_name] = "Center";
-	ss << collider->center.x;
-	(*row)[model.value_1] = ss.str();
-	ss.str(std::string());
+	if (collider->IsSkinned() == false)
+	{
+		row = ComponentPropertyList->append();
+		(*row)[model.m_col_name] = "Center";
+		ss << collider->center.x;
+		(*row)[model.value_1] = ss.str();
+		ss.str(std::string());
+		
+		ss << collider->center.y;
+		(*row)[model.value_2] = ss.str();
+		ss.str(std::string());
+		
+		ss << collider->center.z;
+		(*row)[model.value_3] = ss.str();
+		ss.str(std::string());
 	
-	ss << collider->center.y;
-	(*row)[model.value_2] = ss.str();
-	ss.str(std::string());
-	
-	ss << collider->center.z;
-	(*row)[model.value_3] = ss.str();
-	ss.str(std::string());
-
-	row = ComponentPropertyList->append();
-	(*row)[model.m_col_name] = "Size";
-	ss << collider->size.x;
-	(*row)[model.value_1] = ss.str();
-	ss.str(std::string());
-	
-	ss << collider->size.y;
-	(*row)[model.value_2] = ss.str();
-	ss.str(std::string());
-	
-	ss << collider->size.z;
-	(*row)[model.value_3] = ss.str();
-	ss.str(std::string());
+		row = ComponentPropertyList->append();
+		(*row)[model.m_col_name] = "Size";
+		ss << collider->size.x;
+		(*row)[model.value_1] = ss.str();
+		ss.str(std::string());
+		
+		ss << collider->size.y;
+		(*row)[model.value_2] = ss.str();
+		ss.str(std::string());
+		
+		ss << collider->size.z;
+		(*row)[model.value_3] = ss.str();
+		ss.str(std::string());
+	}
 }
 
 
@@ -1182,12 +1222,21 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 			else if (component->type == "Collider")
 				dynamic_cast<Collider*>(component)->mass = std::stof(value);
 			else if (component->type == "Script")
+			{
+				std::string oldName = dynamic_cast<Script*>(component)->name;
+
+				if (PopupGetConfirm("Edit Name", 
+					"\n\tEditing script name is not recommended : "
+					"\n\tIt will perform an find and replace on several file AND save your app."
+					"\n\tIt can overwrite variable's name similar to the previous script name."
+					"\n\n\tAre you sure you want to proceed ?") == true)
 				{
 					ScriptManager sm;
-					std::string oldName = dynamic_cast<Script*>(component)->name;
 					sm.EditScriptName(oldName, value, dogleFile);
 					ReplaceScriptName(oldName, value);
-				} 																	break;
+					app->Save();
+				}
+			} 																		break;
 		case 1:
 			if (component->type == "Camera")
 				dynamic_cast<Camera*>(component)->clipNear = std::stof(value);
@@ -1200,6 +1249,7 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 			else if (component->type == "Collider")
 				dynamic_cast<Collider*>(component)->size.x = std::stof(value); 		break;
 	}
+	GoInspectorRefresh();
 	isSaved = false;
 }
 
@@ -1215,6 +1265,7 @@ void		UI::ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustr
 			if (component->type == "Collider")
 				dynamic_cast<Collider*>(component)->size.y = std::stof(value); 		break;
 	}
+	GoInspectorRefresh();
 	isSaved = false;
 }
 
@@ -1230,6 +1281,7 @@ void		UI::ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustr
 			if (component->type == "Collider")
 				dynamic_cast<Collider*>(component)->size.z = std::stof(value); 		break;
 	}
+	GoInspectorRefresh();
 	isSaved = false;
 }
 
