@@ -3,7 +3,7 @@
 
 #include <gtkmm.h>
 
-class FileFinder : public Gtk::Window
+class FileFinder :  public Gtk::Dialog
 {
 public:
   FileFinder();

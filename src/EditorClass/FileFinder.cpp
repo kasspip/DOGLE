@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-FileFinder::FileFinder()
+FileFinder::FileFinder() : Gtk::Dialog("Scripts", *parent),
 : m_ButtonBox(Gtk::ORIENTATION_VERTICAL),
   m_Button_File("Choose File"),
   m_Button_Folder("Choose Folder")

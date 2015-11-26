@@ -111,12 +111,27 @@ void			ScriptManager::RemoveScript(std::string name)
 {
 	if (std::find(_scripts.begin(), _scripts.end(), name) == _scripts.end())
 		_PrintError("RemoveScript : script \"" + name + "\" may not exists.");
+	
 	std::ofstream Ocppfile(pathToInclude + name + ".cpp");
 	if (Ocppfile.is_open())
 	{
 		Ocppfile.close();
-		std::remove((pathToInclude + name + ".cpp").c_str());
+		// FILE *in;
+  //   	char buff[512];
+  //   	std::string cmdReturn;
+
+		// in = popen(("git ls-files " + pathToInclude + name + ".cpp").c_str(), "r");
+
+		// while(fgets(buff, sizeof(buff), in)!=NULL)
+		//     cmdReturn += buff;
+		// pclose(in);
+
+		// if (cmdReturn.length() > 0)
+		// 	system(("git rm -f " + pathToInclude + name + ".cpp").c_str());
+		// else
+		// 	std::remove((pathToInclude + name + ".cpp").c_str());
 	}
+
 	try {
 		_FileEraseLine(pathToInclude, includeFile, "#include \"" + name + ".cpp\"");
 		_FileEraseLine(pathToInclude, makefileSources, "\t\t" + name + ".cpp\\");

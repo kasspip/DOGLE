@@ -50,10 +50,15 @@ public:
 	std::string						PopupGetText(std::string win_name, std::string label, const Glib::ustring warning);
 	bool							PopupGetConfirm(std::string win_name, std::string question);
 	void							PopWarning(const Glib::ustring warn);
+	std::string						FinderGetFile(std::string folder, std::string extensionPattern);
+	std::string						FileGetName(std::string& filePath);
+	std::string						FileGetPath(std::string& filePath);
 	void							ReplaceScriptName(std::string oldName, std::string newName);
+
 
 	// Application panel //
 	void							AppInspectorDisplay();
+	void							AppInspectorRefresh();
 	void							AppInspectorEdit(const Glib::ustring& index, const Glib::ustring& value);
 	void							ButtonNewApp();
 	void							ButtonLoadApp();
@@ -121,8 +126,6 @@ public:
 	void							CreateScript();
 	void							CreateCollider();
 
-
-	
 	Glib::RefPtr<Gtk::ListStore>	GameObjectInspectorList;
 	Gtk::TreeView					*GameObjectInspectorTreeView;
 

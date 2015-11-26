@@ -23,18 +23,17 @@ APPLICATION:42run|1280|1280
 	PREFAB:child|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SKIN:cube.dae
-		SCRIPT:BCD
 	SCENE:Level1
-		GAMEOBJECT:MonCube (2)|
+		GAMEOBJECT:Player|
 			TRANSFORM:0,0,-10|0,0,0|1,1,1
 			SKIN:cube.dae
 			SCRIPT:MyCube
-			COLLIDER:true|10
+			COLLIDER:true|1
 		GAMEOBJECT:Floor|
 			TRANSFORM:-0.7,-5,-10|0,0,0|1000,1,1000
 			SKIN:cube.dae
-			COLLIDER:true|66
-		GAMEOBJECT:Camera1 (4)|
+			COLLIDER:true|0
+		GAMEOBJECT:Camera|
 			TRANSFORM:0,0,0|0,0,0|1,1,1
 			CAMERA:45|0.1|100
 			SCRIPT:ControlCamera

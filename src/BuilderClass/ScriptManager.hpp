@@ -2,6 +2,7 @@
 # define SCRIPTMANAGER_HPP
 
 # include "DOGLE.hpp"
+# include <cstdlib>
 
 	class ScriptManager
 	{

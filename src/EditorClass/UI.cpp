@@ -15,7 +15,7 @@ UI::UI(Application *app, std::string Dfile) :
 											app(app)
 {
 
-	GtkApp = Gtk::Application::create("GTK");
+	GtkApp = Gtk::Application::create("Dogle.gtkmm.Editor.base", Gio::APPLICATION_FLAGS_NONE);
 	builder = Gtk::Builder::create_from_file("src/EditorClass/unity_gtk.glade");
 	builder->get_widget("window1", window);
 	GtkApp->signal_shutdown ().connect(sigc::mem_fun(*this, &UI::OnQuitEditor));
@@ -27,8 +27,7 @@ UI::UI(Application *app, std::string Dfile) :
 	AppSceneDisplay();
 	SceneListDisplay();
 	GoComponentsDisplay();
-	ComponentPropertyDisplay();
-
+	
 	update = true;
 	isSaved = true;
 
@@ -122,12 +121,28 @@ void		UI::ButtonNewApp()
 
 void		UI::ButtonLoadApp()
 {
-	std::cout << "APPLICATION LOAD BUTTON NOT IMPLEMENTED" << std::endl;
-	// // Glib::RefPtr<Gtk::Application> finder = Gtk::Application::create("org.gtkmm.example");
-	// FileFinder						fileFinder;
+	Builder 	builder;
 
-	// GtkApp->add_window(fileFinder);
-	// GtkApp->run(fileFinder);
+	dogleFile = FinderGetFile("./", "*.dogle");
+	if (dogleFile.length() == 0 )
+		return ;
+	
+	scene = nullptr;
+	gameObject = nullptr;
+	component = nullptr;
+	if (app)
+		delete app;
+
+	app = builder.Build(dogleFile);
+
+	AppInspectorRefresh();
+	SceneInspectorRefresh();
+  	GoInspectorRefresh();
+	AppPrefabRefresh();
+	AppSceneRefresh();
+	SceneListRefresh();
+	GoComponentsRefresh();
+
 }
 
 void		UI::ButtonSaveApp()
@@ -149,32 +164,42 @@ void		UI::AppInspectorDisplay()
 	AppInspectorTreeView->append_column_editable("", model.value_1);
 	AppInspectorTreeView->get_column_cell_renderer(0)->set_fixed_size(100,0);
 
-	Gtk::TreeModel::iterator newRow = AppInspectorList->append();
-	(*newRow)[model.m_col_name] = "Name";
-	(*newRow)[model.value_1] = app->name;
-	
-
-	newRow = AppInspectorList->append();
-	(*newRow)[model.m_col_name] = "Win Width";
-	std::stringstream winWVal;
-	winWVal << app->winW;
-	(*newRow)[model.value_1] = winWVal.str();
-
-	newRow = AppInspectorList->append();
-	(*newRow)[model.m_col_name] = "Win Height";
-	std::stringstream winHVal;
-	winHVal << app->winH;
-	(*newRow)[model.value_1] = winHVal.str();
-
-	newRow = AppInspectorList->append();
-	(*newRow)[model.m_col_name] = "Fps";
-	std::stringstream FPSVal;
-	FPSVal << app->FPS;
-	(*newRow)[model.value_1] = FPSVal.str();
-
 	Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(AppInspectorTreeView->get_column_cell_renderer(1));
 	cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::AppInspectorEdit));
+
+	AppInspectorRefresh();
 }
+
+void		UI::AppInspectorRefresh()
+{
+	ClearListStore(AppInspectorList);
+
+	if (app)
+	{
+		Gtk::TreeModel::iterator newRow = AppInspectorList->append();
+		(*newRow)[model.m_col_name] = "Name";
+		(*newRow)[model.value_1] = app->name;
+		
+		newRow = AppInspectorList->append();
+		(*newRow)[model.m_col_name] = "Win Width";
+		std::stringstream winWVal;
+		winWVal << app->winW;
+		(*newRow)[model.value_1] = winWVal.str();
+	
+		newRow = AppInspectorList->append();
+		(*newRow)[model.m_col_name] = "Win Height";
+		std::stringstream winHVal;
+		winHVal << app->winH;
+		(*newRow)[model.value_1] = winHVal.str();
+	
+		newRow = AppInspectorList->append();
+		(*newRow)[model.m_col_name] = "Fps";
+		std::stringstream FPSVal;
+		FPSVal << app->FPS;
+		(*newRow)[model.value_1] = FPSVal.str();
+	}
+}
+
 
 void		UI::AppInspectorEdit(const Glib::ustring& index, const Glib::ustring& value)
 {
@@ -220,11 +245,14 @@ void		UI::AppPrefabRefresh()
 {
 	ClearListStore(AppPrefabList);
 	
-	for (GameObject* go : app->GetListPrefab())
+	if (app)
 	{
-		Gtk::TreeModel::iterator iter = AppPrefabList->append();
-		(*iter)[model2.m_col_name] = go->name;
-		(*iter)[model2.del] = false;
+		for (GameObject* go : app->GetListPrefab())
+		{
+			Gtk::TreeModel::iterator iter = AppPrefabList->append();
+			(*iter)[model2.m_col_name] = go->name;
+			(*iter)[model2.del] = false;
+		}
 	}
 }
 
@@ -362,11 +390,14 @@ void		UI::AppSceneRefresh()
 {
 	ClearListStore(AppScenesList);
 
-	for (Scene* scene : app->GetListScene())
+	if (app)
 	{
-		Gtk::TreeModel::iterator iter = AppScenesList->append();
-		(*iter)[model2.m_col_name] = scene->name;
-		(*iter)[model2.del] = false;
+		for (Scene* scene : app->GetListScene())
+		{
+			Gtk::TreeModel::iterator iter = AppScenesList->append();
+			(*iter)[model2.m_col_name] = scene->name;
+			(*iter)[model2.del] = false;
+		}
 	}
 }
 
@@ -847,16 +878,19 @@ void		UI::GoComponentsRefresh()
 
 	ClearListStore(GameObjectComponentsList);
 
-	for (IComponent* compo : gameObject->GetListComponent())
+	if (gameObject)
 	{
-		if (compo->type == "Transform")
-			continue ;
-		Gtk::TreeModel::iterator newRow = GameObjectComponentsList->append();
-		if (compo->type == "Script")
-			(*newRow)[model2.m_col_name] = dynamic_cast<Script*>(compo)->name;
-		else
-			(*newRow)[model2.m_col_name] = compo->type;
-		(*newRow)[model2.del] = false;
+		for (IComponent* compo : gameObject->GetListComponent())
+		{
+			if (compo->type == "Transform")
+				continue ;
+			Gtk::TreeModel::iterator newRow = GameObjectComponentsList->append();
+			if (compo->type == "Script")
+				(*newRow)[model2.m_col_name] = dynamic_cast<Script*>(compo)->name;
+			else
+				(*newRow)[model2.m_col_name] = compo->type;
+			(*newRow)[model2.del] = false;
+		}
 	}
 }
 
@@ -881,7 +915,7 @@ void		UI::GoComponentsSelection()
 	 		LightPropertyRefresh();
 	 	else if (type == "Collider")
 	 		ColliderPropertyRefresh();
-	 	else if (type == "Script")
+	 	else if (gameObject->GetScript(type))
 	 		ScriptPropertyRefresh(gameObject->GetScript(type));
 	}
 	else
@@ -965,6 +999,7 @@ void		UI::CreateCamera()
 		PopWarning("Your GameObject has already a Camera Component");
 		return ;
 	}
+	
 	gameObject->AddComponent(new Camera);
 }
 
@@ -975,6 +1010,7 @@ void		UI::CreateLight()
 		PopWarning("Your GameObject has already a Light Component");
 		return ;
 	}
+	
 	gameObject->AddComponent(new Light);
 }
 
@@ -985,13 +1021,15 @@ void		UI::CreateSkin()
 		PopWarning("Your GameObject has already a Skin Component");
 		return ;
 	}
-	std::string fileName = PopupGetText("New Skin","Dae file:","You must specify a dae file in resources/3DObject");
-	if (fileName.length() == 0 )
+	
+	std::string file = FinderGetFile("./resources/3D Objects", "*.dae");
+	if (file.length() == 0 )
 		return;
-	if (fileName.find(".dae") == std::string::npos)
-		fileName += ".dae";
+
+	std::string skinFile = FileGetName(file);
+	
 	try {
-		gameObject->AddComponent(new Skin( fileName ));
+		gameObject->AddComponent(new Skin( skinFile ));
 	}
 	catch (DError & e ) {
 		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
@@ -1000,36 +1038,43 @@ void		UI::CreateSkin()
 
 void		UI::CreateScript()
 {
-	PopupNewScript popup(window, app);
-	Script* script;
-	int		ret;
+	ScriptManager sm;
+	std::string scriptFile;
+	std::string scriptName;
+	size_t separator;
+
+
+	std::string file = FinderGetFile("./resources/Scripts", "*.cpp");
+	if (file.length() == 0 )
+		return ;
 	
-	while ((ret = popup.run()) != Gtk::RESPONSE_CANCEL)
+	scriptFile = FileGetName(file);
+ 	separator = scriptFile.find_last_of(".");
+	scriptName = scriptFile.substr(0, separator);
+	
+	if (sm.ScriptExists(scriptName) == false)
 	{
-		if (ret == Gtk::RESPONSE_OK && (script = popup.GetSelection()) != nullptr)
-		{		
-			try 
-			{
-				gameObject->AddComponent( script );
-			}
-			catch (DError & e ) {
-				std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
-			}
-			break ;
-		}
-		else 
-			PopWarning("You must choose a script");
-	}	
+		std::cout << "linking " << scriptName << " to ScriptManager." << std::endl;
+		sm.NewScript(scriptName);
+	}
+
+	try {
+		gameObject->AddComponent(new Script( scriptName ));
+	}
+	catch (DError & e ) {
+		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+	}
 }
 
 void		UI::CreateCollider()
 {
 	if (gameObject->GetComponent<Collider>())
 	{
-		PopWarning("Your GameObject has already a Collider Component");
+		PopWarning("Your GameObject already has a Collider Component");
 		return ;
 	}
-	// todo
+	
+	std::cout << "NOT IMPLEMENTED" << std::endl;
 }
 
 
@@ -1083,9 +1128,6 @@ void		UI::SkinPropertyRefresh()
 
 void		UI::ScriptPropertyRefresh(Script * script)
 {
-  	if (script == nullptr)
-  		return;
-  	
   	component = script;
 		
 	Gtk::TreeModel::iterator row;
@@ -1304,7 +1346,8 @@ void 		UI::UnselectTreeView( Gtk::TreeView *treeView )
 void 		UI::ClearListStore( Glib::RefPtr<Gtk::ListStore> list )
 {
 	update = false;
-	list->clear();
+	if (list)
+		list->clear();
 	update = true;
 }
 
@@ -1317,6 +1360,25 @@ bool		UI::del(GdkEventKey *e)
 {
 	std::cout << e->keyval << std::endl;
 	return true;
+}
+
+std::string		UI::FinderGetFile(std::string folder, std::string extensionPattern)
+{
+	Glib::RefPtr< Gtk::FileFilter > filterDae = Gtk::FileFilter::create() ;
+	filterDae->set_name(extensionPattern);
+	filterDae->add_pattern(extensionPattern);
+
+	Gtk::FileChooserDialog finder("Please choose a file", Gtk::FILE_CHOOSER_ACTION_OPEN);
+	finder.set_transient_for(*window);
+	finder.set_current_folder(folder);
+	finder.add_filter(filterDae);
+	finder.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+	finder.add_button("Select", Gtk::RESPONSE_OK);
+
+	if (finder.run() == Gtk::RESPONSE_OK)
+		return finder.get_filename();
+
+	return "";
 }
 
 std::string		UI::PopupGetText(std::string win_name, std::string label, const Glib::ustring warn)
@@ -1395,6 +1457,26 @@ void			UI::ReplaceScriptName(std::string oldName, std::string newName)
 			}
 		}
 	}
+}
+
+std::string		UI::FileGetName(std::string& filePath)
+{
+	size_t lastSeparator;
+ 	
+ 	lastSeparator = filePath.find_last_of("/");
+ 	
+ 	return filePath.substr(lastSeparator + 1);
+}
+
+std::string		UI::FileGetPath(std::string& filePath)
+{
+	size_t lastSeparator;
+ 	
+ 	lastSeparator = filePath.find_last_of("/");
+  	if (lastSeparator == std::string::npos)
+  		return "";
+ 	
+ 	return filePath.substr(0, lastSeparator);
 }
 
 int main(int ac, char **av)
