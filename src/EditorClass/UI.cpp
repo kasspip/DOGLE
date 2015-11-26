@@ -25,8 +25,10 @@ UI::UI(Application *app, std::string Dfile) :
   	GoInspectorDisplay();
 	AppPrefabDisplay();
 	AppSceneDisplay();
+	AppScriptDisplay();
 	SceneListDisplay();
 	GoComponentsDisplay();
+	ComponentPropertyDisplay();
 	
 	update = true;
 	isSaved = true;
@@ -65,6 +67,16 @@ UI::UI(Application *app, std::string Dfile) :
 	Gtk::Button	*SceneDeleteButton;
 	builder->get_widget("button11", SceneDeleteButton);
 	SceneDeleteButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonDeleteScene));
+
+	/*APPLICATION SCENE NEW BUTTON*/
+	Gtk::Button	*ScriptNewButton;
+	builder->get_widget("button12", ScriptNewButton);
+	ScriptNewButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonNewScript));
+
+	/*APPLICATION SCENE DELETE BUTTON*/
+	Gtk::Button	*ScriptDeleteButton;
+	builder->get_widget("button13", ScriptDeleteButton);
+	ScriptDeleteButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonDeleteScript));
 
 	/*SCENE INSTANCIATE BUTTON*/
 	Gtk::Button	*SceneInstanciateButton;
@@ -505,8 +517,88 @@ void		UI::ButtonDeleteScene()
 	scene = nullptr;
 	AppSceneRefresh();
 	SceneInspectorRefresh();
+
 	
 	isSaved = false;
+}
+
+
+
+
+
+
+//	APP SCRIPTS LIST //
+
+
+void		UI::AppScriptDisplay()
+{
+	builder->get_widget("treeview9", AppScriptTreeView);
+	AppScriptList = Gtk::ListStore::create(model2);
+	AppScriptTreeView->set_model(AppScriptList);
+
+	AppScriptTreeView->append_column("Linked scripts :",model2.m_col_name);
+	AppScriptTreeView->append_column_editable("",model2.del);
+	AppScriptTreeView->get_column_cell_renderer(0)->set_fixed_size(300,0);
+
+	// Gtk::CellRendererText*  cellText = static_cast<Gtk::CellRendererText*>(AppScriptTreeView->get_column_cell_renderer(0));
+	// cellText->signal_edited().connect(sigc::mem_fun(*this, &UI::AppSceneListEdit));
+
+	AppScriptRefresh();
+}
+
+void		UI::AppScriptRefresh()
+{
+	ClearListStore(AppScriptList);
+
+	ScriptManager sm;
+
+	for (std::string scriptName : sm.GetScriptsNames())
+	{
+		Gtk::TreeModel::iterator iter = AppScriptList->append();
+		(*iter)[model2.m_col_name] = scriptName;
+		(*iter)[model2.del] = false;
+	}
+
+}
+
+void		UI::ButtonNewScript()
+{
+	std::string scriptName = PopupGetText("New Script", "Name ", "<b>You must specify a Script name</b>");
+	
+	if (scriptName.length() == 0)
+		return;
+	
+	ScriptManager			scriptManager;
+	scriptManager.NewScript(scriptName);
+	
+	AppScriptRefresh();
+}
+
+void		UI::ButtonDeleteScript()
+{
+	Gtk::TreeModel::Children children = AppScriptList->children();
+	Gtk::TreeModel::Children::iterator row = children.begin();
+
+	for (; row != children.end(); row++)
+	{
+		if ((*row)[model2.del] == true)
+		{
+			std::stringstream ss;
+			ss << (*row)[model2.m_col_name];
+		
+			ScriptManager			scriptManager;
+			
+			scriptManager.RemoveScript( ss.str() );
+			ApplicationRemoveScripts(ss.str());
+
+			if (false == PopupGetConfirm("Unlink Script", 
+				"\tDo you want to keep " + ss.str() + ".cpp ?"))
+				DeleteFile("./resources/Scripts/" + ss.str() + ".cpp");
+		}
+	}
+	
+	AppScriptRefresh();
+	GoInspectorRefresh();
 }
 
 
@@ -1056,6 +1148,7 @@ void		UI::CreateScript()
 	{
 		std::cout << "linking " << scriptName << " to ScriptManager." << std::endl;
 		sm.NewScript(scriptName);
+		AppScriptRefresh();
 	}
 
 	try {
@@ -1129,7 +1222,7 @@ void		UI::SkinPropertyRefresh()
 void		UI::ScriptPropertyRefresh(Script * script)
 {
   	component = script;
-		
+
 	Gtk::TreeModel::iterator row;
 	std::stringstream ss;
 
@@ -1277,6 +1370,7 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 					sm.EditScriptName(oldName, value, dogleFile);
 					ReplaceScriptName(oldName, value);
 					app->Save();
+					AppScriptRefresh();
 				}
 			} 																		break;
 		case 1:
@@ -1477,6 +1571,63 @@ std::string		UI::FileGetPath(std::string& filePath)
   		return "";
  	
  	return filePath.substr(0, lastSeparator);
+}
+
+void 			UI::ApplicationRemoveScripts(std::string name)
+{
+	std::list<GameObject*>	gameObjects = app->GetListPrefab();
+	std::list<GameObject*>::iterator it = gameObjects.begin();
+	for(; it != gameObjects.end() ; it++)
+		(*it)->DeleteComponent(name);
+
+	std::list<Scene*> scenes = app->GetListScene();
+	std::list<Scene*>::iterator it_scene = scenes.begin();
+
+	for (; it_scene != scenes.end(); it_scene++)
+	{
+		gameObjects = (*it_scene)->GetBindGameObjectList();
+		it = gameObjects.begin();
+		for(; it != gameObjects.end() ; it++)
+			(*it)->DeleteComponent(name);
+		
+		gameObjects = (*it_scene)->GetGameObjectList();
+		it = gameObjects.begin();
+		for(; it != gameObjects.end() ; it++)
+			(*it)->DeleteComponent(name);
+	}
+}
+
+void		UI::DeleteFile(std::string file)
+{
+	std::ofstream Ocppfile(file);
+	if (Ocppfile.is_open())
+		Ocppfile.close();
+	else
+	{
+		PopWarning("Cannot find file: " + file);
+		return ;
+	}
+
+	FILE *in;
+    char buff[512];
+    std::string cmdReturn;
+
+	in = popen(("git ls-files " + file + ".cpp").c_str(), "r");
+
+	while(fgets(buff, sizeof(buff), in)!=NULL)
+	    cmdReturn += buff;
+	pclose(in);
+
+	if (cmdReturn.length() > 0)
+	{
+		std::cout << "git rm -f " + file << std::endl;
+		system(("git rm -f " + file).c_str());
+	}
+	else
+	{
+		std::cout << "rm -f " + file << std::endl;
+		std::remove((file).c_str());
+	}
 }
 
 int main(int ac, char **av)

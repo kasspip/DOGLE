@@ -19,7 +19,6 @@
 #include "FileFinder.hpp"
 #include "PopupInstancePrefab.hpp"
 #include "PopupNewComponent.hpp"
-#include "PopupNewScript.hpp"
 #include "PopupConfirmation.hpp"
 #include "ScriptManager.hpp"
 
@@ -54,6 +53,8 @@ public:
 	std::string						FileGetName(std::string& filePath);
 	std::string						FileGetPath(std::string& filePath);
 	void							ReplaceScriptName(std::string oldName, std::string newName);
+	void 							ApplicationRemoveScripts(std::string name);
+	void							DeleteFile(std::string file);
 
 
 	// Application panel //
@@ -87,6 +88,14 @@ public:
 	Glib::RefPtr<Gtk::ListStore>	AppScenesList;
 	Gtk::TreeView					*AppScenesTreeView;
 	
+	void							AppScriptDisplay();
+	void							AppScriptRefresh();
+	void							ButtonNewScript();
+	void							ButtonDeleteScript();
+
+	Glib::RefPtr<Gtk::ListStore>	AppScriptList;
+	Gtk::TreeView					*AppScriptTreeView;
+
 	Application*					app;
 
 	// Scene panel //
