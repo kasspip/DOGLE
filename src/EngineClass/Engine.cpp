@@ -60,8 +60,8 @@ void			Engine::RunApplication(Application* app)
 		_winH = app->winH;
 		_StartOpenGL();
 	}
-	app->shaderProgram3D = _CompileShader("3D");
-	app->shaderProgramDebug = _CompileShader("Debug");
+	app->shaderProgram_Gizmo =  _CompileShader("Gizmo");
+	app->shaderProgram_Standard = _CompileShader("Standard");
 	app->window = _window;
 	glfwSetKeyCallback(app->window, Inputs::KeyCallback);
 	_SM.RunApplication(*app);

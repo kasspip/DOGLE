@@ -19,9 +19,11 @@
 			Render &operator=(Render const &rhs);
 			Render(Render const &src);
 
-			void			_renderSkin(Skin& skin);
-			void 			_UpdateFpsCounter(std::string & name, GLFWwindow* window);
 			
+			void 			_UpdateFpsCounter(std::string & name, GLFWwindow* window);
+			void			_SetupCamera(Application & app);
+			void			_RenderGameObjects(Application & app);
+
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Render const &rhs);

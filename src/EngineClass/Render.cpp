@@ -26,53 +26,18 @@ void			Render::RunState(Application & app, e_state & currentState)
 	PRINT_DEBUG("[MACHINE] <Render>");
 	
 	Engine::_currTime = glfwGetTime();
+
 	if (Engine::_currTime > Engine::_lastTime + (1.0f / static_cast<double>(app.FPS)))
 	{
 		Engine::_lastTime = Engine::_currTime;
 		_UpdateFpsCounter(app.name, app.window);
 	
-	
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, app.winW, app.winH);
-		glUseProgram(app.shaderProgramDebug);
-		GLint variableLocation;
-	
-		// setting camera
-		Scene* scene = app.GetCurrentScene();
-		GameObject* sceneCamera = Camera::GetMainCamera();
-		if (sceneCamera)
-		{
-			Camera* camera = sceneCamera->GetComponent<Camera>();
-			variableLocation = glGetUniformLocation(app.shaderProgramDebug, "View");
-			glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr( camera->View() ));
-			variableLocation = glGetUniformLocation(app.shaderProgramDebug, "Projection");
-			glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr( camera->Projection(app.winW, app.winH) ));
-		}
-		else
-			throw DError() << msg("No current camera in scene " + scene->name);
-	
-		// rendering Skins
-		Transform* transform = nullptr;
-		Skin* skin = nullptr;
-		for (GameObject* go : scene->GetGameObjectList())
-		{
-			if (go == sceneCamera)
-				continue ;
-			if ((transform = go->GetComponent<Transform>()))
-			{
-    	   		variableLocation = glGetUniformLocation(app.shaderProgramDebug, "Transform");
-    	    	glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr(transform->GetMatrice()));
-				transform = nullptr;
-			}
-			if ((skin = go->GetComponent<Skin>())
-				&& skin->GetIsBind() == true)
-			{
-				glBindTexture(GL_TEXTURE_2D, skin->textureBind);
-				glBindVertexArray(skin->vao);
-				glDrawArrays(GL_TRIANGLES, 0, skin->nb_vertices);
-				skin = nullptr;
-			}
-		}
+
+		_SetupCamera(app);
+		_RenderGameObjects(app);
+
 		glfwSwapBuffers(app.window);
 	}
 	currentState = STATE_GUI;
@@ -85,6 +50,59 @@ std::string		Render::toString(void) const
 }
 
 // PRIVATE //
+
+void			Render::_RenderGameObjects(Application & app)
+{
+	GLint variableLocation;
+	Transform* transform = nullptr;
+	Skin* skin = nullptr;
+
+	Scene* scene = app.GetCurrentScene();
+	GameObject* sceneCamera = Camera::GetMainCamera();
+
+	for (GameObject* go : scene->GetGameObjectList())
+	{
+		glUseProgram(app.shaderProgram_Standard);
+
+		if (go == sceneCamera)
+			continue ;
+		if ((transform = go->GetComponent<Transform>()))
+		{
+       		variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "Transform");
+        	glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr(transform->GetMatrice()));
+			transform = nullptr;
+		}
+		if ((skin = go->GetComponent<Skin>())
+			&& skin->GetIsBind() == true)
+		{
+			glBindTexture(GL_TEXTURE_2D, skin->textureBind);
+			glBindVertexArray(skin->vao);
+			glDrawArrays(GL_TRIANGLES, 0, skin->nb_vertices);
+			skin = nullptr;
+		}
+	}
+}
+
+
+void			Render::_SetupCamera(Application & app)
+{
+	GLint variableLocation;
+	
+	Scene* scene = app.GetCurrentScene();
+	GameObject* sceneCamera = Camera::GetMainCamera();
+	
+	if (sceneCamera)
+	{
+		Camera* camera = sceneCamera->GetComponent<Camera>();
+		variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "View");
+		glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr( camera->View() ));
+		variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "Projection");
+		glUniformMatrix4fv(variableLocation, 1, GL_FALSE, glm::value_ptr( camera->Projection(app.winW, app.winH) ));
+	}
+	else
+		throw DError() << msg("No current camera in scene " + scene->name);
+}
+
 
 void 			Render::_UpdateFpsCounter (std::string & name, GLFWwindow* window)
 {

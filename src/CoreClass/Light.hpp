@@ -3,6 +3,7 @@
 
 # include "DOGLE.hpp"
 # include "IComponent.hpp"
+# include <assimp/cimport.h>
 
 
 	class Light : public IComponent
@@ -17,6 +18,9 @@
 			
 			std::string toString(void) const;
 			void		Save(std::ofstream &file);
+
+
+			aiColor4D 	color;
 
 		private:
 	

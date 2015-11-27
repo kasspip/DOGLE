@@ -9,8 +9,8 @@ Application::Application(std::string name, int width, int height) : name(name), 
 	_sceneToLoad = nullptr;
 	_appShouldClose = false;
 	FPS = 60;
-	shaderProgram3D = 0;
-	shaderProgramDebug = 0;
+	shaderProgram_Gizmo = 0;
+	shaderProgram_Standard = 0;
 	std::cout << "construct " + name << std::endl;
 	singleton = this;
 }

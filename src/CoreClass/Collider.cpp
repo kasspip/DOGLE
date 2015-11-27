@@ -10,7 +10,7 @@ Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf) : center(po
 {
 	std::cout << "construct Collider withoud skin" << std::endl;
 	type = "Collider";
-	physic_ptr = Physics::singleton->CreatePhysic(go, this);
+	//physic_ptr = Physics::singleton->CreatePhysic(go, this); // TODO
 }
 
 Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(true)

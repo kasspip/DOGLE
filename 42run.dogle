@@ -23,11 +23,13 @@ APPLICATION:42run|1280|1280
 	PREFAB:child|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SKIN:cube.dae
+	PREFAB:Empty GameObject|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
 	SCENE:Level1
 		GAMEOBJECT:Player|
 			TRANSFORM:0,0,-10|0,0,0|1,1,1
-			SKIN:cube.dae
 			SCRIPT:MyCube
+			SKIN:MrRobot.dae
 			COLLIDER:true|1
 		GAMEOBJECT:Floor|
 			TRANSFORM:-0.7,-5,-10|0,0,0|1000,1,1000
@@ -37,3 +39,6 @@ APPLICATION:42run|1280|1280
 			TRANSFORM:0,0,0|0,0,0|1,1,1
 			CAMERA:45|0.1|100
 			SCRIPT:ControlCamera
+		GAMEOBJECT:TestLight|
+			TRANSFORM:0,0,-10|0,0,0|1,1,1
+			SKIN:Gizmo.dae

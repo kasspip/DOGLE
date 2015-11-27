@@ -39,8 +39,8 @@
 
 			// Engine
 			GLFWwindow			*window;
-			GLuint				shaderProgram3D;
-			GLuint				shaderProgramDebug;
+			GLuint				shaderProgram_Gizmo;
+			GLuint				shaderProgram_Standard;
 			Scene*				sceneToLoad;
 			
 
