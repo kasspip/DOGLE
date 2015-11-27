@@ -18,8 +18,8 @@
 #include "ToggleColumn.hpp"
 #include "FileFinder.hpp"
 #include "PopupInstancePrefab.hpp"
-#include "PopupNewComponent.hpp"
 #include "PopupConfirmation.hpp"
+#include "PopupSelectItems.hpp"
 #include "ScriptManager.hpp"
 
 
@@ -49,6 +49,7 @@ public:
 	std::string						PopupGetText(std::string win_name, std::string label, const Glib::ustring warning);
 	bool							PopupGetConfirm(std::string win_name, std::string question);
 	void							PopWarning(const Glib::ustring warn);
+	std::string						PopupGetItem( std::list<std::string> items );
 	std::string						FinderGetFile(std::string folder, std::string extensionPattern);
 	std::string						FileGetName(std::string& filePath);
 	std::string						FileGetPath(std::string& filePath);
@@ -90,6 +91,7 @@ public:
 	
 	void							AppScriptDisplay();
 	void							AppScriptRefresh();
+	void							ButtonImportScript();
 	void							ButtonNewScript();
 	void							ButtonDeleteScript();
 

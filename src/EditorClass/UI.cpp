@@ -68,12 +68,17 @@ UI::UI(Application *app, std::string Dfile) :
 	builder->get_widget("button11", SceneDeleteButton);
 	SceneDeleteButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonDeleteScene));
 
-	/*APPLICATION SCENE NEW BUTTON*/
+	/*APPLICATION SCRIPT IMPORT BUTTON*/
+	Gtk::Button	*ScriptimportButton;
+	builder->get_widget("button14", ScriptimportButton);
+	ScriptimportButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonImportScript));
+
+	/*APPLICATION SCRIPT NEW BUTTON*/
 	Gtk::Button	*ScriptNewButton;
 	builder->get_widget("button12", ScriptNewButton);
 	ScriptNewButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonNewScript));
 
-	/*APPLICATION SCENE DELETE BUTTON*/
+	/*APPLICATION SCRIPT DELETE BUTTON*/
 	Gtk::Button	*ScriptDeleteButton;
 	builder->get_widget("button13", ScriptDeleteButton);
 	ScriptDeleteButton->signal_clicked().connect(sigc::mem_fun(*this, &UI::ButtonDeleteScript));
@@ -139,6 +144,10 @@ void		UI::ButtonLoadApp()
 	if (dogleFile.length() == 0 )
 		return ;
 	
+	if (!isSaved)
+		OnQuitEditor();
+	isSaved = true;
+
 	scene = nullptr;
 	gameObject = nullptr;
 	component = nullptr;
@@ -561,6 +570,31 @@ void		UI::AppScriptRefresh()
 
 }
 
+void		UI::ButtonImportScript()
+{
+	ScriptManager sm;
+	std::string scriptFile;
+	std::string scriptName;
+	size_t separator;
+
+
+	std::string file = FinderGetFile("./resources/Scripts", "*.cpp");
+	if (file.length() == 0 )
+		return ;
+	
+	scriptFile = FileGetName(file);
+ 	separator = scriptFile.find_last_of(".");
+	scriptName = scriptFile.substr(0, separator);
+	
+	if (sm.ScriptExists(scriptName) == false)
+	{
+		std::cout << "linking " << scriptName << " to ScriptManager." << std::endl;
+		sm.NewScript(scriptName);
+		AppScriptRefresh();
+	}
+}
+
+
 void		UI::ButtonNewScript()
 {
 	std::string scriptName = PopupGetText("New Script", "Name ", "<b>You must specify a Script name</b>");
@@ -592,7 +626,7 @@ void		UI::ButtonDeleteScript()
 			ApplicationRemoveScripts(ss.str());
 
 			if (false == PopupGetConfirm("Unlink Script", 
-				"\tDo you want to keep " + ss.str() + ".cpp ?"))
+				"\t<b>Do you want to keep " + ss.str() + ".cpp file ?</b>\n"))
 				DeleteFile("./resources/Scripts/" + ss.str() + ".cpp");
 		}
 	}
@@ -744,6 +778,7 @@ void		UI::ButtonNewInstance()
 		PopWarning("No Scene Selected.");
 		return;
 	}
+
 	PopupInstancePrefab	popup = PopupInstancePrefab(this->window, app);
 	int i = 0;
 	while (popup.run() != Gtk::RESPONSE_CANCEL)
@@ -998,6 +1033,7 @@ void		UI::GoComponentsSelection()
 		ss << (*selection)[model2.m_col_name];
 	 	std::string type = ss.str();
 
+	 	// The 4 steps to add component :
 	 	// 1 - add type here and create <name>PropertyRefresh() function
 		if (type == "Skin")
 	 		SkinPropertyRefresh();
@@ -1022,25 +1058,21 @@ void		UI::ButtonNewComponent()
 		return;
 	}
 	
-	PopupNewComponent	popup = PopupNewComponent(this->window);
-	int i = 0;
-	std::string compoType;
-	while (popup.run() != Gtk::RESPONSE_CANCEL)
-	{
-		if ((compoType = popup.GetSelection()).length() > 0)
-		{
-			CreateComponent(compoType);
-			GoComponentsRefresh();
-			isSaved = false;
-			break ;
-		}
-		else 
-		{
-			if (i > 0)
-				break;
-			i++;
-		}
-	}
+	// 2 - add choice selection in popup
+	std::list<std::string> components;
+	components.push_back("Skin");
+	components.push_back("Collider");
+	components.push_back("Script");
+	components.push_back("Light");
+	components.push_back("Camera");
+
+	std::string compoType = PopupGetItem( components );
+
+	if (compoType.length() == 0)
+		return;
+
+	CreateComponent(compoType);
+	GoComponentsRefresh();	
 }
 
 void		UI::ButtonDeleteComponent()
@@ -1070,7 +1102,7 @@ void		UI::ButtonDeleteComponent()
 
 void		UI::CreateComponent(std::string type)
 {
-	// 2 - Create and Link function creation
+	// 3 - Create and Link function creation
 
 	if (type == "Camera")
 		CreateCamera();
@@ -1131,25 +1163,11 @@ void		UI::CreateSkin()
 void		UI::CreateScript()
 {
 	ScriptManager sm;
-	std::string scriptFile;
-	std::string scriptName;
-	size_t separator;
 
+	std::string scriptName = PopupGetItem(sm.GetScriptsNames());
 
-	std::string file = FinderGetFile("./resources/Scripts", "*.cpp");
-	if (file.length() == 0 )
-		return ;
-	
-	scriptFile = FileGetName(file);
- 	separator = scriptFile.find_last_of(".");
-	scriptName = scriptFile.substr(0, separator);
-	
-	if (sm.ScriptExists(scriptName) == false)
-	{
-		std::cout << "linking " << scriptName << " to ScriptManager." << std::endl;
-		sm.NewScript(scriptName);
-		AppScriptRefresh();
-	}
+	if (scriptName.length() == 0)
+		return;
 
 	try {
 		gameObject->AddComponent(new Script( scriptName ));
@@ -1167,7 +1185,10 @@ void		UI::CreateCollider()
 		return ;
 	}
 	
-	std::cout << "NOT IMPLEMENTED" << std::endl;
+	if (gameObject->GetComponent<Skin>())
+		gameObject->AddComponent(new Collider( gameObject ));
+	else
+		gameObject->AddComponent(new Collider( glm::vec3(0,0,0), glm::vec3(1,1,1) ) );
 }
 
 
@@ -1310,36 +1331,33 @@ void		UI::ColliderPropertyRefresh()
 	(*row)[model.value_1] = ss.str();
 	ss.str(std::string());
 
-	if (collider->IsSkinned() == false)
-	{
-		row = ComponentPropertyList->append();
-		(*row)[model.m_col_name] = "Center";
-		ss << collider->center.x;
-		(*row)[model.value_1] = ss.str();
-		ss.str(std::string());
-		
-		ss << collider->center.y;
-		(*row)[model.value_2] = ss.str();
-		ss.str(std::string());
-		
-		ss << collider->center.z;
-		(*row)[model.value_3] = ss.str();
-		ss.str(std::string());
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Center";
+	ss << collider->center.x;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
 	
-		row = ComponentPropertyList->append();
-		(*row)[model.m_col_name] = "Size";
-		ss << collider->size.x;
-		(*row)[model.value_1] = ss.str();
-		ss.str(std::string());
-		
-		ss << collider->size.y;
-		(*row)[model.value_2] = ss.str();
-		ss.str(std::string());
-		
-		ss << collider->size.z;
-		(*row)[model.value_3] = ss.str();
-		ss.str(std::string());
-	}
+	ss << collider->center.y;
+	(*row)[model.value_2] = ss.str();
+	ss.str(std::string());
+	
+	ss << collider->center.z;
+	(*row)[model.value_3] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Size";
+	ss << collider->size.x;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+	
+	ss << collider->size.y;
+	(*row)[model.value_2] = ss.str();
+	ss.str(std::string());
+	
+	ss << collider->size.z;
+	(*row)[model.value_3] = ss.str();
+	ss.str(std::string());
 }
 
 
@@ -1347,8 +1365,7 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 {
 	switch (std::stoi(index))
 	{
-		// 3 - add edition here
-		// 4 - add choice selection in PopupNewComponent.cpp
+		// 4 - add edition here
 		case 0:
 			if (component->type == "Skin")
 				dynamic_cast<Skin*>(component)->dae_file = value;	
@@ -1503,6 +1520,27 @@ bool			UI::PopupGetConfirm(std::string win_name, std::string question)
 			return true;
 	}
 	return false;
+}
+
+std::string		UI::PopupGetItem( std::list<std::string> items )
+{
+
+	PopupSelectItems popup(window, items);
+
+	int i = 0;
+	std::string itemSelected;
+	while (popup.run() != Gtk::RESPONSE_CANCEL)
+	{
+		if ((itemSelected = popup.GetSelection()).length() > 0)
+			return itemSelected;
+		else 
+		{
+			if (i > 0)
+				break;
+			i++;
+		}
+	}
+	return "";
 }
 
 void			UI::PopWarning(const Glib::ustring warn)

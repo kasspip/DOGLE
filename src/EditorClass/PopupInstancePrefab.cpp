@@ -12,7 +12,7 @@ PopupInstancePrefab::PopupInstancePrefab(Gtk::Window* parent, Application *app) 
 	treeView.set_model(list);
 	
 	treeView.append_column("Prefabs :", model2.m_col_name);
-	treeView.get_column_cell_renderer(0)->set_fixed_size(200,0);
+	treeView.get_column_cell_renderer(0)->set_fixed_size(300,0);
 	
 
 	for (GameObject* go : app->GetListPrefab())

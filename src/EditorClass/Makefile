@@ -17,7 +17,7 @@ SRC = 	UI.cpp \
 		myColumn.cpp \
 		ToggleColumn.cpp \
 		PopupInstancePrefab.cpp \
-		PopupNewComponent.cpp \
+		PopupSelectItems.cpp \
 		PopupConfirmation.cpp \
 
 SRC +=	../CoreClass/Application.cpp \

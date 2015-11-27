@@ -156,11 +156,14 @@ void			ScriptManager::_FileFindAndReplace(std::string path, std::string fileName
 		newFile << line << std::endl;
 	}
 	file.close();
-	std::remove((path + fileName).c_str());
+
+	_DeleteFile(path + fileName);
+
 	if (fileName.find(oldName + ".cpp") == std::string::npos)
 		std::rename((path + "RewriteTmpFile.txt").c_str(), (path + fileName).c_str());
 	else
 		std::rename((path + "RewriteTmpFile.txt").c_str(), (path + newName + ".cpp").c_str());
+    
     newFile.close();
 }
 
@@ -207,6 +210,33 @@ void			ScriptManager::_SnippetScript(std::ofstream & file, std::string & name)
 
 
 	 << "};" << std::endl;
+}
+
+void			ScriptManager::_DeleteFile(std::string file)
+{
+	std::ofstream Ocppfile(file);
+	if (Ocppfile.is_open())
+		Ocppfile.close();
+	else
+	{
+		std::cout << "Script manager: _DeleteFile : could not open " << file << std::endl;
+		return ;
+	}
+
+	FILE *in;
+    char buff[512];
+    std::string cmdReturn;
+
+	in = popen(("git ls-files " + file + ".cpp").c_str(), "r");
+
+	while(fgets(buff, sizeof(buff), in)!=NULL)
+	    cmdReturn += buff;
+	pclose(in);
+
+	if (cmdReturn.length() > 0)
+		system(("git rm -f " + file).c_str());
+	else
+		std::remove((file).c_str());
 }
 
 // GETTER SETTER //

@@ -10,7 +10,7 @@ Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf) : center(po
 {
 	std::cout << "construct Collider withoud skin" << std::endl;
 	type = "Collider";
-
+	physic_ptr = Physics::singleton->CreatePhysic(go, this);
 }
 
 Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(true)
@@ -46,19 +46,10 @@ Collider::Collider(Collider const & src) : _skinned(src._skinned)//instable
 	std::cout << "construct Collider " << std::endl;
 }
 
-Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf, GameObject *go) : center(pos), size(sz), enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(true)
-{
-	std::cout << "construct Collider with builder" << std::endl;
-	type = "Collider";
-	physic_ptr = Physics::singleton->CreatePhysic(go, this);
-
-}
-
 Collider::~Collider(void)
 {
 	std::cout << "destruct Collider " << std::endl;
 	Physics::singleton->DestroyPhysic(static_cast<btCollisionObject	*>(physic_ptr));
-
 }
 
 // OVERLOADS //
@@ -101,11 +92,11 @@ void		Collider::Save(std::ofstream &file)
 	else
 	 	TABS = "\t\t\t";
 	file << TABS << "COLLIDER:";
-	if (_skinned == false)
-	{ 
-		file << center.x << SEPARATOR_F << center.y << SEPARATOR_F << center.z << SEPARATOR
-			 << size.x << SEPARATOR_F << size.y << SEPARATOR_F << size.z << SEPARATOR;
-	}
+	// if (_skinned == false)
+	// { 
+	// 	file << center.x << SEPARATOR_F << center.y << SEPARATOR_F << center.z << SEPARATOR
+	// 		 << size.x << SEPARATOR_F << size.y << SEPARATOR_F << size.z << SEPARATOR;
+	// }
 	if (enable)
 		file << "true" << SEPARATOR;
 	else

@@ -32,6 +32,7 @@
 			void					_FileEraseLine(std::string path, std::string fileName, std::string target);
 			void					_SnippetScript(std::ofstream & file, std::string & name);
 			void					_FileFindAndReplace(std::string path, std::string fileName, std::string oldName, std::string newName);
+			void					_DeleteFile(std::string file);
 
 			std::list<std::string>	_scripts;
 	};
