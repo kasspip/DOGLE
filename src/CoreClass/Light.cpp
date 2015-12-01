@@ -3,10 +3,11 @@
 
 // CONSTRUCTOR DESTRUCTOR //
 
-Light::Light(void)
+Light::Light(float intens)
 {
 	std::cout << "Construct Light" << std::endl;
 	type = "Light";
+	intensity = intens;
 }
 
 Light::Light(Light const & src)
@@ -25,7 +26,8 @@ Light::~Light(void)
 
 Light	&Light::operator=(Light const & rhs)
 {
-	(void)rhs;
+	intensity = rhs.intensity;
+	color = rhs.color;
 	return *this;
 }
 
@@ -51,7 +53,8 @@ void			Light::Save(std::ofstream &file)
 		TABS = "\t\t";
 	else
 	 	TABS = "\t\t\t";
-	file << TABS << "LIGHT" << std::endl;
+	file << TABS << "LIGHT:" << intensity
+	<< std::endl;
 }
 
 // PRIVATE //

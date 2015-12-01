@@ -1135,7 +1135,7 @@ void		UI::CreateLight()
 		return ;
 	}
 	
-	gameObject->AddComponent(new Light);
+	gameObject->AddComponent(new Light(1));
 }
 
 void		UI::CreateSkin()
@@ -1303,11 +1303,11 @@ void		UI::LightPropertyRefresh()
 	Gtk::TreeModel::iterator row;
 	std::stringstream ss;
 
-	// row = ComponentPropertyList->append();
-	// (*row)[model.m_col_name] = "3DFile";
-	// ss << skin->dae_file;
-	// (*row)[model.value_1] = ss.str();
-	// ss.str(std::string());
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Intensity";
+	ss << light->intensity;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
 
 }
 
@@ -1389,7 +1389,9 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 					app->Save();
 					AppScriptRefresh();
 				}
-			} 																		break;
+			}
+			else if (component->type == "Light")
+				dynamic_cast<Light*>(component)->intensity = std::stof(value);		break;
 		case 1:
 			if (component->type == "Camera")
 				dynamic_cast<Camera*>(component)->clipNear = std::stof(value);

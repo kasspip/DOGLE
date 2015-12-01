@@ -1,0 +1,26 @@
+# APPLICATION 			<name> <window W> <window H>
+# SCENE 				<name>
+# PREFAB | GAMEOBJECT 	<name> <parent>
+# TRANSFORM 			<vec3 position> <vec3 rotation> <vec3 scale>
+# SKIN 					<file name .dae>
+# SCRIPT 				<class name>
+# CAMERA 				<fov> <clip near> <clip far>
+# COLLIDER 				<center> <size> <enable> <mass>
+
+APPLICATION:testLights|1280|1280
+	PREFAB:Empty|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+	PREFAB:camera|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		CAMERA:45|0.1|100
+	SCENE:scene1
+		GAMEOBJECT:camera|
+			TRANSFORM:0,1,5|0,0,0|1,1,1
+			CAMERA:45|0.1|100
+		GAMEOBJECT:cube|
+			TRANSFORM:0,0,0|0,0,0|1,1,1
+			SKIN:cube.dae
+		GAMEOBJECT:light|
+			TRANSFORM:0,3,0|0,0,0|1,1,1
+			LIGHT:1
+			SKIN:Gizmo.dae

@@ -37,6 +37,7 @@
 			void			_ParseSkin(std::string& line);
 			void			_ParseCollider(std::string& line);
 			void			_ParseColliderGo(std::string& line);
+			void			_ParseLight(std::string& line);
 
 			std::string*	_GetAttributs(std::string& line, int count);
 			glm::vec3		_AttributToVec3(std::string& attribut);

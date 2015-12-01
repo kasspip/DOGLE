@@ -9,10 +9,11 @@ uniform mat4 View;
 uniform mat4 Projection;
 
 out vec2 UV;
-
+out vec3 Normal;
 
 void main () 
 {
 	UV = vertexUV;
+	Normal = vertexNormal;
 	gl_Position = Projection * View * Transform * vec4 (vertexPosition, 1.0);
 }

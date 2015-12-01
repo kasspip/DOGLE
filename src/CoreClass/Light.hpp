@@ -10,7 +10,7 @@
 	{
 		public:
 
-			Light(void);
+			Light(float intensity);
 			Light(Light const &src);
 			~Light(void);
 		
@@ -19,10 +19,11 @@
 			std::string toString(void) const;
 			void		Save(std::ofstream &file);
 
-
+			float		intensity;
 			aiColor4D 	color;
 
 		private:
+			Light(void);
 	
 	};
 

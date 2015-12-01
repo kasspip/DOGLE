@@ -23,7 +23,10 @@
 			void 			_UpdateFpsCounter(std::string & name, GLFWwindow* window);
 			void			_SetupCamera(Application & app);
 			void			_RenderGameObjects(Application & app);
-
+			
+			Scene* 			_scene;
+			GameObject* 	_sceneCamera;
+			GLint 			_variableLocation;
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Render const &rhs);
