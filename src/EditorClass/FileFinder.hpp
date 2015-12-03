@@ -1,7 +1,7 @@
 #ifndef FILEFINDER_HPP
 #define FILEFINDER_HPP
 
-#include <gtkmm.h>
+// #include <gtkmm.h>
 
 class FileFinder :  public Gtk::Dialog
 {

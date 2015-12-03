@@ -25,11 +25,10 @@ $(NAME): $(OBJ)
 	@ranlib $(NAME)
 
 %.o: %.cpp
-	$(CC) -c $(FLAGS) $(INCLUDES) $<
+	$(CC) -c $(FLAGS) $(INCLUDES) $< -o $@
 
 clean:
 	rm -f $(OBJ)
-	rm -f *.o
 
 fclean: clean
 	rm -f $(NAME)

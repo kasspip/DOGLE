@@ -1,7 +1,5 @@
 NAME = dogle
 
-# SRC = 	example.cpp
-
 SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Application.cpp \
 		src/CoreClass/Scene.cpp \
@@ -82,13 +80,11 @@ all: $(NAME)
 COMPGAMESCRIPTS:
 	make -C resources/Scripts/
 
-$(NAME): COMPGAMESCRIPTS $(SOIL2)  $(OBJ) 
+$(NAME): COMPGAMESCRIPTS $(SOIL2) $(OBJ) 
 	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) -o $(NAME)
 
 %.o: %.cpp
 	$(CC) -c $(FLAGS) $(INCLUDES) $(BULLET_INC) $< -o $@
-
-
 
 $(SOIL2):
 	make -C include/soil2/make/macosx soil2-static-lib
@@ -104,7 +100,6 @@ editor_fclean:
 
 clean:
 	rm -f $(OBJ)
-	rm -f $(SCRIPTS_PATH)/*.o
 	make -C resources/Scripts/ clean
 
 

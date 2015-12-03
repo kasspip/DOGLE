@@ -2,10 +2,16 @@
 #define UI_HPP
 
 #include <iostream>
-#include <gtkmm.h>
+
 #include <gtkmm/messagedialog.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtkmm/application.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/treeselection.h>
+#include <gtkmm/builder.h>
+#include <gtkmm/filefilter.h>
+#include <gtkmm/filechooserdialog.h>
 
 #include "Builder.hpp"
 #include "Engine.hpp"

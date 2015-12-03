@@ -1,7 +1,8 @@
 #ifndef TOGGLECOLUMN_HPP
 #define TOGGLECOLUMN_HPP
 
-#include <gtkmm.h>
+#include <gtkmm/treemodel.h>
+#include <gtkmm/treemodel.h>
 
 class ToggleColumn : public Gtk::TreeModel::ColumnRecord
 {

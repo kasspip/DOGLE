@@ -4,7 +4,7 @@
 // CONSTRUCTOR DESTRUCTOR //
 
 std::string	Skin::_3Dobjects_path = std::string("resources/3D objects/");
-std::string	Skin::_images_path = std::string("resources/Images/");
+std::string	Skin::_images_path = std::string("resources/3D objects/");
 
 
 Skin::Skin(std::string obj) : dae_file(obj)

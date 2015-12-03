@@ -1,7 +1,8 @@
 #ifndef MY_COLUMN_HPP
 #define MY_COLUMN_HPP
 
-#include <gtkmm.h>
+#include <gtkmm/treemodel.h>
+#include <gtkmm/treemodel.h>
 
 class myColumn : public Gtk::TreeModel::ColumnRecord
 {

@@ -9,6 +9,8 @@
 #include <gtkmm/label.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/window.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/treeview.h>
 #include "ToggleColumn.hpp"
 #include "Application.hpp"
 

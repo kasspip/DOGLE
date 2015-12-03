@@ -153,6 +153,8 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3 \
 			-lglib-2.0 \
 			-lintl
 
+OBJ = $(SRC:.cpp=.o)
+
 DEPRECATED = -Wno-ignored-qualifiers -Wno-deprecated-register
 
 FLAGS =  -Wall -Wextra -Werror -std=c++14 -g $(DEPRECATED)
@@ -161,10 +163,10 @@ SOIL2 = ../../include/soil2/lib/macosx/libsoil2-debug.a
 
 FRAMEWORKS = -framework Cocoa -framework OpenGL -framework IOKit -lGlew 
 
-all: $(NAME)
+all: $(NAME) 
 
-$(NAME): $(SOIL2) $(GAMESCRIPTS) $(SRC:.c=.o)
-	g++ -std=c++14 -o $@ $^ $(FLAGS) ${INCLUDE} ${LIBRARIES}
+$(NAME): $(GAMESCRIPTS) $(SOIL2) $(OBJ)	
+	clang++ $(FLAGS) $(INCLUDE) $(LIBRARIES) $(OBJ)	-o $(NAME)
 	mv $(NAME) ../../
 
 $(GAMESCRIPTS):
@@ -174,12 +176,13 @@ $(SOIL2):
 	make -C ../../include/soil2/make/macosx soil2-static-lib
 
 %.o: %.cpp
-	g++ -c $^ -o $@ $(FLAGS) ${INCLUDE}
+	clang++ -c $(FLAGS) $(INCLUDE) $< -o $@
 
 clean:
-	rm -rf *.o
+	rm -rf $(OBJ)
 
 fclean: clean
 	rm -rf ../../$(NAME)
 
-re: fclean all
+re: fclean
+	make -j -j -j
