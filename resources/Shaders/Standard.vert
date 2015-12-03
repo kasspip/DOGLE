@@ -9,11 +9,14 @@ uniform mat4 View;
 uniform mat4 Projection;
 
 out vec2 UV;
+out vec3 FragmentPosition;
 out vec3 Normal;
 
 void main () 
 {
-	UV = vertexUV;
-	Normal = vertexNormal;
 	gl_Position = Projection * View * Transform * vec4 (vertexPosition, 1.0);
+
+	UV = vertexUV;
+	Normal = mat3(transpose(inverse(Transform))) * vertexNormal;
+	FragmentPosition = vec3(Transform * vec4(vertexPosition, 1.0f));
 }

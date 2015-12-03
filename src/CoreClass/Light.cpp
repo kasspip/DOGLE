@@ -3,11 +3,12 @@
 
 // CONSTRUCTOR DESTRUCTOR //
 
-Light::Light(float intens)
+Light::Light(float intens, glm::vec3 col)
 {
 	std::cout << "Construct Light" << std::endl;
 	type = "Light";
 	intensity = intens;
+	color = col;
 }
 
 Light::Light(Light const & src)
@@ -42,7 +43,8 @@ std::ostream	&operator<<(std::ostream & o, Light const & rhs)
 std::string		Light::toString(void) const
 {
 	std::stringstream ss;
-	ss << "# Component Light #";
+	ss << "# Component Light #" << std::endl
+	<< "intensity : " << intensity;
 	return ss.str();
 }
 

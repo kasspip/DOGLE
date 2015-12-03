@@ -5,6 +5,9 @@
 
 Render::Render(void)
 {
+	_scene = nullptr;
+	_sceneCamera = nullptr;
+	_variableLocation = 0;
 }
 
 Render::~Render(void)
@@ -35,8 +38,12 @@ void			Render::RunState(Application & app, e_state & currentState)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, app.winW, app.winH);
 		
-		_scene = app.GetCurrentScene();
-		_sceneCamera = Camera::GetMainCamera();
+		if (_scene == nullptr || _scene != app.GetCurrentScene())
+		{
+			_scene = app.GetCurrentScene();
+			_sceneCamera = Camera::GetMainCamera();
+			_SetupLights();
+		}
 
 		_RenderGameObjects(app);
 
@@ -53,6 +60,20 @@ std::string		Render::toString(void) const
 
 // PRIVATE //
 
+void			Render::_SetupLights()
+{
+	Light* light = nullptr;
+
+	_lights.clear();
+
+	for (GameObject* go : _scene->GetGameObjectList())
+	{
+		if ((light = go->GetComponent<Light>()) != nullptr)
+			_lights.push_back(light);
+	}
+}
+
+
 void			Render::_RenderGameObjects(Application & app)
 {
 	Transform* transform = nullptr;
@@ -60,25 +81,37 @@ void			Render::_RenderGameObjects(Application & app)
 
 	for (GameObject* go : _scene->GetGameObjectList())
 	{
-		_SetupCamera(app);
 
 		if (go == _sceneCamera)
 			continue ;
 
 		if ((transform = go->GetComponent<Transform>()))
 		{
-			if (go->GetComponent<Light>())
+			if (go->GetComponent<Light>()) // gizmo render
 			{
 				glUseProgram(app.shaderProgram_Gizmo);
+				_SetupCamera(app);
 				_variableLocation = glGetUniformLocation(app.shaderProgram_Gizmo, "Transform");
+				glUniformMatrix4fv(_variableLocation, 1, GL_FALSE, glm::value_ptr(transform->GetMatrice()));
 			}
-			else
+			else //standard render
 			{
 				glUseProgram(app.shaderProgram_Standard);
+				_SetupCamera(app);
 				_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "Transform");
+				glUniformMatrix4fv(_variableLocation, 1, GL_FALSE, glm::value_ptr(transform->GetMatrice()));
+				
+				for (Light *light : _lights)
+				{
+					_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "lightPosition");
+					glUniform3f(_variableLocation, 	light->transform->_position.x, 
+													light->transform->_position.y, 
+													light->transform->_position.z);
+					_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "lightColor");
+					glUniform3f(_variableLocation, 	light->color.x, light->color.y, light->color.z);
+				}
 			}
 
-			glUniformMatrix4fv(_variableLocation, 1, GL_FALSE, glm::value_ptr(transform->GetMatrice()));
 			transform = nullptr;
 		}
 
@@ -99,11 +132,13 @@ void			Render::_SetupCamera(Application & app)
 	{
 		Camera* camera = _sceneCamera->GetComponent<Camera>();
 		
+		// gizmo render
 		_variableLocation = glGetUniformLocation(app.shaderProgram_Gizmo, "View");
 		glUniformMatrix4fv(_variableLocation, 1, GL_FALSE, glm::value_ptr( camera->View() ));
 		_variableLocation = glGetUniformLocation(app.shaderProgram_Gizmo, "Projection");
 		glUniformMatrix4fv(_variableLocation, 1, GL_FALSE, glm::value_ptr( camera->Projection(app.winW, app.winH) ));
 
+		//standard render
 		_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "View");
 		glUniformMatrix4fv(_variableLocation, 1, GL_FALSE, glm::value_ptr( camera->View() ));
 		_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "Projection");

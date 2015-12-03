@@ -10,7 +10,7 @@
 	{
 		public:
 
-			Light(float intensity);
+			Light(float intensity, glm::vec3 col = glm::vec3(1,1,1));
 			Light(Light const &src);
 			~Light(void);
 		
@@ -20,7 +20,7 @@
 			void		Save(std::ofstream &file);
 
 			float		intensity;
-			aiColor4D 	color;
+			glm::vec3 	color;
 
 		private:
 			Light(void);

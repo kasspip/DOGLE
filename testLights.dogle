@@ -28,15 +28,3 @@ APPLICATION:testLights|1280|1024
 			TRANSFORM:0,3,0|0,0,0|1,1,1
 			LIGHT:1
 			SKIN:Gizmo.dae
-		GAMEOBJECT:Cluster1|
-			TRANSFORM:0,0,-20|0,0,0|1,1,1
-			SKIN:cluster_0.dae
-		GAMEOBJECT:Cluster2|
-			TRANSFORM:0,0,-40|0,0,0|1,1,1
-			SKIN:cluster_0.dae
-		GAMEOBJECT:Cluster3|
-			TRANSFORM:0,0,-60|0,0,0|1,1,1
-			SKIN:cluster_0.dae
-		GAMEOBJECT:Cluster4|
-			TRANSFORM:0,0,-80|0,0,0|1,1,1
-			SKIN:cluster_0.dae
