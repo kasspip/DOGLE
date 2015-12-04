@@ -10,7 +10,7 @@
 	{
 		public:
 
-			Light(float intensity, glm::vec3 col = glm::vec3(1,1,1));
+			Light(glm::vec3 col = glm::vec3(1,1,1));
 			Light(Light const &src);
 			~Light(void);
 		
@@ -19,7 +19,6 @@
 			std::string toString(void) const;
 			void		Save(std::ofstream &file);
 
-			float		intensity;
 			glm::vec3 	color;
 
 		private:

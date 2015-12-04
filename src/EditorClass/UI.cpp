@@ -1135,7 +1135,7 @@ void		UI::CreateLight()
 		return ;
 	}
 	
-	gameObject->AddComponent(new Light(1));
+	gameObject->AddComponent(new Light(glm::vec3(1,1,1)));
 }
 
 void		UI::CreateSkin()
@@ -1220,7 +1220,10 @@ void		UI::ComponentPropertyDisplay()
 
 void		UI::SkinPropertyRefresh()
 {
+	ClearListStore(ComponentPropertyList);
+	
 	Skin* skin;
+
 	try 
 	{
  	  	skin = gameObject->GetComponent<Skin>();
@@ -1242,6 +1245,8 @@ void		UI::SkinPropertyRefresh()
 
 void		UI::ScriptPropertyRefresh(Script * script)
 {
+	ClearListStore(ComponentPropertyList);
+  	
   	component = script;
 
 	Gtk::TreeModel::iterator row;
@@ -1257,7 +1262,10 @@ void		UI::ScriptPropertyRefresh(Script * script)
 
 void		UI::CameraPropertyRefresh()
 {
+	ClearListStore(ComponentPropertyList);
+	
 	Camera* camera;
+	
 	try 
 	{
  	  	camera = gameObject->GetComponent<Camera>();
@@ -1291,6 +1299,8 @@ void		UI::CameraPropertyRefresh()
 
 void		UI::LightPropertyRefresh()
 {
+	ClearListStore(ComponentPropertyList);
+	
 	Light* light;
 	try 
 	{
@@ -1304,15 +1314,25 @@ void		UI::LightPropertyRefresh()
 	std::stringstream ss;
 
 	row = ComponentPropertyList->append();
-	(*row)[model.m_col_name] = "Intensity";
-	ss << light->intensity;
+	(*row)[model.m_col_name] = "Color";
+	ss << light->color.x;
 	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+
+	ss << light->color.y;
+	(*row)[model.value_2] = ss.str();
+	ss.str(std::string());
+
+	ss << light->color.z;
+	(*row)[model.value_3] = ss.str();
 	ss.str(std::string());
 
 }
 
 void		UI::ColliderPropertyRefresh()
 {
+	ClearListStore(ComponentPropertyList);
+	
 	Collider* collider;
 	try 
 	{
@@ -1368,11 +1388,20 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 		// 4 - add edition here
 		case 0:
 			if (component->type == "Skin")
-				dynamic_cast<Skin*>(component)->dae_file = value;	
+			{
+				dynamic_cast<Skin*>(component)->dae_file = value;
+				SkinPropertyRefresh();
+			}
 			else if (component->type == "Camera")
+			{
 				dynamic_cast<Camera*>(component)->fov = std::stof(value);
+				CameraPropertyRefresh();
+			}
 			else if (component->type == "Collider")
+			{
 				dynamic_cast<Collider*>(component)->mass = std::stof(value);
+				ColliderPropertyRefresh();
+			}
 			else if (component->type == "Script")
 			{
 				std::string oldName = dynamic_cast<Script*>(component)->name;
@@ -1388,23 +1417,42 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 					ReplaceScriptName(oldName, value);
 					app->Save();
 					AppScriptRefresh();
+					ScriptPropertyRefresh(dynamic_cast<Script*>(component));
 				}
 			}
 			else if (component->type == "Light")
-				dynamic_cast<Light*>(component)->intensity = std::stof(value);		break;
+			{
+				dynamic_cast<Light*>(component)->color.x = std::stof(value); 		
+				LightPropertyRefresh();
+			}
+			break;
+		
 		case 1:
 			if (component->type == "Camera")
+			{
 				dynamic_cast<Camera*>(component)->clipNear = std::stof(value);
+				CameraPropertyRefresh();
+			}
 			else if (component->type == "Collider")
-				dynamic_cast<Collider*>(component)->center.x = std::stof(value); 	break;
+			{
+				dynamic_cast<Collider*>(component)->center.x = std::stof(value);
+				ColliderPropertyRefresh();
+			}
+			break;
 		
 		case 2:
 			if (component->type == "Camera")
+			{
 				dynamic_cast<Camera*>(component)->clipFar = std::stof(value);
+				CameraPropertyRefresh();
+			}
 			else if (component->type == "Collider")
-				dynamic_cast<Collider*>(component)->size.x = std::stof(value); 		break;
+			{
+				dynamic_cast<Collider*>(component)->size.x = std::stof(value);
+				ColliderPropertyRefresh();
+			} 		
+			break;
 	}
-	GoInspectorRefresh();
 	isSaved = false;
 }
 
@@ -1412,15 +1460,31 @@ void		UI::ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustr
 {
 	switch (std::stoi(index))
 	{
+		case 0:
+			if (component->type == "Light")
+			{
+				dynamic_cast<Light*>(component)->color.y = std::stof(value); 
+				LightPropertyRefresh();		
+			}
+			break;
+
 		case 1:
 			if (component->type == "Collider")
-				dynamic_cast<Collider*>(component)->center.y = std::stof(value); 	break;
+			{
+				dynamic_cast<Collider*>(component)->center.y = std::stof(value);
+				ColliderPropertyRefresh();
+			}
+
+			break;
 		
 		case 2:
 			if (component->type == "Collider")
-				dynamic_cast<Collider*>(component)->size.y = std::stof(value); 		break;
+			{
+				dynamic_cast<Collider*>(component)->size.y = std::stof(value);
+				ColliderPropertyRefresh();	
+			}
+			break;
 	}
-	GoInspectorRefresh();
 	isSaved = false;
 }
 
@@ -1428,15 +1492,35 @@ void		UI::ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustr
 {
 	switch (std::stoi(index))
 	{
+		case 0:
+			if (component->type == "Light")
+			{
+				dynamic_cast<Light*>(component)->color.z = std::stof(value); 
+				LightPropertyRefresh();	
+			}
+			break;
+			
 		case 1:
 			if (component->type == "Collider")
-				dynamic_cast<Collider*>(component)->center.z = std::stof(value); 	break;
-		
+			{
+				dynamic_cast<Collider*>(component)->center.z = std::stof(value); 
+				ColliderPropertyRefresh();	
+			}
+			else if (component->type == "Light")
+			{
+				dynamic_cast<Light*>(component)->color.z = std::stof(value); 
+				LightPropertyRefresh();	
+			}
+			break;
+
 		case 2:
 			if (component->type == "Collider")
-				dynamic_cast<Collider*>(component)->size.z = std::stof(value); 		break;
+			{
+				dynamic_cast<Collider*>(component)->size.z = std::stof(value); 
+				ColliderPropertyRefresh();		
+			}
+			break;
 	}
-	GoInspectorRefresh();
 	isSaved = false;
 }
 

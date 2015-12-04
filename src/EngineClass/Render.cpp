@@ -107,8 +107,12 @@ void			Render::_RenderGameObjects(Application & app)
 					glUniform3f(_variableLocation, 	light->transform->_position.x, 
 													light->transform->_position.y, 
 													light->transform->_position.z);
-					_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "lightColor");
-					glUniform3f(_variableLocation, 	light->color.x, light->color.y, light->color.z);
+					_variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "light.ambient");
+					glUniform3f(_variableLocation,  0.2f, 0.2f, 0.2f);
+					_variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "light.diffuse");
+					glUniform3f(_variableLocation,  light->color.x, light->color.y, light->color.z);
+					_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "light.specular");
+					glUniform3f(_variableLocation, 1.0f, 1.0f, 1.0f);
 				}
 			}
 
@@ -117,6 +121,15 @@ void			Render::_RenderGameObjects(Application & app)
 
 		if ((skin = go->GetComponent<Skin>()) && skin->GetIsBind() == true)
 		{
+			_variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "material.ambient");
+			glUniform3f(_variableLocation, skin->ambient.r, skin->ambient.g, skin->ambient.b);
+			_variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "material.diffuse");
+			glUniform3f(_variableLocation, skin->diffuse.r, skin->diffuse.g, skin->diffuse.b);
+			_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "material.specular");
+			glUniform3f(_variableLocation, skin->specular.r, skin->specular.g, skin->specular.b);
+			_variableLocation    = glGetUniformLocation(app.shaderProgram_Standard, "material.shininess"); 			
+			glUniform1f(_variableLocation, 64.0f);
+
 			glBindTexture(GL_TEXTURE_2D, skin->textureBind);
 			glBindVertexArray(skin->vao);
 			glDrawArrays(GL_TRIANGLES, 0, skin->nb_vertices);
@@ -143,6 +156,10 @@ void			Render::_SetupCamera(Application & app)
 		glUniformMatrix4fv(_variableLocation, 1, GL_FALSE, glm::value_ptr( camera->View() ));
 		_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "Projection");
 		glUniformMatrix4fv(_variableLocation, 1, GL_FALSE, glm::value_ptr( camera->Projection(app.winW, app.winH) ));
+		GLint viewPosLoc = glGetUniformLocation(app.shaderProgram_Standard, "viewPosition");
+		glUniform3f(viewPosLoc, camera->transform->_position.x, 
+								camera->transform->_position.y, 
+								camera->transform->_position.z);
 	}
 	else
 		throw DError() << msg("No current camera in _scene " + _scene->name);

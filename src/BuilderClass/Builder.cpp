@@ -211,13 +211,10 @@ void			Builder::_ParseLight(std::string& line)
 	std::string	*attributs;
 	attributs = _GetAttributs(line, 1);
 
-	_go->AddComponent( new Light( stof(attributs[0]) ) );
+	_go->AddComponent( new Light( _AttributToVec3(attributs[0])) );
 
 	delete[] attributs;
 }
-
-
-
 
 
 std::string*	Builder::_GetAttributs(std::string& line, int count)

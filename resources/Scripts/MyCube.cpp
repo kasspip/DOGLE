@@ -124,7 +124,7 @@ class MyCube : public Script
 				{
 					delta = dash_speed - dash_timer;
 					dashing = false;
-					std::cout << cam_pad << std::endl;
+					//std::cout << cam_pad << std::endl;
 				}
 				glm::vec3 inc = dash_target * (float)(delta / dash_speed);
 				cam_pad += inc;
