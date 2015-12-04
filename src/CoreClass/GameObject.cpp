@@ -51,6 +51,8 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 			AddComponent(new Skin(*(dynamic_cast<Skin*>(compo))));
 		else if (dynamic_cast<Camera*>(compo))
 			AddComponent(new Camera(*(dynamic_cast<Camera*>(compo))));
+		else if (dynamic_cast<Collider*>(compo))
+			AddComponent(new Collider(*(dynamic_cast<Collider*>(compo))));
 		else if (dynamic_cast<Light*>(compo))
 			AddComponent(new Light(*(dynamic_cast<Light*>(compo))));
 		else if (dynamic_cast<Script*>(compo))

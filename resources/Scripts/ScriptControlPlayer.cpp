@@ -8,22 +8,27 @@ enum e_dash_pos
 	RIGHT
 };
 
-class MyCube : public Script
+class ScriptControlPlayer : public Script
 {
 	public:
 
 		GameObject* 	child = nullptr;
 		float 			baseSpeed = 3;
 		e_dash_pos		dash_pos = MID;
+		float			move_speed = 10;
+		bool			mooving = false;
+		GameObject*		floor = nullptr;
 
-		static MyCube	*instance;
+		static ScriptControlPlayer	*instance;
 
-		MyCube() : Script("MyCube") {}
-		Script* 		Clone() { return new MyCube(*this); }
+		ScriptControlPlayer() : Script("ScriptControlPlayer") {}
+		Script* 		Clone() { return new ScriptControlPlayer(*this); }
 
 		void			Awake()
 		{
 			GameObject	*cam = Camera::GetMainCamera();
+			floor = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("Floor"));
+			std::cout << floor->GetComponent<Collider>()->mass << std::endl;
 			glm::vec3	cam_pos = cam->GetComponent<Transform>()->GetPosition();
 			glm::vec3	my_pos = transform->GetPosition();
 			pad = cam_pos - my_pos;
@@ -32,7 +37,7 @@ class MyCube : public Script
 
 		void			Update()
 		{
-
+			(void)floor;
 			if (Inputs::singleton->KeyDown(GLFW_KEY_W))
 			{
 				std::cout << "key press W (MoveForward)" << std::endl;
@@ -81,11 +86,6 @@ class MyCube : public Script
 					else
 						start_jump = true;
 				}
-			}
-			else
-			{
-				std::cout << "bolo" << std::endl;
-				exit(0);
 			}
 		}
 
@@ -205,9 +205,6 @@ class MyCube : public Script
 			turn_target = mul;
 		}
 
-		float			move_speed = 50;
-		bool			mooving = false;
-
 		void		UpdateMoveForward()
 		{
 			if (!mooving)
@@ -243,8 +240,8 @@ class MyCube : public Script
 			if (jumping)
 				return ;
 			std::cout << "Jump" << std::endl;
-			jumping = true;
-			start_jump = true;
+			jumping = false;
+			start_jump = false;
 			mid_jump = false;
 			gameObject->GetComponent<Collider>()->impulse = jumpower;
 		}

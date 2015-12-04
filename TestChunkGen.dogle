@@ -1,0 +1,49 @@
+# APPLICATION 			<name> <window W> <window H>
+# SCENE 				<name>
+# PREFAB | GAMEOBJECT 	<name> <parent>
+# TRANSFORM 			<vec3 position> <vec3 rotation> <vec3 scale>
+# SKIN 					<file name .dae>
+# SCRIPT 				<class name>
+# CAMERA 				<fov> <clip near> <clip far>
+# COLLIDER 				<center> <size> <enable> <mass>
+
+APPLICATION:TestChunkGen|1280|1280
+	PREFAB:Empty|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+	PREFAB:Camera|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		CAMERA:45|0.1|100
+	PREFAB:Floor|
+		TRANSFORM:0,-0.51,-10|0,0,0|20,1,20
+		SKIN:cube.dae
+		COLLIDER:true|0
+	PREFAB:chunk0|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cluster_0.dae
+	PREFAB:Light|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		LIGHT:1,1,1
+		SKIN:Gizmo.dae
+	SCENE:scene1
+
+		GAMEOBJECT:Camera|
+			TRANSFORM:0,2,5|0,0,0|1,1,1
+			CAMERA:45|0.1|100
+			#SCRIPT:ScriptFreeControlCamera
+
+		GAMEOBJECT:Player|
+			TRANSFORM:0,0,-0.5|0,3.14,0|1,1,1
+			SKIN:cube.dae
+			COLLIDER:true|1
+			SCRIPT:ScriptControlPlayer
+
+		GAMEOBJECT:chunkSpawner|
+			TRANSFORM:0,0,0|0,0,0|1,1,1
+			SCRIPT:ScriptChunkSpawner
+
+		GAMEOBJECT:Light|
+			TRANSFORM:0,2,-10|0,0,0|1,1,1
+			LIGHT:1,1,1
+			SKIN:Gizmo.dae
+
+

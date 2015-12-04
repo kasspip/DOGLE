@@ -39,7 +39,7 @@ void main ()
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(lightPosition - FragmentPosition); 
 	float diffuseFactor = max(dot(normal, lightDirection), 0.0);
-	vec3 diffuse = light.diffuse * (diffuseFactor * material.diffuse);
+	vec3 diffuse = light.diffuse * 1;
 
 	// specular
 	vec3 viewDir = normalize(viewPosition - FragmentPosition);
