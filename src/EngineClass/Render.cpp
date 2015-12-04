@@ -108,25 +108,39 @@ void			Render::_RenderGameObjects(Application & app)
 													light->transform->_position.y, 
 													light->transform->_position.z);
 					_variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "light.ambient");
-					glUniform3f(_variableLocation,  0.2f, 0.2f, 0.2f);
+					glUniform3f(_variableLocation,  0.5f, 0.5f, 0.5f);
 					_variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "light.diffuse");
 					glUniform3f(_variableLocation,  light->color.x, light->color.y, light->color.z);
 					_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "light.specular");
 					glUniform3f(_variableLocation, 1.0f, 1.0f, 1.0f);
 				}
 			}
-
 			transform = nullptr;
 		}
 
 		if ((skin = go->GetComponent<Skin>()) && skin->GetIsBind() == true)
 		{
+			// std::cout << "MATERIAL" << std::endl
+			// << skin->ambient.r << " " << skin->ambient.g << " " << skin->ambient.b 	<< std::endl
+			// << skin->diffuse.r << " " << skin->diffuse.g << " " << skin->diffuse.b 	<< std::endl
+			// << skin->specular.r << " " << skin->specular.g << " " << skin->specular.b << std::endl;
+			// _variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "material.ambient");
+			// glUniform3f(_variableLocation, skin->ambient.r, skin->ambient.g, skin->ambient.b);
+			// _variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "material.diffuse");
+			// glUniform3f(_variableLocation, skin->diffuse.r, skin->diffuse.g, skin->diffuse.b);
+			// _variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "material.specular");
+			// glUniform3f(_variableLocation, skin->specular.r, skin->specular.g, skin->specular.b);
+			// export Blender problem : always same values => 0,0,0 | 0.6,0.6,0.6 | 0.5,0.5,0.5
+
+
 			_variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "material.ambient");
-			glUniform3f(_variableLocation, skin->ambient.r, skin->ambient.g, skin->ambient.b);
+			glUniform3f(_variableLocation, 0.75f, 0.75f, 0.75f);
 			_variableLocation  = glGetUniformLocation(app.shaderProgram_Standard, "material.diffuse");
-			glUniform3f(_variableLocation, skin->diffuse.r, skin->diffuse.g, skin->diffuse.b);
+			glUniform3f(_variableLocation, 0.8f, 0.8f, 0.8f);
 			_variableLocation = glGetUniformLocation(app.shaderProgram_Standard, "material.specular");
-			glUniform3f(_variableLocation, skin->specular.r, skin->specular.g, skin->specular.b);
+			glUniform3f(_variableLocation, 0.5f, 0.5f, 0.5f);
+
+
 			_variableLocation    = glGetUniformLocation(app.shaderProgram_Standard, "material.shininess"); 			
 			glUniform1f(_variableLocation, 64.0f);
 

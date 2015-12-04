@@ -49,8 +49,7 @@
 			void			SkinVAO();
 			void			SkinTexture();
 
-
-			std::string			dae_file;
+			std::string		dae_file;
 
 
 		private:

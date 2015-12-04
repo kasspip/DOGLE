@@ -33,7 +33,7 @@ APPLICATION:TestChunkGen|1280|1280
 
 		GAMEOBJECT:Player|
 			TRANSFORM:0,0,-0.5|0,3.14,0|1,1,1
-			SKIN:cube.dae
+			SKIN:MrRobot.dae
 			COLLIDER:true|1
 			SCRIPT:ScriptControlPlayer
 

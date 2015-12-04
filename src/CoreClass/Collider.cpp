@@ -10,7 +10,7 @@ Collider::Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf) : center(po
 {
 	std::cout << "construct Collider withoud skin" << std::endl;
 	type = "Collider";
-	//physic_ptr = Physics::singleton->CreatePhysic(go, this); // TODO
+	physic_ptr = nullptr;
 }
 
 Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf), impulse(glm::vec3()), force(glm::vec3()), _skinned(true)
@@ -39,7 +39,7 @@ Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf)
 	physic_ptr = Physics::singleton->CreatePhysic(go, this);
 }
 
-Collider::Collider(Collider const & src) : _skinned(src._skinned)//instable
+Collider::Collider(Collider const & src) : _skinned(src._skinned) //instable
 {
 	type = "Collider";
 	*this = src;
@@ -49,12 +49,13 @@ Collider::Collider(Collider const & src) : _skinned(src._skinned)//instable
 Collider::~Collider(void)
 {
 	std::cout << "destruct Collider " << std::endl;
-	Physics::singleton->DestroyPhysic(static_cast<btCollisionObject	*>(physic_ptr));
+	if (physic_ptr)
+		Physics::singleton->DestroyPhysic(static_cast<btCollisionObject	*>(physic_ptr));
 }
 
 // OVERLOADS //
 
-Collider	&Collider::operator=(Collider const & rhs)//instable
+Collider	&Collider::operator=(Collider const & rhs) //instable
 {
 	center = rhs.center;
 	size = rhs.size;

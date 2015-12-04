@@ -34,7 +34,7 @@ Skin::Skin(std::string obj) : dae_file(obj)
 	UVs = 		_Construct2DArray(mesh->mTextureCoords[0], nb_vertices);
 
 	_flipYZAxis(positions, nb_vertices);
-	_flipYZAxis(normals, nb_vertices); // check if work well
+	_flipYZAxis(normals, nb_vertices);
 
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr);
 	texture_file = _images_path + std::string(path.C_Str());

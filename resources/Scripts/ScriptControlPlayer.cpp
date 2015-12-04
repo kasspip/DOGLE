@@ -28,7 +28,6 @@ class ScriptControlPlayer : public Script
 		{
 			GameObject	*cam = Camera::GetMainCamera();
 			floor = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("Floor"));
-			std::cout << floor->GetComponent<Collider>()->mass << std::endl;
 			glm::vec3	cam_pos = cam->GetComponent<Transform>()->GetPosition();
 			glm::vec3	my_pos = transform->GetPosition();
 			pad = cam_pos - my_pos;
