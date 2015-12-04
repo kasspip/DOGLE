@@ -10,6 +10,7 @@ SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Light.cpp \
 		src/CoreClass/Script.cpp \
 		src/CoreClass/Collider.cpp \
+		src/CoreClass/Text.cpp \
 
 SRC +=	src/BuilderClass/ScriptFactory.cpp \
 		src/BuilderClass/Builder.cpp \
@@ -43,6 +44,7 @@ INCLUDES = 	-Iinclude \
 			-Isrc/EngineClass \
 			-I$(HOME)/.brew/include \
 			-Iinclude/soil2/src/SOIL2 \
+			-I$(HOME)/.brew/include/freetype2 \
 
 LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-L$(HOME)/.brew/lib/ -lGLEW\
@@ -63,6 +65,7 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3\
 			-lBullet3OpenCL_clew\
 			-lBulletSoftBody\
 			-lLinearMath\
+			-L$(HOME)/.brew/lib/ -lfreetype\
 
 DEPRECATED = -Wno-ignored-qualifiers -Wno-deprecated-register
 

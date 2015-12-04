@@ -19,7 +19,6 @@
 
 			Gui &operator=(Gui const &rhs);
 			Gui(Gui const &src);
-	
 	};
 
 	std::ostream	&operator<<(std::ostream &o, Gui const &rhs);

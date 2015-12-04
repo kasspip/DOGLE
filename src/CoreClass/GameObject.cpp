@@ -55,6 +55,8 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 			AddComponent(new Collider(*(dynamic_cast<Collider*>(compo))));
 		else if (dynamic_cast<Light*>(compo))
 			AddComponent(new Light(*(dynamic_cast<Light*>(compo))));
+		else if (dynamic_cast<Text*>(compo))
+			AddComponent(new Text(*(dynamic_cast<Text*>(compo))));
 		else if (dynamic_cast<Script*>(compo))
 			AddComponent(dynamic_cast<Script*>(compo)->Clone());
 		else

@@ -20,6 +20,7 @@ Builder::Builder()
 		_token.push_back(std::make_pair("SKIN:", &Builder::_ParseSkin));
 		_token.push_back(std::make_pair("COLLIDER:", &Builder::_ParseColliderGo));
 		_token.push_back(std::make_pair("LIGHT:", &Builder::_ParseLight));
+		_token.push_back(std::make_pair("TEXT:", &Builder::_ParseText));
 	}
 	#include "ScriptsRegister.cpp"
 }
@@ -216,6 +217,15 @@ void			Builder::_ParseLight(std::string& line)
 	delete[] attributs;
 }
 
+void			Builder::_ParseText(std::string& line)
+{
+	std::string	*attributs;
+	attributs = _GetAttributs(line, 1);
+
+	_go->AddComponent( new Text( attributs[0]) );
+
+	delete[] attributs;
+}
 
 std::string*	Builder::_GetAttributs(std::string& line, int count)
 {

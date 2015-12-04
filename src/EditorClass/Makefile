@@ -29,6 +29,7 @@ SRC +=	../CoreClass/Application.cpp \
 		../CoreClass/Light.cpp \
 		../CoreClass/Script.cpp \
 		../CoreClass/Collider.cpp \
+		../CoreClass/Text.cpp \
 
 
 SRC +=	../EngineClass/Engine.cpp \
@@ -93,7 +94,8 @@ INCLUDE = 	-I$(HOME)/.brew/include\
 			-I$(HOME)/.brew/Cellar/glib/2.46.2/include/glib-2.0 \
 			-I$(HOME)/.brew/Cellar/glib/2.46.2/lib/glib-2.0/include \
 			-I$(HOME)/.brew/opt/gettext/include \
-
+			-I$(HOME)/.brew/include/freetype2 \
+			
 GAMESCRIPTS = ../../resources/Scripts/GameScripts.a
 
 LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3 \
@@ -115,6 +117,7 @@ LIBRARIES =	-L$(HOME)/.brew/lib -lglfw3 \
 			-lBullet3OpenCL_clew \
 			-lBulletSoftBody \
 			-lLinearMath \
+			-L$(HOME)/.brew/lib/ -lfreetype\
 			-L$(HOME)/.brew/Cellar/gtkmm3/3.18.0/lib \
 			-L$(HOME)/.brew/Cellar/atkmm/2.24.1/lib \
 			-L$(HOME)/.brew/Cellar/gtkmm3/3.18.0/lib \

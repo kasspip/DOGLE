@@ -13,7 +13,8 @@ INCLUDES = 	-I../../include \
 			-I../../src/EngineClass \
 			-I../../include/soil2/src/SOIL2 \
 			-I$(HOME)/.brew/include \
-
+			-I$(HOME)/.brew/include/freetype2 \
+			
 FLAGS = -Wall -Wextra -Werror -std=c++14
 
 CC = clang++ 

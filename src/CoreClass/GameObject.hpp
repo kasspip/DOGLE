@@ -4,8 +4,10 @@
 # include "DOGLE.hpp"
 # include "Transform.hpp"
 # include "Skin.hpp"
+# include "Collider.hpp"
 # include "Camera.hpp"
 # include "Light.hpp"
+# include "Text.hpp"
 
 class IComponent;
 class Script;
