@@ -14,11 +14,7 @@ APPLICATION:42run|1280|1280
 	PREFAB:MonCube
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SKIN:cube.dae
-		SCRIPT:MyCube
-	PREFAB:MonTriangle
-		TRANSFORM:0,0,0|0,0,0|1,1,1
-		SKIN:triangle.dae
-		SCRIPT:ScriptTriangle
+		SCRIPT:ScriptControlPlayer
 	PREFAB:child
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SKIN:cube.dae
@@ -27,7 +23,7 @@ APPLICATION:42run|1280|1280
 		GAMEOBJECT:MonCube (2)
 			TRANSFORM:0,0,-10|0,0,0|1,1,1
 			SKIN:cube.dae
-			SCRIPT:MyCube
+			SCRIPT:ScriptControlPlayer
 			COLLIDER:true|1
 		GAMEOBJECT:Floor
 			TRANSFORM:-0.7,-5,-10|0,0,0|1000,1,1000

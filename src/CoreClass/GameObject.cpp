@@ -41,6 +41,7 @@ GameObject::~GameObject(void)
 GameObject&				GameObject::operator=(GameObject const & rhs)
 {
 	std::stringstream ss;
+	Collider	*save = nullptr;
 	ss << rhs.name + " (" << _id << ")";
 	name = ss.str();
 	for (IComponent* compo : rhs.GetListComponent())
@@ -52,7 +53,7 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 		else if (dynamic_cast<Camera*>(compo))
 			AddComponent(new Camera(*(dynamic_cast<Camera*>(compo))));
 		else if (dynamic_cast<Collider*>(compo))
-			AddComponent(new Collider(*(dynamic_cast<Collider*>(compo))));
+			save = dynamic_cast<Collider*>(compo);
 		else if (dynamic_cast<Light*>(compo))
 			AddComponent(new Light(*(dynamic_cast<Light*>(compo))));
 		else if (dynamic_cast<Text*>(compo))
@@ -61,6 +62,10 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 			AddComponent(dynamic_cast<Script*>(compo)->Clone());
 		else
 			throw DError() << msg("GameObject operator= overload. Missing component");
+	}
+	if (save)
+	{
+		AddComponent(new Collider(this, save->enable, save->mass));
 	}
 	_destroyMe = rhs._destroyMe;
 	_parentObject = rhs._parentObject;

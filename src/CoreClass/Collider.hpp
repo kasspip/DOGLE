@@ -13,7 +13,6 @@
 			Collider(glm::vec3 pos, glm::vec3 sz, bool b = true, float massf = 1);
 			Collider(GameObject *go, bool b = true, float massf = 1);
 			Collider(glm::vec3 pos, glm::vec3 sz, bool b, float massf, GameObject *go);
-			Collider(Collider const &src);
 			~Collider(void);
 		
 			Collider &operator=(Collider const &rhs);
@@ -37,6 +36,7 @@
 			bool		IsSkinned();
 		private:
 			Collider(void);
+			Collider(Collider const &src);
 			const bool	_skinned;
 	
 	};

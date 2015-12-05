@@ -39,13 +39,6 @@ Collider::Collider(GameObject *go, bool b, float massf) : enable(b), mass(massf)
 	physic_ptr = Physics::singleton->CreatePhysic(go, this);
 }
 
-Collider::Collider(Collider const & src) : _skinned(src._skinned) //instable
-{
-	type = "Collider";
-	*this = src;
-	std::cout << "construct Collider " << std::endl;
-}
-
 Collider::~Collider(void)
 {
 	std::cout << "destruct Collider " << std::endl;
