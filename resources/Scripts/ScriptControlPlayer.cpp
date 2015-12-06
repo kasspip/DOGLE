@@ -1,3 +1,5 @@
+
+
 #include "DOGLE.hpp"
 #include "Script.hpp"
 
@@ -13,11 +15,11 @@ class ScriptControlPlayer : public Script
 	public:
 
 		GameObject* 	child = nullptr;
-		float 			baseSpeed = 3;
+		Transform* 	light = nullptr;
+		float 			baseSpeed = 6;
 		e_dash_pos		dash_pos = MID;
 		float			move_speed = 10;
 		bool			mooving = false;
-		GameObject*		floor = nullptr;
 
 		static ScriptControlPlayer	*instance;
 
@@ -27,16 +29,14 @@ class ScriptControlPlayer : public Script
 		void			Awake()
 		{
 			GameObject	*cam = Camera::GetMainCamera();
-			floor = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("Floor"));
 			glm::vec3	cam_pos = cam->GetComponent<Transform>()->GetPosition();
 			glm::vec3	my_pos = transform->GetPosition();
 			pad = cam_pos - my_pos;
-
+			light =  Application::singleton->GetCurrentScene()->FindGameObject("Light")->GetComponent<Transform>();
 		}
 
 		void			Update()
 		{
-			(void)floor;
 			if (Inputs::singleton->KeyDown(GLFW_KEY_W))
 			{
 				std::cout << "key press W (MoveForward)" << std::endl;
@@ -71,12 +71,14 @@ class ScriptControlPlayer : public Script
 			UpdateTurn();
 			UpdateMoveForward();
 			UpdateCameraPos();
+			UpdateLightPos();
 			UpdateJump();
 		}
 
 		void	OnCollisionEnter(GameObject *go)
 		{
-			if (go->name == "Floor")
+			std::vector<std::string>	lst;
+			if ( go->name.find("Floor") != std::string::npos)
 			{
 				if (jumping)
 				{
@@ -90,6 +92,11 @@ class ScriptControlPlayer : public Script
 
 
 	private:
+
+		void			UpdateLightPos()
+		{
+			light->SetPosition(transform->GetPosition() + glm::vec3(0, 3.5, 0));
+		}
 
 		void			UpdateCameraPos()
 		{
@@ -123,7 +130,6 @@ class ScriptControlPlayer : public Script
 				{
 					delta = dash_speed - dash_timer;
 					dashing = false;
-					//std::cout << cam_pad << std::endl;
 				}
 				glm::vec3 inc = dash_target * (float)(delta / dash_speed);
 				cam_pad += inc;
@@ -239,8 +245,8 @@ class ScriptControlPlayer : public Script
 			if (jumping)
 				return ;
 			std::cout << "Jump" << std::endl;
-			jumping = false;
-			start_jump = false;
+			jumping = true;
+			start_jump = true;
 			mid_jump = false;
 			gameObject->GetComponent<Collider>()->impulse = jumpower;
 		}

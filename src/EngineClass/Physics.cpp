@@ -44,6 +44,10 @@ glm::vec3		Physics::quaternion_to_euler123(btQuaternion &q)
 		));
 }
 
+void	Physics::InstantiateGo(void* body)
+{
+	_dynamicsWorld->addRigidBody(static_cast<btRigidBody *>(body));
+}
 
 void	*Physics::CreatePhysic(GameObject *go, Collider *collider)
 {
@@ -58,7 +62,7 @@ void	*Physics::CreatePhysic(GameObject *go, Collider *collider)
 	/// Create Dynamic Objects
 	btTransform startTransform;
 	startTransform.setIdentity();
-	startTransform.setOrigin(GlmVec3TobtVector3(transform->GetPosition() + collider->center));
+	startTransform.setOrigin(GlmVec3TobtVector3(transform->GetPosition()));
 	btQuaternion	tmp_q;
 	glm::vec3		rot = transform->GetRotation();
 	tmp_q.setEuler(rot.x, rot.y, rot.z);
@@ -78,7 +82,6 @@ void	*Physics::CreatePhysic(GameObject *go, Collider *collider)
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,colShape,localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 	body->setUserPointer(go);
-	_dynamicsWorld->addRigidBody(body);
 	return (body);
 }
 

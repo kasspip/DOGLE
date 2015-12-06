@@ -18,6 +18,7 @@
 			void		*CreatePhysic(GameObject *go, Collider *collider);
 			void		DestroyPhysic(btCollisionObject	*obj);
 			void		CallCollision();
+			void		InstantiateGo(void* body);
 
 			static Physics	*singleton;
 

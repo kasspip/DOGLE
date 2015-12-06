@@ -23,6 +23,7 @@
 			glm::vec3	center;
 			glm::vec3	size;
 			bool		enable;
+			bool		isPhy;
 			float		mass;
 
 			glm::vec3 	impulse;

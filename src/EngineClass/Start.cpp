@@ -1,5 +1,6 @@
 #include "Start.hpp"
 #include "Script.hpp"
+#include "Physics.hpp"
 
 // CONSTRUCTOR DESTRUCTOR //
 
@@ -101,6 +102,7 @@ void			Start::_AwakeNewGameObects(Application & app)
 		}
 	}
 	Skin					*skin = nullptr;
+	Collider				*collider = nullptr;
 	for (GameObject *go : lst_bind)
 	{
 		PRINT_DEBUG("> Awaking GameObject: \'" + go->name + "\'\n");
@@ -114,6 +116,16 @@ void			Start::_AwakeNewGameObects(Application & app)
 				skin->SkinTexture();
 				skin->SetIsBind(true);
 				skin = nullptr;
+			}
+		}
+		if ((collider = go->GetComponent<Collider>()))
+		{
+			if (collider->isPhy == false)
+			{
+				PRINT_DEBUG("ADD world phy");
+				Physics::singleton->InstantiateGo(collider->physic_ptr);
+				collider->isPhy= true;
+				collider = nullptr;
 			}
 		}
 	}

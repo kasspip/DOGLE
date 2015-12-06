@@ -14,12 +14,21 @@ APPLICATION:TestChunkGen|1280|1280
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		CAMERA:45|0.1|100
 	PREFAB:Floor|
-		TRANSFORM:0,-0.51,-10|0,0,0|20,1,20
+		TRANSFORM:0,-2.001,-10|0,0,0|10,1,10
 		SKIN:cube.dae
 		COLLIDER:true|0
 	PREFAB:chunk0|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cluster0.dae
+	PREFAB:chunk2|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cluster2.dae
+	PREFAB:chunk_right|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SKIN:cluster_corner_right.dae
+	PREFAB:chunk_left|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cluster_corner_left.dae
 	PREFAB:Light|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		LIGHT:1,1,1
@@ -31,7 +40,7 @@ APPLICATION:TestChunkGen|1280|1280
 			CAMERA:45|0.1|100
 
 		GAMEOBJECT:Player|
-			TRANSFORM:0,0,-0.5|0,3.14,0|1,1,1
+			TRANSFORM:0,3,-0.5|0,3.14,0|1,1,1
 			SKIN:MrRobot.dae
 			COLLIDER:true|1
 			SCRIPT:ScriptControlPlayer
