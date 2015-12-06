@@ -2,7 +2,6 @@
 #include "Scene.hpp"
 #include "GameObject.hpp"
 #include "ControlCamera.cpp"
-#include "ScriptControlPlayer.cpp"
 #include "ScriptTriangle.cpp"
 #include "ScriptFreeControlCamera.cpp"
 #include "ScriptChunkSpawner.cpp"

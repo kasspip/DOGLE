@@ -36,6 +36,7 @@ void			Destroy::RunState(Application & app, e_state & currentState)
 			if ((script = (*it)->GetComponent<Script>()))
 			{
 				PRINT_DEBUG("Calling Destroy() from " + (*it)->name);
+				std::cout << ("Calling Destroy() from " + (*it)->name) << std::endl;
 				script->OnDestroy();
 				script = nullptr;
 			}

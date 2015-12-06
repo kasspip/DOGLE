@@ -93,7 +93,7 @@ Physics::Physics(void)
 	_overlappingPairCache = new btDbvtBroadphase();
 	_solver = new btSequentialImpulseConstraintSolver();
 	_dynamicsWorld = new btDiscreteDynamicsWorld(_dispatcher, _overlappingPairCache, _solver, _collisionConfiguration);
-	_dynamicsWorld->setGravity(btVector3(0,-10,0));
+	_dynamicsWorld->setGravity(btVector3(0,0,0));
 
 }
 
@@ -195,16 +195,23 @@ void			Physics::RunState(Application & app, e_state & currentState)
 		btRigidBody			*rigid = btRigidBody::upcast(colObj);
 		if (collider)
 		{
-			if (collider->force != glm::vec3())
-			{
+		/*	if (collider->force != glm::vec3())
+			{*/
+
+
 				rigid->activate(true);
 				btVector3 tmp_v = rigid->getLinearVelocity();
-				rigid->setLinearVelocity(btVector3(collider->force.x, tmp_v.y(), collider->force.z));
-			}
+				btVector3 vel = btVector3(collider->force.x, tmp_v.y(), collider->force.z);
+				rigid->setLinearVelocity(vel);
+				vel = rigid->getLinearVelocity();
+//				std::cout << "MOOBING " << vel.x() << " " << vel.y() << " " << vel.z() <<std::endl;
+				//collider->force = glm::vec3();
+
+
+//			}
 			if (collider->impulse != glm::vec3())
 			{
 				rigid->activate(true);
-				std::cout << "JUMP" << std::endl;
 				rigid->applyCentralImpulse(btVector3(collider->impulse.x, collider->impulse.y, collider->impulse.z));
 				collider->impulse = glm::vec3();
 			}

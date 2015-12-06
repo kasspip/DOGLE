@@ -7,7 +7,7 @@
 # CAMERA 				<fov> <clip near> <clip far>
 # COLLIDER 				<center> <size> <enable> <mass>
 
-APPLICATION:TestChunkGen|1280|1280
+APPLICATION:TestChunkGen|1980|1080
 	PREFAB:Empty|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 	PREFAB:Camera|
@@ -20,6 +20,9 @@ APPLICATION:TestChunkGen|1280|1280
 	PREFAB:chunk0|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SKIN:cluster0.dae
+	PREFAB:chunk1|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cluster1.dae
 	PREFAB:chunk2|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SKIN:cluster2.dae
@@ -33,14 +36,23 @@ APPLICATION:TestChunkGen|1280|1280
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		LIGHT:1,1,1
 		SKIN:Gizmo.dae
+	PREFAB:Obstacle1|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:Obstacle1.dae
+		COLLIDER:true|0
+	PREFAB:Obstacle2|
+		TRANSFORM:0,0,0|0,0,0|0.5,0.5,0.5
+		SKIN:Obstacle2.dae
+		COLLIDER:true|0
+
 	SCENE:scene1
 
 		GAMEOBJECT:Camera|
-			TRANSFORM:0,2,5|0,0,0|1,1,1
-			CAMERA:45|0.1|100
+			TRANSFORM:0,2.5,4|0,0,0|1,1,1
+			CAMERA:45|0.1|150
 
 		GAMEOBJECT:Player|
-			TRANSFORM:0,3,-0.5|0,3.14,0|1,1,1
+			TRANSFORM:0,0,-0.5|0,3.14,0|1,1,1
 			SKIN:MrRobot.dae
 			COLLIDER:true|1
 			SCRIPT:ScriptControlPlayer
@@ -52,6 +64,4 @@ APPLICATION:TestChunkGen|1280|1280
 		GAMEOBJECT:Light|
 			TRANSFORM:0,2,-10|0,0,0|1,1,1
 			LIGHT:1,1,1
-			SKIN:Gizmo.dae
-			TEXT:Hello World
 

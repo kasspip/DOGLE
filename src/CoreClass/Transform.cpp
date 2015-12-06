@@ -216,7 +216,7 @@ void		Transform::_SetPhysicPosition()
 
 	if (!(coll  = gameObject->GetComponent<Collider>()) || !(rigid = static_cast<btRigidBody *>(coll->physic_ptr)))
 		return ;
-	rigid->getWorldTransform().setOrigin(Physics::GlmVec3TobtVector3(_position + coll->center));
+	rigid->getWorldTransform().setOrigin(Physics::GlmVec3TobtVector3(_position));
 }
 
 

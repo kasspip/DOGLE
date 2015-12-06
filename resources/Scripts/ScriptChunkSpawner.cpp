@@ -1,5 +1,7 @@
 # include "DOGLE.hpp"
 # include "Script.hpp"
+#include "ScriptControlPlayer.cpp"
+
 
 enum BasicCard
 {
@@ -71,7 +73,9 @@ class	Chunk
 	
 	GameObject					*render;
 	GameObject					*collider;
-	std::vector<std::string>	name_chunk = {"chunk0", "chunk2"};
+	std::vector<std::string>	name_chunk = {"chunk0", "chunk1", "chunk2"};
+	std::vector<std::string>	little_obs = {"Obstacle2"};
+	std::vector<std::string>	big_obs = {"Obstacle1"};
 
 	Chunk(glm::vec3 vec)
 	{
@@ -91,13 +95,58 @@ class	Chunk
 		render->GetComponent<Transform>()->SetPosition(vec);
 	}
 
-	void SetConf(glm::vec3 vec, glm::vec3 rot)
+	std::vector<GameObject	*> obstacle;
+
+	void SetConf(glm::vec3 vec, glm::vec3 rot, bool corner)
 	{
 		Transform	*tr_render = render->GetComponent<Transform>();
 		Transform	*tr_collider = collider->GetComponent<Transform>();
 		tr_render->SetPosition(vec);
 		tr_collider->SetPosition(vec + glm::vec3(0, -3.01, 0));
 		tr_render->SetRotation(rot);
+
+		if (corner)
+			return ;
+
+		int random_nb = rand() % 2;
+		GameObject *tmp_obs;
+
+		for (GameObject *obs : obstacle)
+		{
+			obs->SetDestroy(true);
+		}
+		obstacle = std::vector<GameObject	*>();
+		if (random_nb == 1)
+		{
+			std::vector<glm::vec3> rand_pos = { tr_render->Left() * 2.0f, glm::vec3(0, 0, 0), tr_render->Left() * -2.0f};
+			std::random_shuffle ( rand_pos.begin(), rand_pos.end() );
+
+			tmp_obs = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab(
+				big_obs[rand() % big_obs.size()]
+				));
+			tmp_obs->GetComponent<Transform>()->SetPosition(vec + rand_pos[0]);
+			float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
+			tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
+			obstacle.push_back(tmp_obs);
+
+		}
+		else if (random_nb == 0)
+		{
+			std::vector<glm::vec3> rand_pos = { tr_render->Left() * 2.0f, glm::vec3(0, 0, 0), tr_render->Left() * -2.0f};
+			std::random_shuffle ( rand_pos.begin(), rand_pos.end() );
+			int random_count = rand() % 3;
+			for (int i = 0; i < random_count; ++i)
+			{
+				tmp_obs = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab(
+					little_obs[rand() % little_obs.size()]
+					));
+				tmp_obs->GetComponent<Transform>()->SetPosition(vec + rand_pos[i]);
+				float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
+				tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
+				obstacle.push_back(tmp_obs);
+			}
+
+		}
 
 
 	}
@@ -186,7 +235,7 @@ class ScriptChunkSpawner : public Script
 			if (curanal != cur_turn && curanal != next_proc && curanal != last_turn)
 			{
 				i++;
-				curanal->SetConf(glm::vec3(0, -20, 0), glm::vec3());
+				curanal->SetConf(glm::vec3(0, -20, 0), glm::vec3(), true);
 			}
 		}
 		for (Chunk *curanal : chunks_rights)
@@ -194,7 +243,7 @@ class ScriptChunkSpawner : public Script
 			if (curanal != cur_turn && curanal != next_proc && curanal != last_turn)
 			{
 				i++;
-				curanal->SetConf(glm::vec3(0, -20, 0), glm::vec3());
+				curanal->SetConf(glm::vec3(0, -20, 0), glm::vec3(), true);
 			}
 		}
 		std::cout  << "wasting chunk " << i << std::endl; 
@@ -222,11 +271,11 @@ class ScriptChunkSpawner : public Script
 			anal = (*cur_chunks)[i];
 			if (i < random_nb)
 			{
-				anal->SetConf(before->render->GetComponent<Transform>()->GetPosition() + cur_dir.add, cur_dir.rot);
+				anal->SetConf(before->render->GetComponent<Transform>()->GetPosition() + cur_dir.add, cur_dir.rot, false);
 				before = anal;
 			}
 			else
-				anal->SetConf(glm::vec3(0, -20, 0), glm::vec3());
+				anal->SetConf(glm::vec3(0, -20, 0), glm::vec3(), false);
 		}
 		(*cur_chunks) = rep;
 
@@ -234,13 +283,14 @@ class ScriptChunkSpawner : public Script
 		cur_turn = next_proc;
 		next_proc = last_turn;
 		last_turn = PickTurnChunk(add_dir);
-		last_turn->SetConf(before->render->GetComponent<Transform>()->GetPosition() + cur_dir.add, cur_dir.rot);
+		last_turn->SetConf(before->render->GetComponent<Transform>()->GetPosition() + cur_dir.add, cur_dir.rot, true);
 
 		cur_dir = BasicDir(BasicDir::AddCard(cur_dir.card, add_dir));
 
 
 
 	}
+
 
 	void			Awake()
 	{
@@ -257,21 +307,29 @@ class ScriptChunkSpawner : public Script
 		last_turn = chunks_lefts[0];
 		GenerateNext();
 		GenerateNext();
-		//RemoveUselessTurn();
 		std::cout << "after assign " << cur_dir.card << std::endl;
 	}
 
 	void	CheckPos()
 	{
-		glm::vec3 pos = Application::singleton->GetCurrentScene()->FindGameObject("Player")->GetComponent<Transform>()->GetPosition();
+		static GameObject	*player = Application::singleton->GetCurrentScene()->FindGameObject("Player");
+		glm::vec3 pos = player->GetComponent<Transform>()->GetPosition();
 		if (next_proc->BelongTo(pos))
 		{
+			ScriptControlPlayer	*ctrl = dynamic_cast<ScriptControlPlayer *>(player->GetComponent<Script>());
+			bool 	have_to_turn = true;
+
+			if (std::find(chunks_lefts.begin(), chunks_lefts.end(), next_proc) != chunks_lefts.end())
+				have_to_turn = false;
+			ctrl->IsInTurnPoint(next_proc->render->GetComponent<Transform>()->GetPosition(), have_to_turn);
+
 			static int ite = 0;
 			ite ++;
 			std::cout << "belong " << ite << std::endl;
 			GenerateNext();
 			RemoveUselessTurn();
 			std::cout << "end belong" << std::endl;
+			//ScriptControlPlayer::instance = nullptr;
 		}
 	}
 
