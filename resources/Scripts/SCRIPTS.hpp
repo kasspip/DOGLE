@@ -5,3 +5,4 @@
 #include "ScriptTriangle.cpp"
 #include "ScriptFreeControlCamera.cpp"
 #include "ScriptChunkSpawner.cpp"
+#include "ScriptChangeText.cpp"

@@ -139,6 +139,7 @@ public:
 	void							CreateComponent(std::string type);
 	void							CreateCamera();
 	void							CreateLight();
+	void							CreateText();
 	void							CreateSkin();
 	void							CreateScript();
 	void							CreateCollider();
@@ -161,6 +162,7 @@ public:
 	void							CameraPropertyRefresh();
 	void							LightPropertyRefresh();
 	void							ColliderPropertyRefresh();
+	void							TextPropertyRefresh();
 	void							ScriptPropertyRefresh(Script* script);
 	void							ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustring& value);
 	void							ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustring& value);

@@ -31,14 +31,14 @@ class ScriptFreeControlCamera : public Script
 			transform->_position -= glm::vec3(0.0, speed * 2, 0.0);
 		
 				
-		if(Inputs::singleton->KeyPressed(GLFW_KEY_UP))
-			Camera::GetMainCamera()->GetComponent<Transform>()->_rotation += glm::vec3(speed,0,0);
-		if(Inputs::singleton->KeyPressed(GLFW_KEY_DOWN))
-			Camera::GetMainCamera()->GetComponent<Transform>()->_rotation -= glm::vec3(speed,0,0);
-		if(Inputs::singleton->KeyPressed(GLFW_KEY_LEFT))
-			Camera::GetMainCamera()->GetComponent<Transform>()->_rotation -= glm::vec3(0,speed,0);
-		if(Inputs::singleton->KeyPressed(GLFW_KEY_RIGHT))
-			Camera::GetMainCamera()->GetComponent<Transform>()->_rotation += glm::vec3(0,speed,0);
+		// if(Inputs::singleton->KeyPressed(GLFW_KEY_UP))
+		// 	Camera::GetMainCamera()->GetComponent<Transform>()->_rotation += glm::vec3(speed,0,0);
+		// if(Inputs::singleton->KeyPressed(GLFW_KEY_DOWN))
+		// 	Camera::GetMainCamera()->GetComponent<Transform>()->_rotation -= glm::vec3(speed,0,0);
+		// if(Inputs::singleton->KeyPressed(GLFW_KEY_LEFT))
+		// 	Camera::GetMainCamera()->GetComponent<Transform>()->_rotation -= glm::vec3(0,speed,0);
+		// if(Inputs::singleton->KeyPressed(GLFW_KEY_RIGHT))
+		// 	Camera::GetMainCamera()->GetComponent<Transform>()->_rotation += glm::vec3(0,speed,0);
 	}
 
 };

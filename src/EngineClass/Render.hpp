@@ -24,7 +24,8 @@
 			void			_SetupCamera(Application & app);
 			void			_RenderGameObjects(Application & app);
 			void			_SetupLights();
-			
+			void			_RenderText();
+
 			Scene* 				_scene;
 			GameObject* 		_sceneCamera;
 			GLint 				_variableLocation;

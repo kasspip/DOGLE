@@ -220,9 +220,11 @@ void			Builder::_ParseLight(std::string& line)
 void			Builder::_ParseText(std::string& line)
 {
 	std::string	*attributs;
-	attributs = _GetAttributs(line, 1);
+	attributs = _GetAttributs(line, 7);
 
-	_go->AddComponent( new Text( attributs[0]) );
+	_go->AddComponent( new Text( attributs[0], stof(attributs[1]), attributs[2], 
+								stof(attributs[3]), stof(attributs[4]), stof(attributs[5]),
+								 _AttributToVec3(attributs[6])) );
 
 	delete[] attributs;
 }

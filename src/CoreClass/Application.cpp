@@ -124,7 +124,7 @@ void			Application::Save(void)
 			<< "# SCRIPT 				<class name>" << std::endl
 			<< "# CAMERA 				<fov> <clip near> <clip far>" << std::endl
 			<< "# COLLIDER 				<enable> <mass>" << std::endl
-			<< "# TEXT 					<text>" << std::endl
+			<< "# TEXT 					<text> <size> <font> <posX> <posY> <scale> <color>" << std::endl
 			<< std::endl;
 
 	file << "APPLICATION:"

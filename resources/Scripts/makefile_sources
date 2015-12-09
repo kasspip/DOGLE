@@ -4,3 +4,4 @@ SRC = 	\
 		ScriptTriangle.cpp\
 		ScriptFreeControlCamera.cpp\
 		ScriptChunkSpawner.cpp\
+		ScriptChangeText.cpp\

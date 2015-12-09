@@ -84,9 +84,6 @@ void			Start::_SwapScene(Application & app)
 
 void			Start::_AwakeNewGameObects(Application & app)
 {
-	
-
-
 	std::list<GameObject*>	&lst_bind = app.GetCurrentScene()->GetBindGameObjectList();
 	std::list<GameObject*>	&lst_cur = app.GetCurrentScene()->GetGameObjectList();
 	Script			*script = nullptr;
@@ -103,6 +100,7 @@ void			Start::_AwakeNewGameObects(Application & app)
 	}
 	Skin					*skin = nullptr;
 	Collider				*collider = nullptr;
+	Text					*text = nullptr;
 	for (GameObject *go : lst_bind)
 	{
 		PRINT_DEBUG("> Awaking GameObject: \'" + go->name + "\'\n");
@@ -126,6 +124,17 @@ void			Start::_AwakeNewGameObects(Application & app)
 				Physics::singleton->InstantiateGo(collider->physic_ptr);
 				collider->isPhy= true;
 				collider = nullptr;
+			}
+		}
+		if ((text = go->GetComponent<Text>()))
+		{
+			if (text->isInit == false)
+			{
+				PRINT_DEBUG("Init text: " + text->text);
+				std::cout << "Init text: " << text->text << std::endl;;
+				text->LoadFont(app.winW, app.winH);
+				text->isInit = true;
+				text = nullptr;
 			}
 		}
 	}

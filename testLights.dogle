@@ -5,9 +5,10 @@
 # SKIN 					<file name .dae>
 # SCRIPT 				<class name>
 # CAMERA 				<fov> <clip near> <clip far>
-# COLLIDER 				<center> <size> <enable> <mass>
+# COLLIDER 				<enable> <mass>
+# TEXT 					<text> <size> <font> <posX> <posY> <scale> <color>
 
-APPLICATION:testLights|1280|1024
+APPLICATION:testLights|1280|1280
 	PREFAB:Empty|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 	PREFAB:camera|
@@ -15,16 +16,23 @@ APPLICATION:testLights|1280|1024
 		CAMERA:45|0.1|100
 	PREFAB:cluster|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
-		SKIN:cluster_0.dae
+		SKIN:cluster0.dae
 	SCENE:scene1
 		GAMEOBJECT:camera|
 			TRANSFORM:0,2,5|0,0,0|1,1,1
 			CAMERA:45|0.1|100
 		GAMEOBJECT:Cluster|
 			TRANSFORM:0,0,0|0,0,0|1,1,1
-			SKIN:cluster_0.dae
+			SKIN:cluster0.dae
 		GAMEOBJECT:light|
 			TRANSFORM:0,3,0|1,1,1|0.5,0.5,0.5
 			LIGHT:0,0,0
 			SKIN:Gizmo.dae
 			SCRIPT:ScriptFreeControlCamera
+		GAMEOBJECT:Text1|
+			TRANSFORM:0,0,0|0,0,0|1,1,1
+			SCRIPT:ScriptChangeText
+			TEXT:toto|48|Arial.ttf|0|0|1|0,0,0|
+		GAMEOBJECT:Text2|
+			TRANSFORM:0,0,0|0,0,0|1,1,1
+			TEXT:edition|62|Arial.ttf|100|200|1|0.1,0.2,0.3|

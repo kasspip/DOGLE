@@ -1043,6 +1043,8 @@ void		UI::GoComponentsSelection()
 	 		LightPropertyRefresh();
 	 	else if (type == "Collider")
 	 		ColliderPropertyRefresh();
+	 	else if (type == "Text")
+	 		TextPropertyRefresh();
 	 	else if (gameObject->GetScript(type))
 	 		ScriptPropertyRefresh(gameObject->GetScript(type));
 	}
@@ -1065,6 +1067,7 @@ void		UI::ButtonNewComponent()
 	components.push_back("Script");
 	components.push_back("Light");
 	components.push_back("Camera");
+	components.push_back("Text");
 
 	std::string compoType = PopupGetItem( components );
 
@@ -1114,6 +1117,8 @@ void		UI::CreateComponent(std::string type)
 		CreateScript();
 	else if (type == "Collider")
 		CreateCollider();
+	else if (type == "Text")
+		CreateText();
 }
 
 void		UI::CreateCamera()
@@ -1171,6 +1176,27 @@ void		UI::CreateScript()
 
 	try {
 		gameObject->AddComponent(new Script( scriptName ));
+	}
+	catch (DError & e ) {
+		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+	}
+}
+
+void		UI::CreateText()
+{
+	if (gameObject->GetComponent<Camera>())
+	{
+		PopWarning("Your GameObject has already a Text Component");
+		return ;
+	}
+
+	std::string text = PopupGetText("New Text", "Text ", "<b>You must specify text</b>");
+
+	if (text.length() == 0)
+		return;
+
+	try {
+		gameObject->AddComponent(new Text( text ));
 	}
 	catch (DError & e ) {
 		std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
@@ -1380,6 +1406,59 @@ void		UI::ColliderPropertyRefresh()
 	ss.str(std::string());
 }
 
+void		UI::TextPropertyRefresh()
+{
+	ClearListStore(ComponentPropertyList);
+	
+	Text* text;
+
+	try 
+	{
+ 	  	text = gameObject->GetComponent<Text>();
+ 	  	component = text;
+	}catch (DError & e) {
+	 	std::cerr 	<< C_YELLOW << "DOGLE Exception : " << *(boost::get_error_info<msg>(e)) << C_DEFAULT << std::endl;
+	}
+
+	Gtk::TreeModel::iterator row;
+	std::stringstream ss;
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Text";
+	ss << text->text;
+	(*row)[model.value_3] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Size";
+	ss << text->size;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Position";
+	ss << text->x;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+
+	ss << text->y;
+	(*row)[model.value_2] = ss.str();
+	ss.str(std::string());
+
+	row = ComponentPropertyList->append();
+	(*row)[model.m_col_name] = "Color";
+	ss << text->color.x;
+	(*row)[model.value_1] = ss.str();
+	ss.str(std::string());
+
+	ss << text->color.y;
+	(*row)[model.value_2] = ss.str();
+	ss.str(std::string());
+
+	ss << text->color.z;
+	(*row)[model.value_3] = ss.str();
+	ss.str(std::string());
+}
 
 void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustring& value)
 {
@@ -1438,6 +1517,11 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 				dynamic_cast<Collider*>(component)->center.x = std::stof(value);
 				ColliderPropertyRefresh();
 			}
+			else if (component->type == "Text")
+			{
+				dynamic_cast<Text*>(component)->size = std::stof(value);
+				TextPropertyRefresh();
+			}
 			break;
 		
 		case 2:
@@ -1450,8 +1534,19 @@ void		UI::ComponentPropertyEditCol1(const Glib::ustring& index, const Glib::ustr
 			{
 				dynamic_cast<Collider*>(component)->size.x = std::stof(value);
 				ColliderPropertyRefresh();
-			} 		
+			}
+			else if (component->type == "Text")
+			{
+				dynamic_cast<Text*>(component)->x = std::stof(value);
+				TextPropertyRefresh();
+			}		
 			break;
+		case 3:
+			if (component->type == "Text")
+			{
+				dynamic_cast<Text*>(component)->color.x = std::stof(value);
+				TextPropertyRefresh();
+			}
 	}
 	isSaved = false;
 }
@@ -1483,6 +1578,19 @@ void		UI::ComponentPropertyEditCol2(const Glib::ustring& index, const Glib::ustr
 				dynamic_cast<Collider*>(component)->size.y = std::stof(value);
 				ColliderPropertyRefresh();	
 			}
+			else if (component->type == "Text")
+			{
+				dynamic_cast<Text*>(component)->y = std::stof(value);
+				TextPropertyRefresh();
+			}
+			break;
+
+		case 3:
+			if (component->type == "Text")
+			{
+				dynamic_cast<Text*>(component)->color.y = std::stof(value);
+				TextPropertyRefresh();
+			}
 			break;
 	}
 	isSaved = false;
@@ -1497,6 +1605,11 @@ void		UI::ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustr
 			{
 				dynamic_cast<Light*>(component)->color.z = std::stof(value); 
 				LightPropertyRefresh();	
+			}
+			else if (component->type == "Text")
+			{
+				dynamic_cast<Text*>(component)->text = value;
+				TextPropertyRefresh();
 			}
 			break;
 			
@@ -1518,6 +1631,14 @@ void		UI::ComponentPropertyEditCol3(const Glib::ustring& index, const Glib::ustr
 			{
 				dynamic_cast<Collider*>(component)->size.z = std::stof(value); 
 				ColliderPropertyRefresh();		
+			}
+			break;
+
+		case 3:
+			if (component->type == "Text")
+			{
+				dynamic_cast<Text*>(component)->color.z = std::stof(value);
+				TextPropertyRefresh();
 			}
 			break;
 	}

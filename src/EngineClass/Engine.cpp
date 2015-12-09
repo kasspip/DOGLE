@@ -111,8 +111,8 @@ void			Engine::_StartOpenGL(void)
 	std::cout << "OpenGL version supported " <<  (char*)glGetString(GL_VERSION) << std::endl;
 
 	// renderer attibuts
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	// glEnable(GL_DEPTH_TEST);
+	// glDepthFunc(GL_LESS);
 	glClearColor(0.0, 0.0, 0.0, 1);
 	glfwWindowHint(GLFW_SAMPLES, _aliasingSamples);
 	

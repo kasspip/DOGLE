@@ -46,7 +46,7 @@ void			Render::RunState(Application & app, e_state & currentState)
 		}
 
 		_RenderGameObjects(app);
-
+		_RenderText();
 		glfwSwapBuffers(app.window);
 	}
 	currentState = STATE_GUI;
@@ -73,11 +73,32 @@ void			Render::_SetupLights()
 	}
 }
 
+void 			Render::_RenderText()
+{
+	Text* text = nullptr;
+
+	for (GameObject* go : _scene->GetGameObjectList())
+	{
+		for (IComponent *compo : go->GetListComponent())
+		{
+			if ((text = dynamic_cast<Text*>(compo)))
+				text->RenderText();
+			text = nullptr;
+		}
+	}
+}
 
 void			Render::_RenderGameObjects(Application & app)
 {
 	Transform* transform = nullptr;
 	Skin* skin = nullptr;
+
+	if (!glIsEnabled(GL_DEPTH_TEST))
+	{
+		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+    }
 
 	for (GameObject* go : _scene->GetGameObjectList())
 	{
