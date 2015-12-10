@@ -31,6 +31,8 @@ Text::Text(Text const & src)
 Text::~Text(void)
 {
 	std::cout << "Destruct Text" << std::endl;
+    if (shader)
+        delete shader;
 }
 
 // OVERLOADS //
@@ -44,6 +46,7 @@ Text	&Text::operator=(Text const & rhs)
 	y = rhs.y;
 	scale = rhs.scale;
 	color = rhs.color;
+    
 	return *this;
 }
 

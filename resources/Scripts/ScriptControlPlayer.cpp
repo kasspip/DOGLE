@@ -1,7 +1,8 @@
-
-
 #include "DOGLE.hpp"
 #include "Script.hpp"
+
+#ifndef SCRIPTCONTROLPLAYER	
+#define SCRIPTCONTROLPLAYER
 
 enum e_dash_pos
 {
@@ -10,27 +11,31 @@ enum e_dash_pos
 	RIGHT
 };
 
+
 class ScriptControlPlayer : public Script
 {
 	public:
 
 		GameObject* 	child = nullptr;
-		Transform* 	light = nullptr;
-		float 			baseSpeed = 6;
+		Transform* 		light = nullptr;
 		e_dash_pos		dash_pos = MID;
 		e_dash_pos		turn_pos = MID;
 		float			move_speed = 10;
 		bool			mooving = false;
+		glm::vec3 		prevPosition;
+		double 			totalDistance;
+		bool			isDead;
+
 
 		static ScriptControlPlayer	*instance;
 
 		ScriptControlPlayer() : Script("ScriptControlPlayer") {}
 		Script* 		Clone() { return new ScriptControlPlayer(*this); }
 
-	void print_tmp_cr(std::string name, glm::vec3 vec)
-	{
-		std::cout  << name << " (" << vec.x << "," << vec .y << "," << vec .z << ")" << std::endl;
-	}
+		void print_tmp_cr(std::string name, glm::vec3 vec)
+		{
+			std::cout  << name << " (" << vec.x << "," << vec .y << "," << vec .z << ")" << std::endl;
+		}
 
 		void			Awake()
 		{
@@ -40,10 +45,21 @@ class ScriptControlPlayer : public Script
 			pad = cam_pos - my_pos;
 			light =  Application::singleton->GetCurrentScene()->FindGameObject("Light")->GetComponent<Transform>();
 			transform->SetRotation(0, M_PI, 0);
+			
+			prevPosition = transform->_position;
+			totalDistance = 0;
+			isDead = false;
 		}
 
 		void			Update()
 		{
+			if (isDead)
+			{
+							std::cout << "Dead" << std::endl;
+				Die();
+				return;
+			}
+
 			if (Inputs::singleton->KeyDown(GLFW_KEY_W))
 			{
 				static bool started = false;
@@ -104,17 +120,39 @@ class ScriptControlPlayer : public Script
 			UpdateCameraPos();
 			UpdateLightPos();
 			UpdateJump();
+			UpdateText();
+
 		}
 
 		void	OnCollisionEnter(GameObject *go)
 		{
-			if ( go->name.find("Floor") == std::string::npos)
+			if ( !isDead && go->name.find("Floor") == std::string::npos)
 			{
 				std::cout << "take down ! : " << go->name << std::endl;
-				Application::singleton->Stop();
+				isDead = true;
 				std::cout << "bolo" << std::endl;
 			}
 		}
+
+		void		Die()
+		{			
+			mooving = false;
+			gameObject->GetComponent<Collider>()->force = glm::vec3();
+		}
+
+		void		UpdateText()
+		{
+			float newDistance = glm::distance(prevPosition, transform->_position);
+			prevPosition = transform->_position;
+			
+			totalDistance += newDistance;
+
+ 			Text *text = gameObject->GetComponent<Text>();
+ 			std::stringstream ss;
+ 			ss << "Distance : " << static_cast<int>(totalDistance);
+ 			text->text = ss.str();
+ 		}
+
 
 		bool		can_turn = false; 
 		glm::vec3	can_turn_pos;
@@ -155,7 +193,7 @@ class ScriptControlPlayer : public Script
 					if (!have_to_turn)
 					{
 						std::cout << "OUBLI PAS DE TOURNER" << std::endl;
-						Application::singleton->Stop();
+						isDead = true;
 					}
 					Turn(false);
 				}
@@ -164,15 +202,15 @@ class ScriptControlPlayer : public Script
 					if (have_to_turn)
 					{
 						std::cout << "OUBLI PAS DE TOURNER" << std::endl;
-						Application::singleton->Stop();
+						isDead = true;
 					}
 					Turn(true);
 
 				}
 				else
 				{
-						std::cout << "OUBLI PAS DE TOURNER" << std::endl;
-					Application::singleton->Stop();
+					std::cout << "OUBLI PAS DE TOURNER" << std::endl;
+					isDead = true;
 				}
 			}
 		}
@@ -254,7 +292,7 @@ class ScriptControlPlayer : public Script
 			print_tmp_cr("AFTER POS", transform->GetPosition());*/
 		}
 
-		float			turn_speed = 0.5;
+		float			turn_speed = 0.2;
 		float			turn_timer = 0;
 		float			turn_target;
 		bool			turning = false;
@@ -345,7 +383,7 @@ class ScriptControlPlayer : public Script
 		bool			jumping = false;
 
 		float			jump_timer = 0;
-		float			jump_speed = 0.4;
+		float			jump_speed = 0.25;
 
 		bool			mode_jump = false;
 		bool			mode_jump_high = false;
@@ -406,3 +444,5 @@ class ScriptControlPlayer : public Script
 
 
 };
+
+#endif

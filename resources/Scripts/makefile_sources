@@ -1,7 +1,7 @@
 SRC = 	\
-		ControlCamera.cpp\
 		ScriptControlPlayer.cpp\
-		ScriptTriangle.cpp\
 		ScriptFreeControlCamera.cpp\
 		ScriptChunkSpawner.cpp\
-		ScriptChangeText.cpp\
+		ScriptMenu.cpp\
+		ScriptLoadingPanel.cpp\
+		ScriptObstacle.cpp\

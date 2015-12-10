@@ -5,41 +5,79 @@
 # SKIN 					<file name .dae>
 # SCRIPT 				<class name>
 # CAMERA 				<fov> <clip near> <clip far>
-# COLLIDER 				<center> <size> <enable> <mass>
+# COLLIDER 				<enable> <mass>
+# TEXT 					<text> <size> <font> <posX> <posY> <scale> <color>
 
-APPLICATION:42run|1280|1280
-	PREFAB:Camera1|
+APPLICATION:42run|1980|1080
+	PREFAB:Empty|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
-		CAMERA:45|0.1|100
-		SCRIPT:ControlCamera
-	PREFAB:MonCube|
+	PREFAB:Camera|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
+		CAMERA:45|0.1|120
+	PREFAB:Floor|
+		TRANSFORM:0,-2.001,-10|0,0,0|10,1,10
 		SKIN:cube.dae
-		SCRIPT:MyCube
-	PREFAB:MonTriangle|
+		COLLIDER:true|0
+	PREFAB:chunk0|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
-		SKIN:triangle.dae
-		SCRIPT:ScriptTriangle
-	PREFAB:child|
+		SKIN:cluster0.dae
+	PREFAB:chunk1|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
-		SKIN:cube.dae
-	PREFAB:Empty GameObject|
+		SKIN:cluster1.dae
+	PREFAB:chunk2|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
-	SCENE:Level1
-		GAMEOBJECT:Player|
-			TRANSFORM:0,0,-10|0,0,0|1,1,1
-			SCRIPT:MyCube
-			SKIN:MrRobot.dae
-			COLLIDER:true|1
-		GAMEOBJECT:Floor|
-			TRANSFORM:-0.7,-5,-10|0,0,0|1000,1,1000
-			SKIN:cube.dae
-			COLLIDER:true|0
+		SKIN:cluster2.dae
+	PREFAB:chunk_right|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cluster_corner_right.dae
+	PREFAB:chunk_left|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:cluster_corner_left.dae
+	PREFAB:Light|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		LIGHT:1,1,1
+		SKIN:Gizmo.dae
+	PREFAB:Obstacle1|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:Obstacle1.dae
+		COLLIDER:true|0
+	PREFAB:ObstacleCollider|
+		TRANSFORM:0,0,0|0,0,0|0.1,0.1,0.1
+		SCRIPT:ScriptObstacle
+	PREFAB:Player|
+		TRANSFORM:0,0,-0.5|0,3.1415,0|1,1,1
+		SKIN:MrRobot.dae
+		COLLIDER:true|1
+		SCRIPT:ScriptControlPlayer
+		TEXT:distance:|48|Arial.ttf|20|1000|1|1,1,1|
+	PREFAB:ChunkManager|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SCRIPT:ScriptChunkSpawner
+	PREFAB:Obstacle2|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		SKIN:Obstacle2.dae
+	SCENE:MenuScene
 		GAMEOBJECT:Camera|
+			TRANSFORM:0,0,1.8|0,0,0|1,1,1
+			CAMERA:45|0.1|150
+		GAMEOBJECT:Light|
+			TRANSFORM:0,-5,5|0,0,0|1,1,1
+			LIGHT:1,1,1
+		GAMEOBJECT:Menu|
 			TRANSFORM:0,0,0|0,0,0|1,1,1
-			CAMERA:45|0.1|100
-			SCRIPT:ControlCamera
-		GAMEOBJECT:TestLight|
-			TRANSFORM:0,0,-10|0,0,0|1,1,1
-			SKIN:Gizmo.dae
-			LIGHT:1
+			SCRIPT:ScriptMenu
+			SKIN:MenuPanel.dae
+		GAMEOBJECT:Decor|
+			TRANSFORM:0,-2.5,0|0,0,0|1,1,1
+			SKIN:cluster1.dae
+	SCENE:GameScene
+		GAMEOBJECT:Camera|
+			TRANSFORM:0,2.5,4|0,0,0|1,1,1
+			CAMERA:45|0.1|150
+		GAMEOBJECT:Light|
+			TRANSFORM:0,2,-10|0,0,0|1,1,1
+			LIGHT:1,1,1
+		GAMEOBJECT:LoadingPanel|
+			TRANSFORM:0,0,0|0,0,0|1,1,1
+			SCRIPT:ScriptLoadingPanel
+			TEXT:Loading Level ...|48|Arial.ttf|20|20|1|1,1,1|

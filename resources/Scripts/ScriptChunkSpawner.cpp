@@ -1,6 +1,6 @@
 # include "DOGLE.hpp"
 # include "Script.hpp"
-#include "ScriptControlPlayer.cpp"
+# include "ScriptControlPlayer.cpp"
 
 
 enum BasicCard
@@ -74,7 +74,6 @@ class	Chunk
 	GameObject					*render;
 	GameObject					*collider;
 	std::vector<std::string>	name_chunk = {"chunk0", "chunk1", "chunk2"};
-	std::vector<std::string>	little_obs = {"Obstacle2"};
 	std::vector<std::string>	big_obs = {"Obstacle1"};
 
 	Chunk(glm::vec3 vec)
@@ -137,18 +136,12 @@ class	Chunk
 			int random_count = rand() % 3;
 			for (int i = 0; i < random_count; ++i)
 			{
-				tmp_obs = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab(
-					little_obs[rand() % little_obs.size()]
-					));
+				tmp_obs = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("ObstacleCollider"));
 				tmp_obs->GetComponent<Transform>()->SetPosition(vec + rand_pos[i]);
-				float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
-				tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
 				obstacle.push_back(tmp_obs);
 			}
 
 		}
-
-
 	}
 
 	void print_tmp_cr(std::string name, glm::vec3 vec)
@@ -286,9 +279,6 @@ class ScriptChunkSpawner : public Script
 		last_turn->SetConf(before->render->GetComponent<Transform>()->GetPosition() + cur_dir.add, cur_dir.rot, true);
 
 		cur_dir = BasicDir(BasicDir::AddCard(cur_dir.card, add_dir));
-
-
-
 	}
 
 
