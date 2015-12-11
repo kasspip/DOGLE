@@ -29,7 +29,6 @@ export HOMEBREW_CACHE=/tmp/mycache
 export HOMEBREW_TEMP=/tmp/mytemp
 mkdir /tmp/mycache /tmp/mytemp
 /usr/local/bin/brew update
-export PATH="$HOME/.brew/bin:$PATH" >> ~/.zshrc
 
 ~/.brew/bin/brew install glew
 ~/.brew/bin/brew tap homebrew/versions
@@ -41,3 +40,4 @@ export PATH="$HOME/.brew/bin:$PATH" >> ~/.zshrc
 ~/.brew/bin/brew install pkg-config
 
 export PKG_CONFIG_PATH=~/.brew/lib/pkgconfig/
+export PATH="$HOME/.brew/bin:$PATH" >> ~/.zshrc

@@ -5,3 +5,4 @@ SRC = 	\
 		ScriptMenu.cpp\
 		ScriptLoadingPanel.cpp\
 		ScriptObstacle.cpp\
+		ScriptCoffee.cpp\

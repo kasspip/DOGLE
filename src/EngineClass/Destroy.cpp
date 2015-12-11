@@ -42,6 +42,7 @@ void			Destroy::RunState(Application & app, e_state & currentState)
 			}
 			delete *it;
 			it = list.erase(it);
+			break;
 		}
 	}
 

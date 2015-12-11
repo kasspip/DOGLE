@@ -6,3 +6,4 @@
 #include "ScriptMenu.cpp"
 #include "ScriptLoadingPanel.cpp"
 #include "ScriptObstacle.cpp"
+#include "ScriptCoffee.cpp"

@@ -4,3 +4,4 @@ ScriptFactory::Register("ScriptChunkSpawner", new ScriptChunkSpawner);
 ScriptFactory::Register("ScriptMenu", new ScriptMenu);
 ScriptFactory::Register("ScriptLoadingPanel", new ScriptLoadingPanel);
 ScriptFactory::Register("ScriptObstacle", new ScriptObstacle);
+ScriptFactory::Register("ScriptCoffee", new ScriptCoffee);

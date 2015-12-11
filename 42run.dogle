@@ -49,13 +49,23 @@ APPLICATION:42run|1980|1080
 		SKIN:MrRobot.dae
 		COLLIDER:true|1
 		SCRIPT:ScriptControlPlayer
-		TEXT:distance:|48|Arial.ttf|20|1000|1|1,1,1|
+		TEXT:distance:|48|Arial.ttf|20|1024|1|1,1,1|
 	PREFAB:ChunkManager|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SCRIPT:ScriptChunkSpawner
 	PREFAB:Obstacle2|
 		TRANSFORM:0,0,0|0,0,0|1,1,1
 		SKIN:Obstacle2.dae
+	PREFAB:TextScore|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
+		TEXT:Score : 0|48|Arial.ttf|20|950|1|1,1,1|
+	PREFAB:Bonus|
+		TRANSFORM:0,0,0|0,0,0|0.5,0.5,0.5
+		SKIN:coffeCup.dae
+		COLLIDER:true|1
+		SCRIPT:ScriptCoffee
+	PREFAB:PanelGameOver|
+		TRANSFORM:0,0,0|0,0,0|1,1,1
 	SCENE:MenuScene
 		GAMEOBJECT:Camera|
 			TRANSFORM:0,0,1.8|0,0,0|1,1,1
@@ -80,4 +90,4 @@ APPLICATION:42run|1980|1080
 		GAMEOBJECT:LoadingPanel|
 			TRANSFORM:0,0,0|0,0,0|1,1,1
 			SCRIPT:ScriptLoadingPanel
-			TEXT:Loading Level ...|48|Arial.ttf|20|20|1|1,1,1|
+			TEXT:Loading Level ...|48|Arial.ttf|850|500|1|1,1,1|

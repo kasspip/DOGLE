@@ -34,6 +34,7 @@ GameObject::~GameObject(void)
 	std::cout << "destruct " + name << std::endl;
 	for (IComponent* compo : _listComponent)
 		delete compo;
+	_listComponent.clear();
 }
 
 // OVERLOADS //

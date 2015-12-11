@@ -42,8 +42,13 @@ std::string		Start::toString(void) const
 
 void			Start::_CleanOldScene(Scene* scene)
 {
-	(void)scene;
-	// TODO //
+
+	for (GameObject* go : scene->GetGameObjectList())
+		delete go;
+	scene->GetGameObjectList().clear();
+	for (GameObject* go : scene->GetBindGameObjectList())
+		delete go;
+	scene->GetBindGameObjectList().clear();
 }
 
 GameObject*			Start::_FindFirstCamera(Scene* scene)

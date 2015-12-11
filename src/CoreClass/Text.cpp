@@ -25,6 +25,8 @@ Text::Text(Text const & src)
 {
 	std::cout << "Construct Text" << std::endl;
 	type = "Text";
+    isInit = false;
+    shader = nullptr;
 	*this = src;
 }
 

@@ -23,6 +23,9 @@ class ScriptLoadingPanel : public Script
 			obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("Player"));
 			obj->name = "Player";
 
+			obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("TextScore"));
+			obj->name = "TextScore";
+
 			obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("ChunkManager"));
 			loadAssets = true;
 		}

@@ -28,8 +28,10 @@ Scene::~Scene(void)
 	std::cout << "destruct " << name << std::endl; 
 	for (GameObject* go : _listGameObject)
 		delete go;
+	_listGameObject.clear();
 	for (GameObject* go : _listBindGameObject)
 		delete go;
+	_listBindGameObject.clear();
 }
 
 // OVERLOADS //

@@ -22,10 +22,11 @@ class ScriptControlPlayer : public Script
 		e_dash_pos		turn_pos = MID;
 		float			move_speed = 10;
 		bool			mooving = false;
+
 		glm::vec3 		prevPosition;
 		double 			totalDistance;
 		bool			isDead;
-
+		int				score;
 
 		static ScriptControlPlayer	*instance;
 
@@ -55,7 +56,6 @@ class ScriptControlPlayer : public Script
 		{
 			if (isDead)
 			{
-							std::cout << "Dead" << std::endl;
 				Die();
 				return;
 			}
@@ -126,7 +126,12 @@ class ScriptControlPlayer : public Script
 
 		void	OnCollisionEnter(GameObject *go)
 		{
-			if ( !isDead && go->name.find("Floor") == std::string::npos)
+			if (!isDead && go->name.find("Bonus") != std::string::npos)
+			{
+				AddScore(10);
+				Destroy(go);
+			}
+			else if ( !isDead && go->name.find("Floor") == std::string::npos)
 			{
 				std::cout << "take down ! : " << go->name << std::endl;
 				isDead = true;
@@ -134,10 +139,30 @@ class ScriptControlPlayer : public Script
 			}
 		}
 
+		void		AddScore(int val)
+		{
+			score += val;
+
+			Text *textScore =  Application::singleton->GetCurrentScene()->FindGameObject("TextScore")->GetComponent<Text>();
+
+			std::stringstream ss;
+			ss << "Score : " << score;
+			textScore->text = ss.str();
+		}
+
 		void		Die()
-		{			
-			mooving = false;
-			gameObject->GetComponent<Collider>()->force = glm::vec3();
+		{	
+			static bool set = false;
+
+			if (!set)
+			{
+				mooving = false;
+				gameObject->GetComponent<Collider>()->force = glm::vec3();
+				set = true;
+			}
+
+			glm::vec3 newRot = glm::vec3 (transform->_rotation.x, transform->_rotation.y + 10 * Engine::singleton->deltaTime, transform->_rotation.z);
+			transform->SetRotation( newRot );
 		}
 
 		void		UpdateText()
@@ -370,10 +395,15 @@ class ScriptControlPlayer : public Script
 		void		MoveForward(bool b)
 		{
 			mooving = b;
+			Collider *collider = gameObject->GetComponent<Collider>();
+			
+			if (collider == nullptr)
+				return ;
+
 			if (mooving)
-				gameObject->GetComponent<Collider>()->force = transform->Forward() * move_speed;
+				collider->force = transform->Forward() * move_speed;
 			else
-				gameObject->GetComponent<Collider>()->force = glm::vec3();
+				collider->force = glm::vec3();
 			std::cout << "MoveForward " << b << std::endl;
 		}
 

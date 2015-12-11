@@ -74,7 +74,7 @@ class	Chunk
 	GameObject					*render;
 	GameObject					*collider;
 	std::vector<std::string>	name_chunk = {"chunk0", "chunk1", "chunk2"};
-	std::vector<std::string>	big_obs = {"Obstacle1"};
+	std::vector<std::string>	big_obs = {"Obstacle1", "Bonus"};
 
 	Chunk(glm::vec3 vec)
 	{
