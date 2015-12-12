@@ -20,7 +20,8 @@ class ScriptControlPlayer : public Script
 		Transform* 		light = nullptr;
 		e_dash_pos		dash_pos = MID;
 		e_dash_pos		turn_pos = MID;
-		float			move_speed = 10;
+		float			base_speed = 10;
+		float			move_speed = base_speed;
 		bool			mooving = false;
 
 		glm::vec3 		prevPosition;
@@ -262,7 +263,8 @@ class ScriptControlPlayer : public Script
 
 		glm::vec3		dash_target;
 		bool			dashing = false;
-		float			dash_speed = 0.1;
+		float			dash_speed_base = 0.1;
+		float			dash_speed = dash_speed_base;
 		float			dash_timer = 0;
 		glm::vec3		pad;
 		float			mul_dash = 2;
@@ -290,6 +292,7 @@ class ScriptControlPlayer : public Script
 		{
 			if (!can_turn && (dashing || turning))
 				return ;
+			dash_speed = GetQuotientSpeed() * dash_speed_base;
 			float mul = 1;
 			if (b)
 			{		
@@ -317,7 +320,8 @@ class ScriptControlPlayer : public Script
 			print_tmp_cr("AFTER POS", transform->GetPosition());*/
 		}
 
-		float			turn_speed = 0.2;
+		float			turn_speed_base = 0.2;
+		float			turn_speed = turn_speed_base;
 		float			turn_timer = 0;
 		float			turn_target;
 		bool			turning = false;
@@ -360,6 +364,7 @@ class ScriptControlPlayer : public Script
 					transform->SetRotation(my_rot);
 					
 					std::cout << "Rotation y" << transform->_rotation.y << std::endl;
+					move_speed += 1;
 					MoveForward(true);
 				}
 				else
@@ -374,6 +379,7 @@ class ScriptControlPlayer : public Script
 			if (turning || dashing)
 				return ;
 			print_tmp_cr("POS BEFORE TURN", transform->_position);
+			turn_speed = GetQuotientSpeed() * turn_speed_base;
 
 			cam_pad = glm::vec3();
 			dash_pos = MID;
@@ -413,7 +419,8 @@ class ScriptControlPlayer : public Script
 		bool			jumping = false;
 
 		float			jump_timer = 0;
-		float			jump_speed = 0.25;
+		float			jump_speed_base = 0.25;
+		float			jump_speed = jump_speed_base;
 
 		bool			mode_jump = false;
 		bool			mode_jump_high = false;
@@ -464,6 +471,7 @@ class ScriptControlPlayer : public Script
 			if (jumping)
 				return ;
 			std::cout << "Jump" << std::endl;
+			jump_speed = GetQuotientSpeed() * jump_speed_base;
 			jumping = true;
 			mode_jump = true;
 			jump_timer = 0;
@@ -472,6 +480,10 @@ class ScriptControlPlayer : public Script
 					
 		}
 
+		float	GetQuotientSpeed()
+		{
+			return (base_speed / move_speed);
+		}
 
 };
 
