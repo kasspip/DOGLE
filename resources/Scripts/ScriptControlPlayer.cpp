@@ -426,7 +426,7 @@ class ScriptControlPlayer : public Script
 					
 					std::cout << "Rotation y" << transform->_rotation.y << std::endl;
 					if (move_speed < 25)
-						move_speed += 5;
+						move_speed += 2;
 					std::cout << "move_speed = " << move_speed << std::endl;
 					MoveForward(true);
 				}
@@ -490,13 +490,13 @@ class ScriptControlPlayer : public Script
 			std::cout << "MoveForward " << b << std::endl;
 		}
 
-		float			jumpower = 1.7;
+		float			jumpower = 2.0;
 		float			jumptarget = 0;
 		float			jumpstart = 0;
 		bool			jumping = false;
 
 		float			jump_timer = 0;
-		float			jump_speed_base = 0.25;
+		float			jump_speed_base = 0.35;
 		float			jump_speed = jump_speed_base;
 
 		bool			mode_jump = false;
@@ -548,7 +548,7 @@ class ScriptControlPlayer : public Script
 			if (jumping)
 				return ;
 			std::cout << "Jump" << std::endl;
-			jump_speed =  jump_speed_base;
+			jump_speed = GetQuotientSpeed() * jump_speed_base;
 			jumping = true;
 			mode_jump = true;
 			jump_timer = 0;

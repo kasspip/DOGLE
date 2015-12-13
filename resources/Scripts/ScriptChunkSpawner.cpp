@@ -152,41 +152,54 @@ class	Chunk
 			tmp_obs = big_obs_lst.back();
 			
 			std::vector<glm::vec3> rand_pos;
-			if (tmp_obs->name == "Obstacle1")
-				rand_pos = { tr_render->Left() * 1.5f, tr_render->Left() * 1.5f};
-			else
-				rand_pos = { tr_render->Left() * 2.0f, glm::vec3(0,0,0), tr_render->Left() * 2.0f};
+			if (tmp_obs->name.find("Obstacle1") != std::string::npos)
+			{
 
-			srand(clock());
+				rand_pos = { tr_render->Left() * 1.f, tr_render->Left() * -1.f};
+				std::cout << "BORDEL : " <<  tmp_obs->name << std::endl;
+			}
+			else
+				rand_pos = { tr_render->Left() * 2.0f, glm::vec3(0,0,0), tr_render->Left() * -2.0f};
+
 			std::random_shuffle ( rand_pos.begin(), rand_pos.end() );
+
 
 			
 			glm::vec3 gro_pos = rand_pos[0];
 			
 			tmp_obs->GetComponent<Transform>()->SetPosition(vec + gro_pos);
-				srand(clock());
 			float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
 			tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
 
+
+				if (tmp_obs->name.find("Coin") != std::string::npos || tmp_obs->name.find("Bonus") != std::string::npos)
+				{
+					std::cout << "COIN" << std::endl;
+					tmp_obs->GetComponent<Transform>()->SetPosition(vec + gro_pos + glm::vec3(0, 1, 0));
+					tmp_obs->GetComponent<Transform>()->SetRotation(0.2, 0, 0.2);
+				}
+				else
+				{
+					tmp_obs->GetComponent<Transform>()->SetPosition(vec + gro_pos);
+					float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
+					tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
+				}
 		}
 		else if (random_nb == 0)
 		{
 			std::vector<glm::vec3> rand_pos = { tr_render->Left() * 2.0f, glm::vec3(0, 0, 0), tr_render->Left() * -2.0f};
-				srand(clock());
 			std::random_shuffle ( rand_pos.begin(), rand_pos.end() );
-				srand(clock());
 			std::random_shuffle ( little_obs_lst.begin(), little_obs_lst.end() );
-				srand(clock());
 			unsigned int random_count = rand() % 3;
 			for (unsigned int i = 0; i <= random_count && i < little_obs_lst.size(); ++i)
 			{
-				srand(clock());
 				tmp_obs = little_obs_lst[i];
 			
 				float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
 				
-				tmp_obs->GetComponent<Transform>()->SetPosition(vec + rand_pos[i]);
-				tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
+					tmp_obs->GetComponent<Transform>()->SetPosition(vec + rand_pos[i]);
+					tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
+				
 			}
 
 		}
