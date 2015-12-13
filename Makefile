@@ -1,4 +1,4 @@
-NAME = dogle
+NAME = 42run
 
 SRC = 	src/CoreClass/main.cpp \
 		src/CoreClass/Application.cpp \
@@ -78,12 +78,22 @@ SOIL2 = include/soil2/lib/macosx/libsoil2-debug.a
 BULLET_INC = -I$(HOME)/.brew/include/bullet
 
 
-all: $(NAME)
+all: BREW $(NAME)
 
-COMPGAMESCRIPTS:
+BREW:
+	~/.brew/bin/brew install glew
+	~/.brew/bin/brew tap homebrew/versions
+	~/.brew/bin/brew install --build-bottle --static glfw3
+	~/.brew/bin/brew install assimp
+	~/.brew/bin/brew install Bullet
+	~/.brew/bin/brew install boost
+	~/.brew/bin/brew install gtkmm3
+	~/.brew/bin/brew install pkg-config
+
+$(GAMESCRIPTS):
 	make -C resources/Scripts/
 
-$(NAME): COMPGAMESCRIPTS $(SOIL2) $(OBJ) 
+$(NAME): $(GAMESCRIPTS) $(SOIL2) $(OBJ) 
 	$(CC) $(FLAGS) $(INCLUDES) $(LIBRARIES) $(OBJ) -o $(NAME)
 
 %.o: %.cpp

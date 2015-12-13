@@ -39,5 +39,5 @@ mkdir /tmp/mycache /tmp/mytemp
 ~/.brew/bin/brew install gtkmm3
 ~/.brew/bin/brew install pkg-config
 
-export PKG_CONFIG_PATH=~/.brew/lib/pkgconfig/
-export PATH="$HOME/.brew/bin:$PATH" >> ~/.zshrc
+echo "export PKG_CONFIG_PATH=~/.brew/lib/pkgconfig/"  >> ~/.zshrc
+echo "export PATH=$HOME/.brew/bin:$PATH" >> ~/.zshrc
