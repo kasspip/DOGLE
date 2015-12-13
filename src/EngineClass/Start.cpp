@@ -94,7 +94,7 @@ void			Start::_AwakeNewGameObects(Application & app)
 	Script			*script = nullptr;
 	for (GameObject *go : lst_bind)
 	{
-		for (IComponent* compo : go->GetListComponent())
+		for (IComponent* compo : go->_listComponent)
 		{
 			if ((script = dynamic_cast<Script*>(compo)))
 			{

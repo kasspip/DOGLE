@@ -54,6 +54,7 @@ Skin::Skin(std::string obj) : dae_file(obj)
 
 Skin::Skin(Skin const & src)
 {
+
 	std::cout << "construct copy Skin"  << std::endl;
 	type = "Skin";
 	*this = src;
@@ -69,9 +70,13 @@ Skin::~Skin(void)
 		glDeleteBuffers(1, &normalsBind);
 		glDeleteTextures(1, &textureBind);
 	}
+	if (positions && UVs && normals)
+	{
 	delete [] positions;
 	delete [] UVs;
 	delete [] normals;
+
+	}
 	std::cout << "destruct Skin" << std::endl;
 }
 
@@ -107,7 +112,8 @@ GLfloat		*Skin::_CopyArray(GLfloat *vec, unsigned int sz)
 	GLfloat	*ret;
 
 	ret = new GLfloat[sz];
-	std::copy(vec, vec + sz, ret);
+//	std::copy(vec, vec + sz, ret);
+	memcpy(ret, vec, sizeof(GLfloat) * sz);
 	return (ret);
 }
 

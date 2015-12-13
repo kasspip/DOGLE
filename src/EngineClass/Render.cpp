@@ -33,7 +33,7 @@ void			Render::RunState(Application & app, e_state & currentState)
 	if (Engine::_currTime > Engine::_lastTime + (1.0f / static_cast<double>(app.FPS)))
 	{
 		Engine::_lastTime = Engine::_currTime;
-		_UpdateFpsCounter(app.name, app.window);
+		//_UpdateFpsCounter(app.name, app.window);
 	
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, app.winW, app.winH);
@@ -79,7 +79,7 @@ void 			Render::_RenderText()
 
 	for (GameObject* go : _scene->GetGameObjectList())
 	{
-		for (IComponent *compo : go->GetListComponent())
+		for (IComponent *compo : go->_listComponent)
 		{
 			if ((text = dynamic_cast<Text*>(compo)))
 				text->RenderText();

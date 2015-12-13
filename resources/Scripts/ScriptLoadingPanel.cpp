@@ -1,6 +1,10 @@
 # include "DOGLE.hpp"
 # include "Script.hpp"
 
+#ifndef SCRIPTLOADINGPANEL
+#define SCRIPTLOADINGPANEL
+
+
 class ScriptLoadingPanel : public Script
 {
 	public:
@@ -14,15 +18,30 @@ class ScriptLoadingPanel : public Script
 	{
 		loadAssets = false;
 	}
-
+	
 	void Update()
 	{
 		if (!loadAssets)
 		{
 			GameObject* obj;
-			obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("Player"));
-			obj->name = "Player";
-
+			if (Application::singleton->playerChoice == 0)
+			{
+				obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("PlayerMarvin"));
+				obj->name = "Player";
+			}
+			else if (Application::singleton->playerChoice == 1)
+			{
+				obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("PlayerRobot"));
+				obj->name = "Player";
+			}
+			else if (Application::singleton->playerChoice == 2)
+			{
+				obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("PlayerFallout"));
+				obj->name = "Player";
+			}
+			else
+				std::cout << "error choice : " << Application::singleton->playerChoice << std::endl;
+			
 			obj = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("TextScore"));
 			obj->name = "TextScore";
 
@@ -34,3 +53,6 @@ class ScriptLoadingPanel : public Script
 	}
 
 };
+
+#endif
+

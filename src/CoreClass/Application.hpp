@@ -42,6 +42,8 @@
 			GLuint				shaderProgram_Standard;
 			Scene*				sceneToLoad;
 			
+			unsigned long 		playerChoice;
+
 
 			// Custom
 			std::string			name;

@@ -8,11 +8,11 @@ class ScriptCoffee : public Script
 	ScriptCoffee() : Script("ScriptCoffee") {}
 	Script* Clone() { return new ScriptCoffee(*this); }
 
-	void		Awake()
+	/*void		Awake()
 	{
 		transform->SetPosition(transform->_position.x, 1, transform->_position.z);
 		transform->SetRotation(0.2, 0, 0.2);
-	}
+	}*/
 
 	void		Update()
 	{

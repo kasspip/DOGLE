@@ -23,6 +23,8 @@ class ScriptControlPlayer : public Script
 		float			base_speed = 10;
 		float			move_speed = base_speed;
 		bool			mooving = false;
+		bool 			started = false;
+		bool			set = false;
 
 		glm::vec3 		prevPosition;
 		double 			totalDistance;
@@ -39,8 +41,49 @@ class ScriptControlPlayer : public Script
 			std::cout  << name << " (" << vec.x << "," << vec .y << "," << vec .z << ")" << std::endl;
 		}
 
+		void			ResetGame(glm::vec3 pos, glm::vec3 rot)
+		{
+			transform->SetPosition(pos);
+			transform->SetRotation(rot);
+			MoveForward(false);
+			isDead = false;
+			set = false;
+			totalDistance = 0;
+			dash_pos = MID;
+			turn_pos = MID;
+			prevPosition = transform->_position;
+			score = 0;
+
+			jumpower = 1.7;
+			jumptarget = 0;
+			jumpstart = 0;
+			jumping = false;
+
+			jump_timer = 0;
+			jump_speed_base = 0.25;
+			jump_speed = jump_speed_base;
+
+			mode_jump = false;
+			mode_jump_high = false;
+
+			turn_speed_base = 0.2;
+			turn_speed = turn_speed_base;
+			turn_timer = 0;
+			turning = false;
+
+			dashing = false;
+			dash_speed_base = 0.1;
+			dash_speed = dash_speed_base;
+			dash_timer = 0;
+			mul_dash = 2;
+			cam_pad = glm::vec3();
+
+			started = false;
+		}
+
 		void			Awake()
 		{
+			srand(clock());
 			GameObject	*cam = Camera::GetMainCamera();
 			glm::vec3	cam_pos = cam->GetComponent<Transform>()->GetPosition();
 			glm::vec3	my_pos = transform->GetPosition();
@@ -55,6 +98,9 @@ class ScriptControlPlayer : public Script
 
 		void			Update()
 		{
+			if (Inputs::singleton->KeyDown(GLFW_KEY_ESCAPE))
+				Application::singleton->Stop();
+			
 			if (isDead)
 			{
 				Die();
@@ -63,7 +109,6 @@ class ScriptControlPlayer : public Script
 
 			if (Inputs::singleton->KeyDown(GLFW_KEY_W))
 			{
-				static bool started = false;
 				if (!started)
 				{
 					started = true;
@@ -71,10 +116,8 @@ class ScriptControlPlayer : public Script
 					MoveForward(true);
 				}
 			}
-			if (Inputs::singleton->KeyDown(GLFW_KEY_ESCAPE))
-			{
-				Application::singleton->Stop();
-			}
+
+
 			if (Inputs::singleton->KeyDown(GLFW_KEY_A))
 			{
 				std::cout << "key press A (turn left)" << std::endl;
@@ -122,15 +165,30 @@ class ScriptControlPlayer : public Script
 			UpdateLightPos();
 			UpdateJump();
 			UpdateText();
-
+			UpdateBoost();
 		}
+
+		float	boost_speed = 10;
+		float	boost_time = 3;
+		float	boost_time_cur = 3;
+		bool	is_boosted = false;
 
 		void	OnCollisionEnter(GameObject *go)
 		{
 			if (!isDead && go->name.find("Bonus") != std::string::npos)
 			{
+				go->GetComponent<Transform>()->SetPosition(glm::vec3(0, -200, 0));
+				if (is_boosted)
+					return ;
+				is_boosted = true;
+				move_speed += boost_speed;
+				boost_time_cur = boost_time;
+				MoveForward(true);
+			}
+			else if (!isDead && go->name.find("Coin") != std::string::npos)
+			{
+				go->GetComponent<Transform>()->SetPosition(glm::vec3(0, -200, 0));
 				AddScore(10);
-				Destroy(go);
 			}
 			else if ( !isDead && go->name.find("Floor") == std::string::npos)
 			{
@@ -153,7 +211,6 @@ class ScriptControlPlayer : public Script
 
 		void		Die()
 		{	
-			static bool set = false;
 
 			if (!set)
 			{
@@ -183,6 +240,9 @@ class ScriptControlPlayer : public Script
 		bool		can_turn = false; 
 		glm::vec3	can_turn_pos;
 		bool		have_to_turn;
+		glm::vec3	turn_start_pos;
+		glm::vec3	turn_start_dir;
+		
 
 		void		IsInTurnPoint(glm::vec3 allower, bool bo)
 		{
@@ -197,6 +257,7 @@ class ScriptControlPlayer : public Script
 			print_tmp_cr("POS", transform->_position);
 			turn_pos = MID;
 			can_turn = true;
+			turn_start_dir = can_turn_pos - transform->_position;
 		}
 
 
@@ -208,7 +269,7 @@ class ScriptControlPlayer : public Script
 				return ;
 			float dist = glm::distance(transform->_position, can_turn_pos);
 		//	std::cout << "dist = " << dist << std::endl;
-			if (dist < 0.2)
+			if (dist < 0.2 || glm::dot(can_turn_pos - transform->_position, turn_start_dir) < 0)
 			{
 				MoveForward(false);
 				transform->SetPosition(can_turn_pos);
@@ -344,7 +405,7 @@ class ScriptControlPlayer : public Script
 					turning = false;
 					std::cout << "turnover" << std::endl;
 				print_tmp_cr("POS AFTER TURN", transform->_position);
-
+					transform->SetPosition(can_turn_pos);
 				}
 				my_rot.y += turn_target * (float)(delta / turn_speed);
 				if (!turning)
@@ -364,7 +425,9 @@ class ScriptControlPlayer : public Script
 					transform->SetRotation(my_rot);
 					
 					std::cout << "Rotation y" << transform->_rotation.y << std::endl;
-					move_speed += 1;
+					if (move_speed < 25)
+						move_speed += 5;
+					std::cout << "move_speed = " << move_speed << std::endl;
 					MoveForward(true);
 				}
 				else
@@ -396,7 +459,18 @@ class ScriptControlPlayer : public Script
 			turn_target = mul;
 		}
 
-
+		void		UpdateBoost()
+		{
+			if (is_boosted)
+			{
+				boost_time -= Engine::singleton->deltaTime;
+				if (boost_time <= 0)
+				{
+					is_boosted = false;
+					move_speed -= boost_speed;
+				}
+			}
+		}
 
 		void		MoveForward(bool b)
 		{
@@ -407,7 +481,10 @@ class ScriptControlPlayer : public Script
 				return ;
 
 			if (mooving)
+			{
 				collider->force = transform->Forward() * move_speed;
+				collider->force.y = 0;
+			}
 			else
 				collider->force = glm::vec3();
 			std::cout << "MoveForward " << b << std::endl;
@@ -471,7 +548,7 @@ class ScriptControlPlayer : public Script
 			if (jumping)
 				return ;
 			std::cout << "Jump" << std::endl;
-			jump_speed = GetQuotientSpeed() * jump_speed_base;
+			jump_speed =  jump_speed_base;
 			jumping = true;
 			mode_jump = true;
 			jump_timer = 0;

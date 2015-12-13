@@ -10,20 +10,9 @@ class ScriptObstacle : public Script
 	Script* Clone() { return new ScriptObstacle(*this); }
 
 
-	std::vector<std::string>	little_obs = {"Obstacle2"};
-	GameObject *visual;
+
 	GameObject *player = nullptr;
 	Transform *playerTrans = nullptr;
-
-	void 	Awake ()
-	{
-		visual = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab(
-				little_obs[rand() % little_obs.size()] 
-				));
-		float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
-		visual->GetComponent<Transform>()->SetPosition(transform->_position);
-		visual->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
-	}
 
 	void Update()
 	{
@@ -37,11 +26,6 @@ class ScriptObstacle : public Script
 			ScriptControlPlayer	*script = dynamic_cast<ScriptControlPlayer *>(player->GetComponent<Script>());
 			script->isDead = true;
 		}
-	}
-
-	void OnDestroy()
-	{
-		Destroy(visual);
 	}
 
 };

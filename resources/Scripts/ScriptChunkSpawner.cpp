@@ -74,7 +74,14 @@ class	Chunk
 	GameObject					*render;
 	GameObject					*collider;
 	std::vector<std::string>	name_chunk = {"chunk0", "chunk1", "chunk2"};
-	std::vector<std::string>	big_obs = {"Obstacle1", "Bonus"};
+	std::vector<std::string>	little_obs = {"Obstacle2", "bin"};
+
+	std::vector<std::string>	big_obs = {"Obstacle1", "Bonus", "Coin"};
+
+	std::vector<GameObject	*>	big_obs_lst;
+	std::vector<GameObject	*>	little_obs_lst;
+
+
 
 	Chunk(glm::vec3 vec)
 	{
@@ -84,6 +91,20 @@ class	Chunk
 			name_chunk[rand() % name_chunk.size()]
 			));
 		render->GetComponent<Transform>()->SetPosition(vec);
+
+		GameObject	*tmp_obs = nullptr;
+		for (std::string name_obs : big_obs)
+		{
+			tmp_obs = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab(name_obs));
+			big_obs_lst.push_back(tmp_obs);
+		}
+		for (int i = 0; i < 3; ++i)
+//		for (std::string name_obs : little_obs)
+		{
+			srand(clock());
+			tmp_obs = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab(little_obs[rand() % little_obs.size()]));
+			little_obs_lst.push_back(tmp_obs);
+		}
 	}
 
 	Chunk(glm::vec3 vec, std::string prefab)
@@ -94,7 +115,6 @@ class	Chunk
 		render->GetComponent<Transform>()->SetPosition(vec);
 	}
 
-	std::vector<GameObject	*> obstacle;
 
 	void SetConf(glm::vec3 vec, glm::vec3 rot, bool corner)
 	{
@@ -106,39 +126,67 @@ class	Chunk
 
 		if (corner)
 			return ;
+		
+		unsigned int i = 0;
 
-		int random_nb = rand() % 2;
-		GameObject *tmp_obs;
-
-		for (GameObject *obs : obstacle)
+		for (GameObject *go : big_obs_lst)
 		{
-			obs->SetDestroy(true);
+			go->GetComponent<Transform>()->SetPosition(vec + glm::vec3(0, -100 - i * 10, 0));
+			i++;
 		}
-		obstacle = std::vector<GameObject	*>();
+		for (GameObject *go : little_obs_lst)
+		{
+			go->GetComponent<Transform>()->SetPosition(vec + glm::vec3(0, -100 - i * 10, 0));
+			i++;
+		}
+
+
+		GameObject	*tmp_obs = nullptr;
+				srand(clock());
+		int random_nb = rand() % 2;
+
 		if (random_nb == 1)
 		{
-			std::vector<glm::vec3> rand_pos = { tr_render->Left() * 2.0f, glm::vec3(0, 0, 0), tr_render->Left() * -2.0f};
+			srand(clock());
+			std::random_shuffle ( big_obs_lst.begin(), big_obs_lst.end() );
+			tmp_obs = big_obs_lst.back();
+			
+			std::vector<glm::vec3> rand_pos;
+			if (tmp_obs->name == "Obstacle1")
+				rand_pos = { tr_render->Left() * 1.5f, tr_render->Left() * 1.5f};
+			else
+				rand_pos = { tr_render->Left() * 2.0f, glm::vec3(0,0,0), tr_render->Left() * 2.0f};
+
+			srand(clock());
 			std::random_shuffle ( rand_pos.begin(), rand_pos.end() );
 
-			tmp_obs = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab(
-				big_obs[rand() % big_obs.size()]
-				));
-			tmp_obs->GetComponent<Transform>()->SetPosition(vec + rand_pos[0]);
+			
+			glm::vec3 gro_pos = rand_pos[0];
+			
+			tmp_obs->GetComponent<Transform>()->SetPosition(vec + gro_pos);
+				srand(clock());
 			float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
 			tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
-			obstacle.push_back(tmp_obs);
 
 		}
 		else if (random_nb == 0)
 		{
 			std::vector<glm::vec3> rand_pos = { tr_render->Left() * 2.0f, glm::vec3(0, 0, 0), tr_render->Left() * -2.0f};
+				srand(clock());
 			std::random_shuffle ( rand_pos.begin(), rand_pos.end() );
-			int random_count = rand() % 3;
-			for (int i = 0; i < random_count; ++i)
+				srand(clock());
+			std::random_shuffle ( little_obs_lst.begin(), little_obs_lst.end() );
+				srand(clock());
+			unsigned int random_count = rand() % 3;
+			for (unsigned int i = 0; i <= random_count && i < little_obs_lst.size(); ++i)
 			{
-				tmp_obs = Application::singleton->GetCurrentScene()->InstanciatePrefab(Application::singleton->FindPrefab("ObstacleCollider"));
+				srand(clock());
+				tmp_obs = little_obs_lst[i];
+			
+				float rand_rot = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 2 * M_PI));
+				
 				tmp_obs->GetComponent<Transform>()->SetPosition(vec + rand_pos[i]);
-				obstacle.push_back(tmp_obs);
+				tmp_obs->GetComponent<Transform>()->SetRotation(glm::vec3(0, rand_rot, 0));
 			}
 
 		}
@@ -323,8 +371,30 @@ class ScriptChunkSpawner : public Script
 		}
 	}
 
+	void	ResetGame()
+	{
+
+		static GameObject	*player = Application::singleton->GetCurrentScene()->FindGameObject("Player");
+		ScriptControlPlayer	*ctrl = dynamic_cast<ScriptControlPlayer *>(player->GetComponent<Script>());
+		glm::vec3 rot =  cur_turn->render->GetComponent<Transform>()->_rotation;
+
+		if (std::find(chunks_lefts.begin(), chunks_lefts.end(), cur_turn) != chunks_lefts.end())
+		{
+			std::cout << "belong to LEFT" << std::endl;
+			rot.y -= M_PI / 2;
+		}
+		else
+		{
+			std::cout << "belong to RIGHT" << std::endl;
+			rot.y += M_PI / 2;
+		}
+		ctrl->ResetGame(cur_turn->render->GetComponent<Transform>()->_position, rot);
+	}
+
 	void	Update()
 	{
 		CheckPos();
+		if (Inputs::singleton->KeyDown(GLFW_KEY_ENTER))
+			ResetGame();
 	}
 };

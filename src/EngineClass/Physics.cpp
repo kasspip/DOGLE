@@ -153,7 +153,7 @@ void			Physics::CallCollision()
 		GameObject				*go2 = static_cast<GameObject *>(obB->getUserPointer());
 
 		Script			*script = nullptr;
-		for (IComponent* compo : go1->GetListComponent())
+		for (IComponent* compo : go1->_listComponent)
 		{
 			if ((script = dynamic_cast<Script*>(compo)))
 			{
@@ -161,7 +161,7 @@ void			Physics::CallCollision()
 				script = nullptr;
 			}
 		}
-		for (IComponent* compo : go2->GetListComponent())
+		for (IComponent* compo : go2->_listComponent)
 		{
 			if ((script = dynamic_cast<Script*>(compo)))
 			{
@@ -201,7 +201,7 @@ void			Physics::RunState(Application & app, e_state & currentState)
 
 				rigid->activate(true);
 				btVector3 tmp_v = rigid->getLinearVelocity();
-				btVector3 vel = btVector3(collider->force.x, tmp_v.y(), collider->force.z);
+				btVector3 vel = btVector3(collider->force.x, collider->force.y, collider->force.z);
 				rigid->setLinearVelocity(vel);
 				vel = rigid->getLinearVelocity();
 //				std::cout << "MOOBING " << vel.x() << " " << vel.y() << " " << vel.z() <<std::endl;

@@ -13,6 +13,7 @@ Application::Application(std::string name, int width, int height) : name(name), 
 	shaderProgram_Standard = 0;
 	std::cout << "construct " + name << std::endl;
 	singleton = this;
+	playerChoice = 0;
 }
 
 Application::~Application(void)
@@ -20,8 +21,10 @@ Application::~Application(void)
 	std::cout << "destuct " + name << std::endl;
 	for (Scene*	scene : _listScene)
 		delete scene;
+	_listScene.clear();
 	for (GameObject* prefab : _listPrefab)
 		delete prefab;
+	_listPrefab.clear();
 }
 
 // OVERLOADS //

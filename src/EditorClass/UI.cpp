@@ -1007,7 +1007,7 @@ void		UI::GoComponentsRefresh()
 
 	if (gameObject)
 	{
-		for (IComponent* compo : gameObject->GetListComponent())
+		for (IComponent* compo : gameObject->_listComponent)
 		{
 			if (compo->type == "Transform")
 				continue ;
@@ -1770,7 +1770,7 @@ void			UI::ReplaceScriptName(std::string oldName, std::string newName)
 
 	for(GameObject* prefab : app->GetListPrefab())
 	{
-		for (IComponent* compo : prefab->GetListComponent())
+		for (IComponent* compo : prefab->_listComponent)
 		{
 			if ((script = dynamic_cast<Script*>(compo)) && script->name == oldName)
 				script->name = newName;
@@ -1781,7 +1781,7 @@ void			UI::ReplaceScriptName(std::string oldName, std::string newName)
 	{
 		for(GameObject* go : scene->GetBindGameObjectList())
 		{
-			for (IComponent* compo : go->GetListComponent())
+			for (IComponent* compo : go->_listComponent)
 			{
 				if ((script = dynamic_cast<Script*>(compo)) && script->name == oldName)
 					script->name = newName;
@@ -1789,7 +1789,7 @@ void			UI::ReplaceScriptName(std::string oldName, std::string newName)
 		}
 		for(GameObject* go : scene->GetGameObjectList())
 		{
-			for (IComponent* compo : go->GetListComponent())
+			for (IComponent* compo : go->_listComponent)
 			{
 				if ((script = dynamic_cast<Script*>(compo)) && script->name == oldName)
 					script->name = newName;

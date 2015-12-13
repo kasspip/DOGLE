@@ -26,7 +26,6 @@ class Script;
 			void						AddComponent(IComponent *cmp);
 			void						DeleteComponent(std::string name);
 			std::string 				toString(void);
-			std::list<IComponent*>		GetListComponent() const;
 			void						SetParent(GameObject* go);
 			GameObject*					GetParent();
 			bool						GetDestroy();
@@ -57,6 +56,7 @@ class Script;
 			}
 
 			std::string					name;
+			std::list<IComponent*>			_listComponent;
 
 		private:
 
@@ -66,7 +66,6 @@ class Script;
 			static size_t					_counter;
 			bool							_isPrefab;
 			size_t							_id;
-			std::list<IComponent*>			_listComponent;
 			bool							_destroyMe;
 			GameObject*						_parentObject;
 	};

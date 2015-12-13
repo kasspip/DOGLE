@@ -45,7 +45,7 @@ GameObject&				GameObject::operator=(GameObject const & rhs)
 	Collider	*save = nullptr;
 	ss << rhs.name + " (" << _id << ")";
 	name = ss.str();
-	for (IComponent* compo : rhs.GetListComponent())
+	for (IComponent* compo : rhs._listComponent)
 	{
 		if (dynamic_cast<Transform*>(compo))
 			AddComponent(new Transform(*(dynamic_cast<Transform*>(compo))));
@@ -166,7 +166,6 @@ std::string				GameObject::_GetDefaultName()
 
 // GETTER SETTER //
 
-std::list<IComponent*>	GameObject::GetListComponent() const { return _listComponent;}
 void					GameObject::SetDestroy(bool set) { _destroyMe = set; }
 bool					GameObject::GetDestroy() { return _destroyMe; }
 bool					GameObject::IsPrefab() { return _isPrefab; }
